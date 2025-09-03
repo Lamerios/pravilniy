@@ -39,9 +39,9 @@ setup_env_file() {
     local example_file=$1
     local target_file=$2
     local description=$3
-    
+
     echo -e "${BLUE}📝 Настройка $description...${NC}"
-    
+
     if check_env_file "$target_file"; then
         cp "$example_file" "$target_file"
         echo -e "${GREEN}✅ Создан $target_file${NC}"
@@ -57,7 +57,7 @@ replace_env_value() {
     local file=$1
     local key=$2
     local value=$3
-    
+
     if [ -f "$file" ]; then
         # Экранируем специальные символы для sed
         escaped_value=$(printf '%s\n' "$value" | sed 's/[[\.*^$()+?{|]/\\&/g')
@@ -120,7 +120,7 @@ case $environment in
         replace_env_value ".env" "LOG_LEVEL" "info"
         replace_env_value "quiz-game-backend/.env" "NODE_ENV" "staging"
         replace_env_value "quiz-game-frontend/.env" "VITE_NODE_ENV" "staging"
-        
+
         # Запрос staging URL
         read -p "Введите staging API URL [https://api-staging.quiz-game.com]: " staging_api_url
         staging_api_url=${staging_api_url:-https://api-staging.quiz-game.com}
@@ -132,12 +132,12 @@ case $environment in
         replace_env_value ".env" "LOG_LEVEL" "warn"
         replace_env_value "quiz-game-backend/.env" "NODE_ENV" "production"
         replace_env_value "quiz-game-frontend/.env" "VITE_NODE_ENV" "production"
-        
+
         # Запрос production URL
         read -p "Введите production API URL [https://api.quiz-game.com]: " prod_api_url
         prod_api_url=${prod_api_url:-https://api.quiz-game.com}
         replace_env_value "quiz-game-frontend/.env" "VITE_API_URL" "$prod_api_url"
-        
+
         # Дополнительные production настройки
         replace_env_value "quiz-game-backend/.env" "SESSION_SECURE" "true"
         replace_env_value "quiz-game-frontend/.env" "VITE_DEBUG_MODE" "false"
@@ -152,7 +152,7 @@ check_required_var() {
     local file=$1
     local var=$2
     local description=$3
-    
+
     if [ -f "$file" ]; then
         value=$(grep "^$var=" "$file" | cut -d'=' -f2)
         if [ -z "$value" ] || [ "$value" = "your-secret-key" ] || [ "$value" = "change-in-production" ]; then

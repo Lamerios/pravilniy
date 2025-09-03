@@ -85,6 +85,7 @@
     "clean": "npm run clean:build && npm run services:clean",
 
     "setup": "npm run install:all && npm run services:start && echo 'Setup complete! Run npm run dev to start development'",
+    "setup:env": "scripts\\env-setup.bat",
     "start": "npm run services:start && npm run dev",
 
     "docs:serve": "cd docs && python -m http.server 8000",

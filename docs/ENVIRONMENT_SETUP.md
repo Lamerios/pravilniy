@@ -31,7 +31,7 @@ cp env.example .env
 # Backend .env
 cp quiz-game-backend/env.example quiz-game-backend/.env
 
-# Frontend .env  
+# Frontend .env
 cp quiz-game-frontend/env.example quiz-game-frontend/.env
 
 # Docker .env
@@ -238,7 +238,7 @@ npm run health:check
 cd quiz-game-backend
 npm run env:validate
 
-# Frontend валидация  
+# Frontend валидация
 cd quiz-game-frontend
 npm run env:validate
 ```
@@ -288,7 +288,7 @@ API_SECRET=secret-key
 # JWT Secret (32+ символа)
 openssl rand -base64 32
 
-# Session Secret (24+ символа)  
+# Session Secret (24+ символа)
 openssl rand -base64 24
 
 # Пароль БД (16+ символов)
@@ -321,7 +321,7 @@ tar -xzf env-backup-20240127.tar.gz
    ```bash
    # Проверьте переменные БД
    echo $DB_HOST $DB_PORT $DB_NAME $DB_USER
-   
+
    # Тест подключения
    psql -h $DB_HOST -U $DB_USER -d $DB_NAME
    ```
@@ -360,7 +360,7 @@ journalctl -u quiz-game -f
 ## 📚 Дополнительные ресурсы
 
 - [Docker Environment Documentation](../docker/docker-commands.md)
-- [Backend Configuration Guide](../docs2/backend-guide.md)  
+- [Backend Configuration Guide](../docs2/backend-guide.md)
 - [Frontend Configuration Guide](../docs2/frontend-guide.md)
 - [Security Best Practices](../docs2/security-guide.md)
 - [Deployment Guide](../docs2/deployment-guide.md)
