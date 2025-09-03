@@ -2,18 +2,60 @@
   "name": "quiz-game",
   "version": "1.0.0",
   "description": "Quiz Game - система управления интеллектуальными играми",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "quiz-game-backend",
+    "quiz-game-frontend"
+  ],
   "scripts": {
-    "dev": "docker-compose --profile dev up -d && echo 'Services started! Backend: http://localhost:5001, Frontend: http://localhost:3000, PgAdmin: http://localhost:8080, Redis Commander: http://localhost:8081'",
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"blue,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd quiz-game-backend && npm run dev",
+    "dev:frontend": "cd quiz-game-frontend && npm run dev",
+    "dev:services": "docker-compose --profile dev up -d && echo 'Services started! PgAdmin: http://localhost:8080, Redis Commander: http://localhost:8081'",
     "dev:stop": "docker-compose --profile dev down",
     "dev:logs": "docker-compose --profile dev logs -f",
-    "dev:restart": "npm run dev:stop && npm run dev",
+    "dev:restart": "npm run dev:stop && npm run dev:services",
+    
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd quiz-game-backend && npm run build",
+    "build:frontend": "cd quiz-game-frontend && npm run build",
+    
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd quiz-game-backend && npm run lint",
+    "lint:frontend": "cd quiz-game-frontend && npm run lint",
+    "lint:fix": "npm run lint:fix:backend && npm run lint:fix:frontend",
+    "lint:fix:backend": "cd quiz-game-backend && npm run lint:fix",
+    "lint:fix:frontend": "cd quiz-game-frontend && npm run lint:fix",
+    
+    "format": "npm run format:backend && npm run format:frontend",
+    "format:backend": "cd quiz-game-backend && npm run format",
+    "format:frontend": "cd quiz-game-frontend && npm run format",
+    
+    "test": "npm run test:backend && npm run test:frontend && npm run test:e2e",
+    "test:backend": "cd quiz-game-backend && npm run test",
+    "test:frontend": "cd quiz-game-frontend && npm run test:run",
+    "test:e2e": "cd tests && npm run test",
+    "test:watch": "concurrently \"npm run test:watch:backend\" \"npm run test:watch:frontend\"",
+    "test:watch:backend": "cd quiz-game-backend && npm run test:watch",
+    "test:watch:frontend": "cd quiz-game-frontend && npm run test",
+    
+    "type-check": "npm run type-check:backend && npm run type-check:frontend",
+    "type-check:backend": "cd quiz-game-backend && npm run type-check",
+    "type-check:frontend": "cd quiz-game-frontend && npm run type-check",
+    
+    "validate": "npm run type-check && npm run lint && npm run format:check",
+    "format:check": "npm run format:check:backend && npm run format:check:frontend",
+    "format:check:backend": "cd quiz-game-backend && npm run format:check",
+    "format:check:frontend": "cd quiz-game-frontend && npm run format:check",
     
     "db:start": "docker-compose up -d postgres",
     "db:stop": "docker-compose stop postgres",
     "db:logs": "docker-compose logs -f postgres",
     "db:reset": "docker-compose down -v postgres && docker-compose up -d postgres",
     "db:backup": "docker-compose exec postgres pg_dump -U quiz_user -d quiz_game_dev > backups/backup_$(date +%Y%m%d_%H%M%S).sql",
+    "db:migrate": "cd quiz-game-backend && npm run db:migrate",
+    "db:seed": "cd quiz-game-backend && npm run db:seed",
+    "db:setup": "npm run db:migrate && npm run db:seed",
     
     "redis:start": "docker-compose up -d redis",
     "redis:stop": "docker-compose stop redis",
@@ -35,14 +77,24 @@
     "health:postgres": "docker-compose exec postgres pg_isready -U quiz_user -d quiz_game_dev",
     "health:redis": "docker-compose exec redis redis-cli ping",
     
-    "install:all": "npm install && cd quiz-game-backend && npm install && cd ../quiz-game-frontend && npm install",
-    "clean:install": "rm -rf node_modules package-lock.json && npm run install:all",
-    
-    "lint:check": "echo 'Linting will be configured in next tasks'",
-    "test:quick": "echo 'Tests will be configured in next tasks'",
+    "install:all": "npm install && npm run install:workspaces",
+    "install:workspaces": "npm install --workspaces",
+    "clean:install": "npm run clean:modules && npm run install:all",
+    "clean:modules": "rm -rf node_modules quiz-game-backend/node_modules quiz-game-frontend/node_modules package-lock.json quiz-game-backend/package-lock.json quiz-game-frontend/package-lock.json",
+    "clean:build": "rm -rf quiz-game-backend/dist quiz-game-frontend/dist",
+    "clean": "npm run clean:build && npm run services:clean",
     
     "setup": "npm run install:all && npm run services:start && echo 'Setup complete! Run npm run dev to start development'",
-    "clean": "npm run services:clean && docker system prune -f"
+    "start": "npm run services:start && npm run dev",
+    
+    "docs:serve": "cd docs && python -m http.server 8000",
+    "docs:build": "echo 'Documentation build not implemented yet'",
+    
+    "security:audit": "npm audit --workspaces",
+    "security:fix": "npm audit fix --workspaces",
+    
+    "release": "npm run validate && npm run test && npm run build",
+    "precommit": "npm run validate"
   },
   "keywords": [
     "quiz",
@@ -52,7 +104,8 @@
     "typescript",
     "postgresql",
     "redis",
-    "websocket"
+    "websocket",
+    "monorepo"
   ],
   "author": "Quiz Game Team",
   "license": "MIT",
@@ -61,6 +114,16 @@
     "npm": ">=9.0.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
-  }
+    "concurrently": "^8.2.2",
+    "@types/node": "^20.4.2",
+    "rimraf": "^5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quiz-game-team/quiz-game.git"
+  },
+  "bugs": {
+    "url": "https://github.com/quiz-game-team/quiz-game/issues"
+  },
+  "homepage": "https://github.com/quiz-game-team/quiz-game#readme"
 }
