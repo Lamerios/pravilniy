@@ -206,7 +206,7 @@ describe('AuthService', () => {
       };
 
       const result = await authService.login(credentials);
-      
+
       expect(result).toHaveProperty('token');
       expect(result).toHaveProperty('user');
       expect(result.user.email).toBe(credentials.email);
@@ -243,7 +243,7 @@ describe('LoginForm', () => {
 
   it('should render login form', () => {
     render(<LoginForm onSubmit={mockOnSubmit} />);
-    
+
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
@@ -251,17 +251,17 @@ describe('LoginForm', () => {
 
   it('should submit form with valid data', async () => {
     render(<LoginForm onSubmit={mockOnSubmit} />);
-    
+
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' }
     });
-    
+
     fireEvent.change(screen.getByLabelText(/password/i), {
       target: { value: 'password123' }
     });
-    
+
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
-    
+
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalledWith({
         email: 'test@example.com',
@@ -281,22 +281,22 @@ import { test, expect } from '@playwright/test';
 test.describe('Authentication', () => {
   test('user can login successfully', async ({ page }) => {
     await page.goto('/login');
-    
+
     await page.fill('[data-testid="email-input"]', 'test@example.com');
     await page.fill('[data-testid="password-input"]', 'password123');
     await page.click('[data-testid="login-button"]');
-    
+
     await expect(page).toHaveURL('/dashboard');
     await expect(page.locator('[data-testid="user-menu"]')).toBeVisible();
   });
 
   test('user sees error with invalid credentials', async ({ page }) => {
     await page.goto('/login');
-    
+
     await page.fill('[data-testid="email-input"]', 'test@example.com');
     await page.fill('[data-testid="password-input"]', 'wrongpassword');
     await page.click('[data-testid="login-button"]');
-    
+
     await expect(page.locator('[data-testid="error-message"]')).toBeVisible();
     await expect(page.locator('[data-testid="error-message"]')).toContainText('Invalid credentials');
   });
