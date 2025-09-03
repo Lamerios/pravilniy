@@ -1,0 +1,66 @@
+{
+  "name": "quiz-game",
+  "version": "1.0.0",
+  "description": "Quiz Game - система управления интеллектуальными играми",
+  "main": "index.js",
+  "scripts": {
+    "dev": "docker-compose --profile dev up -d && echo 'Services started! Backend: http://localhost:5001, Frontend: http://localhost:3000, PgAdmin: http://localhost:8080, Redis Commander: http://localhost:8081'",
+    "dev:stop": "docker-compose --profile dev down",
+    "dev:logs": "docker-compose --profile dev logs -f",
+    "dev:restart": "npm run dev:stop && npm run dev",
+    
+    "db:start": "docker-compose up -d postgres",
+    "db:stop": "docker-compose stop postgres",
+    "db:logs": "docker-compose logs -f postgres",
+    "db:reset": "docker-compose down -v postgres && docker-compose up -d postgres",
+    "db:backup": "docker-compose exec postgres pg_dump -U quiz_user -d quiz_game_dev > backups/backup_$(date +%Y%m%d_%H%M%S).sql",
+    
+    "redis:start": "docker-compose up -d redis",
+    "redis:stop": "docker-compose stop redis",
+    "redis:logs": "docker-compose logs -f redis",
+    "redis:cli": "docker-compose exec redis redis-cli",
+    "redis:flush": "docker-compose exec redis redis-cli flushall",
+    
+    "services:start": "docker-compose up -d postgres redis",
+    "services:stop": "docker-compose down",
+    "services:status": "docker-compose ps",
+    "services:clean": "docker-compose down -v --remove-orphans",
+    
+    "prod:start": "docker-compose -f docker-compose.prod.yml up -d",
+    "prod:stop": "docker-compose -f docker-compose.prod.yml down",
+    "prod:logs": "docker-compose -f docker-compose.prod.yml logs -f",
+    "prod:restart": "npm run prod:stop && npm run prod:start",
+    
+    "health:check": "npm run health:postgres && npm run health:redis",
+    "health:postgres": "docker-compose exec postgres pg_isready -U quiz_user -d quiz_game_dev",
+    "health:redis": "docker-compose exec redis redis-cli ping",
+    
+    "install:all": "npm install && cd quiz-game-backend && npm install && cd ../quiz-game-frontend && npm install",
+    "clean:install": "rm -rf node_modules package-lock.json && npm run install:all",
+    
+    "lint:check": "echo 'Linting will be configured in next tasks'",
+    "test:quick": "echo 'Tests will be configured in next tasks'",
+    
+    "setup": "npm run install:all && npm run services:start && echo 'Setup complete! Run npm run dev to start development'",
+    "clean": "npm run services:clean && docker system prune -f"
+  },
+  "keywords": [
+    "quiz",
+    "game",
+    "nodejs",
+    "react",
+    "typescript",
+    "postgresql",
+    "redis",
+    "websocket"
+  ],
+  "author": "Quiz Game Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
