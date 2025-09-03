@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Coverage reports
+coverage/
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Generated files
+*.generated.ts
+*.generated.js
+
+# Migration files (auto-generated)
+migrations/*.js
+
+# Config files
+.eslintrc.js
+jest.config.js
+
+# Markdown files (preserve formatting)
+*.md
+
+# JSON files that should maintain specific formatting
+tsconfig.json
+.vscode/settings.json
