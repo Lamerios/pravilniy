@@ -3,15 +3,26 @@
  * PostgreSQL connection settings
  */
 
-import { Sequelize, Options } from 'sequelize';
+// Load environment variables (dotenv will be installed later)
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('dotenv').config();
+} catch {
+  // dotenv not installed yet, use process.env directly
+}
 
-import { logger } from '@utils/logger';
+// Simple logger for now (will be replaced when utils/logger is available)
+const logger = {
+  info: (msg: string) => process.stdout.write(`[INFO] ${msg}\n`),
+  error: (msg: string, error?: any) => process.stderr.write(`[ERROR] ${msg} ${error ? String(error) : ''}\n`),
+  debug: (msg: string) => process.stdout.write(`[DEBUG] ${msg}\n`),
+};
 
 // Database configuration interface
 interface DatabaseConfig {
-  development: Options;
-  test: Options;
-  production: Options;
+  development: Record<string, any>;
+  test: Record<string, any>;
+  production: Record<string, any>;
 }
 
 // Environment variables with defaults
@@ -23,10 +34,10 @@ const DB_PASSWORD = process.env.DB_PASSWORD || 'dev_password';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Base configuration
-const baseConfig: Options = {
+const baseConfig = {
   host: DB_HOST,
   port: DB_PORT,
-  dialect: 'postgres',
+  dialect: 'postgres' as const,
   dialectOptions: {
     charset: 'utf8',
     collate: 'utf8_unicode_ci',
@@ -83,12 +94,29 @@ export const config: DatabaseConfig = {
   },
 };
 
-// Create Sequelize instance
-const currentConfig = config[NODE_ENV as keyof DatabaseConfig];
-export const sequelize = new Sequelize(currentConfig);
+// Sequelize instance will be created when sequelize package is installed
+export let sequelize: any = null;
+
+// Initialize Sequelize (will be called after npm install)
+export const initializeSequelize = async (): Promise<void> => {
+  try {
+    // Dynamic import to avoid errors before package installation
+    const { Sequelize } = await import('sequelize');
+    const currentConfig = config[NODE_ENV as keyof DatabaseConfig];
+    sequelize = new Sequelize(currentConfig);
+    logger.info('✅ Sequelize initialized');
+  } catch (error) {
+    logger.error('❌ Failed to initialize Sequelize:', error);
+    throw error;
+  }
+};
 
 // Test database connection
 export const testConnection = async (): Promise<void> => {
+  if (!sequelize) {
+    await initializeSequelize();
+  }
+  
   try {
     await sequelize.authenticate();
     logger.info('✅ Database connection established successfully');
@@ -100,6 +128,10 @@ export const testConnection = async (): Promise<void> => {
 
 // Close database connection
 export const closeConnection = async (): Promise<void> => {
+  if (!sequelize) {
+    return;
+  }
+  
   try {
     await sequelize.close();
     logger.info('🔒 Database connection closed');
