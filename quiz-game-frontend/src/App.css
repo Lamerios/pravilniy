@@ -1,0 +1,170 @@
+/* Quiz Game Frontend Styles */
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-header {
+  margin-bottom: 3rem;
+}
+
+.app-header h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: #213547;
+}
+
+.app-header p {
+  font-size: 1.2em;
+  color: #666;
+  margin: 0;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.card {
+  padding: 2em;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.card button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.card button:hover {
+  border-color: #646cff;
+}
+
+.card button:focus,
+.card button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.card p {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature {
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+}
+
+.feature h3 {
+  margin: 0 0 0.5rem 0;
+  color: #213547;
+}
+
+.feature p {
+  margin: 0;
+  color: #666;
+}
+
+.status {
+  padding: 1.5rem;
+  border: 1px solid #d4edda;
+  border-radius: 8px;
+  background: #f8fff9;
+}
+
+.status h3 {
+  margin: 0 0 1rem 0;
+  color: #155724;
+}
+
+.status ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.status li {
+  padding: 0.5rem 0;
+  text-align: left;
+  color: #155724;
+}
+
+.app-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+  color: #666;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app {
+    padding: 1rem;
+  }
+  
+  .app-header h1 {
+    font-size: 2.4em;
+  }
+  
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .app {
+    color: #f0f0f0;
+    background-color: #242424;
+  }
+  
+  .app-header h1 {
+    color: #f0f0f0;
+  }
+  
+  .card {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+  
+  .feature {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+  
+  .feature h3 {
+    color: #f0f0f0;
+  }
+}
