@@ -32,10 +32,10 @@ docker --version >nul 2>&1
 if not errorlevel 1 (
     echo 🐳 Запуск Docker сервисов...
     call npm run services:start
-    
+
     echo ⏳ Ожидание готовности сервисов...
     timeout /t 10 /nobreak >nul
-    
+
     echo ✅ Сервисы запущены
 ) else (
     echo ⏭️ Пропуск запуска Docker сервисов

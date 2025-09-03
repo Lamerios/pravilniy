@@ -37,10 +37,10 @@ npm run install:all
 if command -v docker &> /dev/null; then
     echo "🐳 Запуск Docker сервисов..."
     npm run services:start
-    
+
     echo "⏳ Ожидание готовности сервисов..."
     sleep 10
-    
+
     # Проверка здоровья сервисов
     if npm run health:check > /dev/null 2>&1; then
         echo "✅ Все сервисы запущены и готовы"

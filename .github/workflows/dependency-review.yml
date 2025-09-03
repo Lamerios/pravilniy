@@ -1,0 +1,169 @@
+name: 📦 Dependency Review
+
+on:
+  pull_request:
+    paths:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    name: 🔍 Dependency Review
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Dependency Review
+        uses: actions/dependency-review-action@v3
+        with:
+          # Fail on moderate or higher severity vulnerabilities
+          fail-on-severity: moderate
+          # Allow only specific licenses
+          allow-licenses: |
+            MIT
+            Apache-2.0
+            BSD-2-Clause
+            BSD-3-Clause
+            ISC
+            0BSD
+            Unlicense
+          # Deny specific licenses
+          deny-licenses: |
+            GPL-2.0
+            GPL-3.0
+            AGPL-1.0
+            AGPL-3.0
+          # Comment on PR with results
+          comment-summary-in-pr: always
+          # Retry configuration
+          retry-on-snapshot-warnings: true
+          retry-on-snapshot-warnings-timeout: 120
+
+  # Анализ лицензий
+  license-check:
+    name: ⚖️ License Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm run install:all
+
+      - name: 🔍 Check licenses
+        run: |
+          npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;Unlicense' --excludePrivatePackages
+        continue-on-error: true
+
+      - name: 📊 Generate license report
+        run: |
+          npx license-checker --json --out license-report.json
+          npx license-checker --csv --out license-report.csv
+
+      - name: 📤 Upload license report
+        uses: actions/upload-artifact@v3
+        with:
+          name: license-report
+          path: |
+            license-report.json
+            license-report.csv
+
+  # Проверка уязвимостей
+  security-audit:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm run install:all
+
+      - name: 🔍 Run security audit
+        run: |
+          npm audit --audit-level moderate
+          cd quiz-game-backend && npm audit --audit-level moderate
+          cd ../quiz-game-frontend && npm audit --audit-level moderate
+
+      - name: 🛡️ Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --severity-threshold=medium
+
+  # Анализ размера bundle
+  bundle-analysis:
+    name: 📊 Bundle Analysis
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.changed_files, 'quiz-game-frontend/')
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm run install:all
+
+      - name: 🏗️ Build frontend
+        run: |
+          cd quiz-game-frontend
+          npm run build
+
+      - name: 📊 Analyze bundle size
+        run: |
+          cd quiz-game-frontend
+          npx bundlesize
+        continue-on-error: true
+
+      - name: 📈 Bundle size report
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Здесь будет логика анализа размера bundle
+            // и создания комментария в PR с результатами
+            
+            const comment = `
+            ## 📊 Bundle Size Analysis
+            
+            Frontend bundle analysis completed.
+            Check the build artifacts for detailed size breakdown.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

@@ -1,0 +1,187 @@
+name: 🔍 PR Checks
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Быстрая проверка PR
+  pr-validation:
+    name: 📋 PR Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm run install:all
+
+      - name: 📊 Validate commit messages
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: .commitlintrc.json
+
+      - name: 🔍 Check for merge conflicts
+        run: |
+          git merge-tree $(git merge-base HEAD main) HEAD main | grep -q "<<<<<<< " && echo "Merge conflicts detected" && exit 1 || echo "No merge conflicts"
+
+      - name: 📏 Check PR size
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD | wc -l)
+          CHANGED_LINES=$(git diff --stat origin/main...HEAD | tail -1 | grep -oE '[0-9]+ insertions|[0-9]+ deletions' | grep -oE '[0-9]+' | paste -sd+ | bc)
+          echo "Changed files: $CHANGED_FILES"
+          echo "Changed lines: $CHANGED_LINES"
+          
+          if [ $CHANGED_FILES -gt 50 ]; then
+            echo "⚠️ PR contains more than 50 files. Consider splitting it."
+          fi
+          
+          if [ $CHANGED_LINES -gt 1000 ]; then
+            echo "⚠️ PR contains more than 1000 lines. Consider splitting it."
+          fi
+
+  # Проверка качества кода
+  code-quality:
+    name: 📊 Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm run install:all
+
+      - name: 🧹 Run full validation
+        run: npm run validate
+
+      - name: 📊 Generate test coverage
+        run: |
+          cd quiz-game-backend
+          npm run test:coverage
+          cd ../quiz-game-frontend
+          npm run coverage
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: |
+            quiz-game-backend/coverage/lcov.info
+            quiz-game-frontend/coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+  # Проверка изменений в зависимостях
+  dependency-changes:
+    name: 📦 Dependency Changes
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.changed_files, 'package.json') || contains(github.event.pull_request.changed_files, 'package-lock.json')
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Dependency Review
+        uses: actions/dependency-review-action@v3
+        with:
+          fail-on-severity: moderate
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
+
+      - name: 📊 Check bundle size impact
+        run: |
+          echo "Checking bundle size changes..."
+          # Будет реализовано позже с bundlesize или similar
+
+  # Автоматические проверки
+  auto-checks:
+    name: 🤖 Auto Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏷️ Check PR labels
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const labelNames = labels.map(label => label.name);
+            const requiredLabels = ['sprint-0', 'sprint-1', 'sprint-2', 'sprint-3', 'sprint-4', 'sprint-5', 'sprint-6', 'sprint-7', 'sprint-8'];
+            const hasSprintLabel = requiredLabels.some(label => labelNames.includes(label));
+            
+            if (!hasSprintLabel) {
+              core.setFailed('PR должен иметь метку спринта (sprint-0, sprint-1, etc.)');
+            }
+
+      - name: 📝 Check PR description
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body || '';
+            
+            if (prBody.length < 50) {
+              core.setFailed('Описание PR должно содержать минимум 50 символов');
+            }
+            
+            if (!prBody.includes('Refs: #')) {
+              core.setFailed('PR должен ссылаться на задачу из tasklist.md (Refs: #X.Y)');
+            }
+
+  # Уведомления
+  notifications:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [pr-validation, code-quality]
+    if: always()
+    
+    steps:
+      - name: 📊 PR Status Summary
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prValidation = '${{ needs.pr-validation.result }}';
+            const codeQuality = '${{ needs.code-quality.result }}';
+            
+            let summary = '## 📊 PR Check Summary\n\n';
+            summary += `- PR Validation: ${prValidation === 'success' ? '✅' : '❌'}\n`;
+            summary += `- Code Quality: ${codeQuality === 'success' ? '✅' : '❌'}\n`;
+            
+            if (prValidation === 'success' && codeQuality === 'success') {
+              summary += '\n🎉 Все проверки прошли успешно! PR готов к review.';
+            } else {
+              summary += '\n⚠️ Некоторые проверки не прошли. Исправьте ошибки перед review.';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
