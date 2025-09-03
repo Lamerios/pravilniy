@@ -15,7 +15,7 @@ jobs:
   dependency-review:
     name: 🔍 Dependency Review
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
   license-check:
     name: ⚖️ License Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -86,7 +86,7 @@ jobs:
   security-audit:
     name: 🔒 Security Audit
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -119,7 +119,7 @@ jobs:
     name: 📊 Bundle Analysis
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.changed_files, 'quiz-game-frontend/')
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -150,17 +150,17 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             // Здесь будет логика анализа размера bundle
             // и создания комментария в PR с результатами
-            
+
             const comment = `
             ## 📊 Bundle Size Analysis
-            
+
             Frontend bundle analysis completed.
             Check the build artifacts for detailed size breakdown.
             `;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
