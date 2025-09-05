@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CreateGameModal } from '../components/CreateGameModal';
+import { EditGameModal } from '../components/EditGameModal';
 import { GameFiltersComponent } from '../components/GameFilters';
 import { GameList } from '../components/GameList';
 import { Pagination } from '../components/Pagination';
@@ -20,6 +21,7 @@ export function GamesPage() {
   } = useGames();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -33,8 +35,7 @@ export function GamesPage() {
 
   const handleEdit = (game: Game) => {
     setSelectedGame(game);
-    // TODO: Открыть модальное окно редактирования
-    console.log('Edit game:', game);
+    setShowEditModal(true);
   };
 
   const handleDelete = async (game: Game) => {
@@ -117,6 +118,16 @@ export function GamesPage() {
   const handleCreateSuccess = () => {
     // Обновляем список игр после успешного создания
     refreshGames();
+  };
+
+  const handleEditSuccess = () => {
+    // Обновляем список игр после успешного редактирования
+    refreshGames();
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedGame(null);
   };
 
   if (error) {
@@ -207,24 +218,13 @@ export function GamesPage() {
         onSuccess={handleCreateSuccess}
       />
 
-      {selectedGame && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h2>Редактировать игру</h2>
-              <button
-                onClick={() => setSelectedGame(null)}
-                className="modal-close"
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-content">
-              <p>Форма редактирования игры будет реализована в следующей задаче.</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Модальное окно редактирования игры */}
+      <EditGameModal
+        isOpen={showEditModal}
+        game={selectedGame}
+        onClose={handleCloseEditModal}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 }

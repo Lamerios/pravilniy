@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useTemplates } from '../hooks/useTemplates';
 import { gameService } from '../services/game.service';
-import { CreateGameDto, GameSettings } from '../types/game.types';
+import { Game, GameSettings, UpdateGameDto } from '../types/game.types';
 import { GameTemplate } from '../types/template.types';
-import { validateCreateGameForm } from '../utils/validation';
+import { validateUpdateGameForm } from '../utils/validation';
 
-interface CreateGameModalProps {
+interface EditGameModalProps {
   isOpen: boolean;
+  game: Game | null;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -14,24 +15,21 @@ interface CreateGameModalProps {
 interface FormData {
   name: string;
   description: string;
-  templateId: string;
   scheduledAt: string;
   settings: GameSettings;
 }
 
 interface FormErrors {
   name?: string;
-  templateId?: string;
   scheduledAt?: string;
   general?: string;
 }
 
-export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalProps) {
-  const { templates, loading: templatesLoading, error: templatesError } = useTemplates();
+export function EditGameModal({ isOpen, game, onClose, onSuccess }: EditGameModalProps) {
+  const { templates, loading: templatesLoading } = useTemplates();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
-    templateId: '',
     scheduledAt: '',
     settings: {
       maxTeams: 10,
@@ -44,50 +42,38 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
   const [loading, setLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<GameTemplate | null>(null);
 
-  // Сброс формы при открытии/закрытии
+  // Заполнение формы данными игры при открытии
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && game) {
       setFormData({
-        name: '',
-        description: '',
-        templateId: '',
-        scheduledAt: '',
+        name: game.name,
+        description: game.description || '',
+        scheduledAt: game.scheduledAt ? new Date(game.scheduledAt).toISOString().slice(0, 16) : '',
         settings: {
-          maxTeams: 10,
-          allowLateJoin: true,
-          autoStart: false,
-          timeLimit: 0
+          maxTeams: game.settings?.maxTeams || 10,
+          allowLateJoin: game.settings?.allowLateJoin ?? true,
+          autoStart: game.settings?.autoStart ?? false,
+          timeLimit: game.settings?.timeLimit || 0
         }
       });
       setErrors({});
-      setSelectedTemplate(null);
-    }
-  }, [isOpen]);
 
-  // Обновление настроек при выборе шаблона
-  useEffect(() => {
-    if (selectedTemplate) {
-      setFormData(prev => ({
-        ...prev,
-        settings: {
-          ...prev.settings,
-          timeLimit: selectedTemplate.timePerQuestion * selectedTemplate.questionsPerRound * selectedTemplate.roundsCount
-        }
-      }));
+      // Находим шаблон игры
+      const template = templates.find(t => t.id === game.templateId);
+      setSelectedTemplate(template || null);
     }
-  }, [selectedTemplate]);
+  }, [isOpen, game, templates]);
 
   const validateForm = (): boolean => {
     const validationData = {
       name: formData.name,
       description: formData.description,
-      templateId: formData.templateId,
       scheduledAt: formData.scheduledAt,
       'settings.maxTeams': formData.settings.maxTeams,
       'settings.timeLimit': formData.settings.timeLimit
     };
 
-    const validation = validateCreateGameForm(validationData);
+    const validation = validateUpdateGameForm(validationData);
 
     if (!validation.isValid) {
       setErrors(validation.errors);
@@ -113,12 +99,6 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
     }
   };
 
-  const handleTemplateChange = (templateId: string) => {
-    const template = templates.find(t => t.id === templateId);
-    setSelectedTemplate(template || null);
-    handleInputChange('templateId', templateId);
-  };
-
   const handleSettingsChange = (field: keyof GameSettings, value: any) => {
     handleInputChange('settings', {
       ...formData.settings,
@@ -129,6 +109,8 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!game) return;
+
     if (!validateForm()) {
       return;
     }
@@ -137,20 +119,19 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
     setErrors({});
 
     try {
-      const createData: CreateGameDto = {
+      const updateData: UpdateGameDto = {
         name: formData.name.trim(),
         description: formData.description.trim() || undefined,
-        templateId: parseInt(formData.templateId),
         scheduledAt: formData.scheduledAt || undefined,
         settings: formData.settings
       };
 
-      await gameService.createGame(createData);
+      await gameService.updateGame(game.id, updateData);
       onSuccess();
       onClose();
     } catch (error) {
       setErrors({
-        general: error instanceof Error ? error.message : 'Ошибка создания игры'
+        general: error instanceof Error ? error.message : 'Ошибка обновления игры'
       });
     } finally {
       setLoading(false);
@@ -163,13 +144,13 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !game) return null;
 
   return (
     <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal create-game-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal edit-game-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Создать игру</h2>
+          <h2>Редактировать игру</h2>
           <button
             onClick={handleClose}
             className="modal-close"
@@ -187,11 +168,11 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
           )}
 
           <div className="form-group">
-            <label htmlFor="game-name" className="form-label required">
+            <label htmlFor="edit-game-name" className="form-label required">
               Название игры
             </label>
             <input
-              id="game-name"
+              id="edit-game-name"
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
@@ -203,11 +184,11 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
           </div>
 
           <div className="form-group">
-            <label htmlFor="game-description" className="form-label">
+            <label htmlFor="edit-game-description" className="form-label">
               Описание
             </label>
             <textarea
-              id="game-description"
+              id="edit-game-description"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               className="form-input"
@@ -217,48 +198,31 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="template-select" className="form-label required">
-              Шаблон игры
-            </label>
-            <select
-              id="template-select"
-              value={formData.templateId}
-              onChange={(e) => handleTemplateChange(e.target.value)}
-              className={`form-input ${errors.templateId ? 'error' : ''}`}
-              disabled={loading || templatesLoading}
-            >
-              <option value="">Выберите шаблон</option>
-              {templates.map(template => (
-                <option key={template.id} value={template.id}>
-                  {template.name} ({template.roundsCount} раундов, {template.questionsPerRound} вопросов)
-                </option>
-              ))}
-            </select>
-            {errors.templateId && <span className="field-error">{errors.templateId}</span>}
-            {templatesError && <span className="field-error">{templatesError}</span>}
-          </div>
-
+          {/* Информация о шаблоне (только для чтения) */}
           {selectedTemplate && (
-            <div className="template-info">
-              <h4>Информация о шаблоне</h4>
-              <div className="template-details">
-                <p><strong>Раундов:</strong> {selectedTemplate.roundsCount}</p>
-                <p><strong>Вопросов в раунде:</strong> {selectedTemplate.questionsPerRound}</p>
-                <p><strong>Время на вопрос:</strong> {selectedTemplate.timePerQuestion} сек</p>
-                {selectedTemplate.description && (
-                  <p><strong>Описание:</strong> {selectedTemplate.description}</p>
-                )}
+            <div className="form-group">
+              <label className="form-label">Шаблон игры</label>
+              <div className="template-info-display">
+                <div className="template-details">
+                  <p><strong>{selectedTemplate.name}</strong></p>
+                  <p><strong>Раундов:</strong> {selectedTemplate.roundsCount}</p>
+                  <p><strong>Вопросов в раунде:</strong> {selectedTemplate.questionsPerRound}</p>
+                  <p><strong>Время на вопрос:</strong> {selectedTemplate.timePerQuestion} сек</p>
+                  {selectedTemplate.description && (
+                    <p><strong>Описание:</strong> {selectedTemplate.description}</p>
+                  )}
+                </div>
               </div>
+              <small className="form-hint">Шаблон нельзя изменить после создания игры</small>
             </div>
           )}
 
           <div className="form-group">
-            <label htmlFor="scheduled-date" className="form-label">
+            <label htmlFor="edit-scheduled-date" className="form-label">
               Дата планирования
             </label>
             <input
-              id="scheduled-date"
+              id="edit-scheduled-date"
               type="datetime-local"
               value={formData.scheduledAt}
               onChange={(e) => handleInputChange('scheduledAt', e.target.value)}
@@ -273,11 +237,11 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
             <h4>Настройки игры</h4>
 
             <div className="form-group">
-              <label htmlFor="max-teams" className="form-label">
+              <label htmlFor="edit-max-teams" className="form-label">
                 Максимальное количество команд
               </label>
               <input
-                id="max-teams"
+                id="edit-max-teams"
                 type="number"
                 min="1"
                 max="50"
@@ -313,11 +277,11 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
             </div>
 
             <div className="form-group">
-              <label htmlFor="time-limit" className="form-label">
+              <label htmlFor="edit-time-limit" className="form-label">
                 Лимит времени (минуты)
               </label>
               <input
-                id="time-limit"
+                id="edit-time-limit"
                 type="number"
                 min="0"
                 value={formData.settings.timeLimit || ''}
@@ -326,6 +290,18 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
                 disabled={loading}
               />
               <small className="form-hint">0 = без ограничений</small>
+            </div>
+          </div>
+
+          {/* Информация о статусе игры */}
+          <div className="form-section">
+            <h4>Информация об игре</h4>
+            <div className="game-info">
+              <p><strong>Статус:</strong> <span className={`status-badge status-${game.status.toLowerCase()}`}>{game.status}</span></p>
+              <p><strong>Создана:</strong> {new Date(game.createdAt).toLocaleString()}</p>
+              <p><strong>Обновлена:</strong> {new Date(game.updatedAt).toLocaleString()}</p>
+              {game.startedAt && <p><strong>Запущена:</strong> {new Date(game.startedAt).toLocaleString()}</p>}
+              {game.finishedAt && <p><strong>Завершена:</strong> {new Date(game.finishedAt).toLocaleString()}</p>}
             </div>
           </div>
 
@@ -343,7 +319,7 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
               className="btn btn-primary"
               disabled={loading || templatesLoading}
             >
-              {loading ? 'Создание...' : 'Создать игру'}
+              {loading ? 'Сохранение...' : 'Сохранить изменения'}
             </button>
           </div>
         </form>
