@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { useTemplates } from '../hooks/useTemplates';
 import { gameService } from '../services/game.service';
 import { CreateGameDto, GameSettings } from '../types/game.types';
 import { GameTemplate } from '../types/template.types';
 import { validateCreateGameForm } from '../utils/validation';
+import { TeamSelector } from './TeamSelector';
 
 interface CreateGameModalProps {
   isOpen: boolean;
@@ -16,6 +18,7 @@ interface FormData {
   description: string;
   templateId: string;
   scheduledAt: string;
+  teamIds: string[];
   settings: GameSettings;
 }
 
@@ -28,11 +31,13 @@ interface FormErrors {
 
 export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalProps) {
   const { templates, loading: templatesLoading, error: templatesError } = useTemplates();
+  const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
     templateId: '',
     scheduledAt: '',
+    teamIds: [],
     settings: {
       maxTeams: 10,
       allowLateJoin: true,
@@ -52,6 +57,7 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
         description: '',
         templateId: '',
         scheduledAt: '',
+        teamIds: [],
         settings: {
           maxTeams: 10,
           allowLateJoin: true,
@@ -142,6 +148,7 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
         description: formData.description.trim() || undefined,
         templateId: parseInt(formData.templateId),
         scheduledAt: formData.scheduledAt || undefined,
+        teamIds: formData.teamIds.length > 0 ? formData.teamIds : undefined,
         settings: formData.settings
       };
 
@@ -328,6 +335,26 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
               <small className="form-hint">0 = без ограничений</small>
             </div>
           </div>
+
+          {/* Выбор команд */}
+          {user?.organizationId && (
+            <div className="form-section">
+              <h4>Выбор команд</h4>
+              <p className="form-help">
+                Выберите команды, которые будут участвовать в игре. Команды можно добавить позже.
+              </p>
+              <TeamSelector
+                selectedTeamIds={formData.teamIds}
+                onSelectionChange={(teamIds) => setFormData(prev => ({ ...prev, teamIds }))}
+                maxTeams={formData.settings.maxTeams || 20}
+                organizationId={user.organizationId}
+                showSearch={true}
+                showFilters={true}
+                compact={true}
+                className="form-team-selector"
+              />
+            </div>
+          )}
 
           <div className="form-actions">
             <button

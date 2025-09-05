@@ -1,6 +1,7 @@
 import {
     AllowNull,
     BelongsTo,
+    BelongsToMany,
     Column,
     CreatedAt,
     DataType,
@@ -13,6 +14,7 @@ import {
     UpdatedAt,
     Validate
 } from 'sequelize-typescript';
+import { GameTeam } from './game-team.model';
 import { Game } from './game.model';
 import { Organization } from './organization.model';
 // Answer модель удалена
@@ -84,6 +86,12 @@ export class Team extends Model<Team> {
   @Column(DataType.STRING(100))
   captain?: string;
 
+  @Column(DataType.INTEGER)
+  tableNumber?: number;
+
+  @Column(DataType.STRING(500))
+  logoUrl?: string;
+
   @Default([])
   @Column(DataType.JSONB)
   members?: TeamMember[];
@@ -153,8 +161,8 @@ export class Team extends Model<Team> {
   @BelongsTo(() => Organization)
   organization!: Organization;
 
-  @BelongsTo(() => Game)
-  game!: Game;
+  @BelongsToMany(() => Game, () => GameTeam)
+  games!: Game[];
 
   // Связь с Answer удалена
 

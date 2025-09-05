@@ -10,6 +10,7 @@ interface GameListProps {
   onStop?: ((game: Game) => void) | undefined;
   onPause?: ((game: Game) => void) | undefined;
   onResume?: ((game: Game) => void) | undefined;
+  onManageTeams?: ((game: Game) => void) | undefined;
 }
 
 export function GameList({
@@ -20,7 +21,8 @@ export function GameList({
   onStart,
   onStop,
   onPause,
-  onResume
+  onResume,
+  onManageTeams
 }: GameListProps) {
   if (loading && games.length === 0) {
     return (
@@ -74,6 +76,7 @@ export function GameList({
             onStop={onStop}
             onPause={onPause}
             onResume={onResume}
+            onManageTeams={onManageTeams}
             loading={loading}
           />
         ))}

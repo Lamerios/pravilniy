@@ -8,6 +8,7 @@ interface GameCardProps {
   onStop?: ((game: Game) => void) | undefined;
   onPause?: ((game: Game) => void) | undefined;
   onResume?: ((game: Game) => void) | undefined;
+  onManageTeams?: ((game: Game) => void) | undefined;
   loading?: boolean;
 }
 
@@ -19,6 +20,7 @@ export function GameCard({
   onStop,
   onPause,
   onResume,
+  onManageTeams,
   loading = false
 }: GameCardProps) {
   const getStatusInfo = (status: GameStatus) => {
@@ -172,6 +174,16 @@ export function GameCard({
         </div>
 
         <div className="game-controls">
+          {onManageTeams && (
+            <button
+              onClick={() => onManageTeams(game)}
+              disabled={loading}
+              className="control-btn teams-btn"
+            >
+              👥 Команды
+            </button>
+          )}
+
           {canStart && onStart && (
             <button
               onClick={() => onStart(game)}

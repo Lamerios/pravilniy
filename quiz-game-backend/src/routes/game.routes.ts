@@ -1,15 +1,17 @@
 import { Router } from 'express';
 import { GameController } from '../controllers/game.controller';
 import {
-  authenticateToken,
-  requireActiveUser,
-  requireAdminOrModerator
+    authenticateToken,
+    requireActiveUser,
+    requireAdminOrModerator
 } from '../middleware/auth.middleware';
 import {
-  validateCreateGame,
-  validateGameQuery,
-  validateGameStateChange,
-  validateUpdateGame
+    validateAddTeamsToGame,
+    validateCreateGame,
+    validateGameQuery,
+    validateGameStateChange,
+    validateRemoveTeamsFromGame,
+    validateUpdateGame
 } from '../middleware/game.middleware';
 
 const router = Router();
@@ -150,6 +152,46 @@ router.post(
   requireAdminOrModerator,
   validateGameStateChange,
   gameController.resumeGame
+);
+
+/**
+ * @route POST /api/games/:id/teams
+ * @desc Добавить команды в игру
+ * @access Private (только создатель или админ)
+ */
+router.post(
+  '/:id/teams',
+  authenticateToken,
+  requireActiveUser,
+  requireAdminOrModerator,
+  validateAddTeamsToGame,
+  gameController.addTeamsToGame
+);
+
+/**
+ * @route DELETE /api/games/:id/teams
+ * @desc Удалить команды из игры
+ * @access Private (только создатель или админ)
+ */
+router.delete(
+  '/:id/teams',
+  authenticateToken,
+  requireActiveUser,
+  requireAdminOrModerator,
+  validateRemoveTeamsFromGame,
+  gameController.removeTeamsFromGame
+);
+
+/**
+ * @route GET /api/games/:id/teams
+ * @desc Получить команды игры
+ * @access Private
+ */
+router.get(
+  '/:id/teams',
+  authenticateToken,
+  requireActiveUser,
+  gameController.getGameTeams
 );
 
 export default router;

@@ -399,3 +399,127 @@ export function validateAndSanitizeText(value: string, maxLength?: number): { va
     error: null
   };
 }
+
+/**
+ * Валидация формы создания команды
+ */
+export function validateCreateTeamForm(data: {
+  name: string;
+  tableNumber?: number;
+  members: Array<{ name: string; email?: string; role?: string }>;
+}): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  // Валидация названия
+  const nameError = validateField(data.name, {
+    required: true,
+    minLength: 2,
+    maxLength: 100
+  });
+  if (nameError) errors.name = nameError;
+
+  // Валидация номера стола
+  if (data.tableNumber !== undefined) {
+    const tableNumberError = validateField(data.tableNumber, {
+      custom: (value) => {
+        if (value < 1 || value > 999) {
+          return 'Номер стола должен быть от 1 до 999';
+        }
+        return null;
+      }
+    });
+    if (tableNumberError) errors.tableNumber = tableNumberError;
+  }
+
+  // Валидация участников
+  if (data.members && data.members.length > 0) {
+    const membersError = validateField(data.members, {
+      custom: (members) => {
+        if (!Array.isArray(members)) {
+          return 'Участники должны быть массивом';
+        }
+
+        for (let i = 0; i < members.length; i++) {
+          const member = members[i];
+          if (!member.name || member.name.trim().length === 0) {
+            return `Участник ${i + 1}: имя обязательно`;
+          }
+          if (member.name.length > 100) {
+            return `Участник ${i + 1}: имя слишком длинное`;
+          }
+          if (member.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email)) {
+            return `Участник ${i + 1}: неверный формат email`;
+          }
+        }
+
+        return null;
+      }
+    });
+    if (membersError) errors.members = membersError;
+  }
+
+  return errors;
+}
+
+/**
+ * Валидация формы обновления команды
+ */
+export function validateUpdateTeamForm(data: {
+  name?: string;
+  tableNumber?: number;
+  members?: Array<{ name: string; email?: string; role?: string }>;
+}): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  // Валидация названия
+  if (data.name !== undefined) {
+    const nameError = validateField(data.name, {
+      required: true,
+      minLength: 2,
+      maxLength: 100
+    });
+    if (nameError) errors.name = nameError;
+  }
+
+  // Валидация номера стола
+  if (data.tableNumber !== undefined) {
+    const tableNumberError = validateField(data.tableNumber, {
+      custom: (value) => {
+        if (value < 1 || value > 999) {
+          return 'Номер стола должен быть от 1 до 999';
+        }
+        return null;
+      }
+    });
+    if (tableNumberError) errors.tableNumber = tableNumberError;
+  }
+
+  // Валидация участников
+  if (data.members !== undefined) {
+    const membersError = validateField(data.members, {
+      custom: (members) => {
+        if (!Array.isArray(members)) {
+          return 'Участники должны быть массивом';
+        }
+
+        for (let i = 0; i < members.length; i++) {
+          const member = members[i];
+          if (!member.name || member.name.trim().length === 0) {
+            return `Участник ${i + 1}: имя обязательно`;
+          }
+          if (member.name.length > 100) {
+            return `Участник ${i + 1}: имя слишком длинное`;
+          }
+          if (member.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email)) {
+            return `Участник ${i + 1}: неверный формат email`;
+          }
+        }
+
+        return null;
+      }
+    });
+    if (membersError) errors.members = membersError;
+  }
+
+  return errors;
+}

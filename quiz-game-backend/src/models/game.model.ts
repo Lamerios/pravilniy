@@ -1,25 +1,26 @@
 import {
-  AllowNull,
-  AutoIncrement,
-  BelongsTo,
-  Column,
-  CreatedAt,
-  DataType,
-  Default,
-  ForeignKey,
-  HasMany,
-  Model,
-  PrimaryKey,
-  Table,
-  Unique,
-  UpdatedAt,
-  Validate
+    AllowNull,
+    BelongsTo,
+    BelongsToMany,
+    Column,
+    CreatedAt,
+    DataType,
+    Default,
+    ForeignKey,
+    HasMany,
+    Model,
+    PrimaryKey,
+    Table,
+    Unique,
+    UpdatedAt,
+    Validate
 } from 'sequelize-typescript';
-import { Organization } from './organization.model';
-import { User } from './user.model';
+import { GameTeam } from './game-team.model';
 import { GameTemplate } from './game-template.model';
-import { Team } from './team.model';
+import { Organization } from './organization.model';
 import { Round } from './round.model';
+import { Team } from './team.model';
+import { User } from './user.model';
 
 /**
  * Модель игровой сессии
@@ -202,7 +203,7 @@ export class Game extends Model<Game> {
   @BelongsTo(() => User)
   creator!: User;
 
-  @HasMany(() => Team)
+  @BelongsToMany(() => Team, () => GameTeam)
   teams!: Team[];
 
   @HasMany(() => Round)
@@ -218,7 +219,7 @@ export class Game extends Model<Game> {
   }
 
   canJoin(): boolean {
-    return this.status === GameStatus.WAITING || 
+    return this.status === GameStatus.WAITING ||
            (this.status === GameStatus.ACTIVE && this.allowLateJoin);
   }
 

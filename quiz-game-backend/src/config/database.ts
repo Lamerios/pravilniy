@@ -6,6 +6,7 @@ import { config } from './config';
 
 // Импортируем модели
 // Answer модель удалена
+import { GameTeam } from '../models/game-team.model';
 import { GameTemplate } from '../models/game-template.model';
 import { Game } from '../models/game.model';
 import { Organization } from '../models/organization.model';
@@ -56,7 +57,7 @@ const dbConfig: DatabaseConfig = {
     ssl: false,
     connectTimeout: 60000,
   },
-  models: [Organization, User, GameTemplate, Game, Team, Round, Score]
+  models: [Organization, User, GameTemplate, Game, GameTeam, Team, Round, Score]
 };
 
 // Отладочная информация

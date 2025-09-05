@@ -4,8 +4,14 @@ import './App.css';
 import { AuthProvider, WithAuth, WithoutAuth } from './contexts/AuthContext';
 import DashboardPage from './pages/DashboardPage';
 import { GamesPage } from './pages/GamesPage';
+import { GameTeamsPage } from './pages/GameTeamsPage';
 import LoginPage from './pages/LoginPage';
 import './styles/auth.css';
+import './styles/file-upload.css';
+import './styles/forms.css';
+import './styles/game-teams.css';
+import './styles/team-components.css';
+import './styles/ui-components.css';
 
 const App: React.FC = () => {
   return (
@@ -38,6 +44,15 @@ const App: React.FC = () => {
               element={
                 <WithAuth>
                   <GamesPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games/:id/teams"
+              element={
+                <WithAuth>
+                  <GameTeamsPage />
                 </WithAuth>
               }
             />

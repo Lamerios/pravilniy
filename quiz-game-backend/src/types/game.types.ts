@@ -5,6 +5,7 @@ export interface CreateGameDto {
   description?: string;
   templateId: number;
   scheduledAt?: Date;
+  teamIds?: string[]; // ID команд для добавления в игру
   settings?: {
     maxTeams?: number;
     allowLateJoin?: boolean;
@@ -18,6 +19,7 @@ export interface UpdateGameDto {
   name?: string;
   description?: string;
   scheduledAt?: Date;
+  teamIds?: string[]; // ID команд для добавления/удаления из игры
   settings?: {
     maxTeams?: number;
     allowLateJoin?: boolean;

@@ -96,6 +96,7 @@ export class GameController {
   createGame = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const createData: CreateGameDto = req.body;
     const userId = req.user?.userId;
+    const organizationId = req.user?.organizationId;
 
     if (!userId) {
       res.status(401).json({
@@ -106,7 +107,16 @@ export class GameController {
       return;
     }
 
-    const game = await this.gameService.createGame(createData, userId.toString());
+    if (!organizationId) {
+      res.status(400).json({
+        success: false,
+        error: 'BadRequestError',
+        message: 'ID организации не указан'
+      });
+      return;
+    }
+
+    const game = await this.gameService.createGame(createData, userId.toString(), organizationId);
 
     res.status(201).json({
       success: true,
@@ -499,6 +509,79 @@ export class GameController {
       success: true,
       message: 'Игра возобновлена успешно',
       data: game
+    });
+  });
+
+  /**
+   * Добавить команды в игру
+   */
+  addTeamsToGame = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const { teamIds } = req.body;
+    const organizationId = req.user?.organizationId;
+
+    if (!organizationId) {
+      res.status(400).json({
+        success: false,
+        error: 'BadRequestError',
+        message: 'ID организации не указан'
+      });
+      return;
+    }
+
+    if (!teamIds || !Array.isArray(teamIds) || teamIds.length === 0) {
+      res.status(400).json({
+        success: false,
+        error: 'BadRequestError',
+        message: 'Список ID команд обязателен'
+      });
+      return;
+    }
+
+    await this.gameService.addTeamsToGame(id!, teamIds, organizationId);
+
+    res.json({
+      success: true,
+      message: 'Команды добавлены в игру успешно'
+    });
+  });
+
+  /**
+   * Удалить команды из игры
+   */
+  removeTeamsFromGame = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const { teamIds } = req.body;
+
+    if (!teamIds || !Array.isArray(teamIds) || teamIds.length === 0) {
+      res.status(400).json({
+        success: false,
+        error: 'BadRequestError',
+        message: 'Список ID команд обязателен'
+      });
+      return;
+    }
+
+    await this.gameService.removeTeamsFromGame(id!, teamIds);
+
+    res.json({
+      success: true,
+      message: 'Команды удалены из игры успешно'
+    });
+  });
+
+  /**
+   * Получить команды игры
+   */
+  getGameTeams = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+
+    const teams = await this.gameService.getGameTeams(id!);
+
+    res.json({
+      success: true,
+      message: 'Команды игры получены успешно',
+      data: teams
     });
   });
 }

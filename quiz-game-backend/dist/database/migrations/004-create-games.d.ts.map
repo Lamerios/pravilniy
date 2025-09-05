@@ -1,0 +1,1 @@
+{"version":3,"file":"004-create-games.d.ts","sourceRoot":"","sources":["../../../src/database/migrations/004-create-games.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,cAAc,EAAE,MAAM,WAAW,CAAC;AAOtD,wBAAsB,EAAE,CAAC,cAAc,EAAE,cAAc,GAAG,OAAO,CAAC,IAAI,CAAC,CAiMtE;AAED,wBAAsB,IAAI,CAAC,cAAc,EAAE,cAAc,GAAG,OAAO,CAAC,IAAI,CAAC,CAGxE"}

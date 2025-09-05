@@ -1,0 +1,274 @@
+/* File Upload Components Styles */
+.file-upload {
+  position: relative;
+}
+
+.file-upload__input {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.file-upload__dropzone {
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f9f9f9;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-upload__dropzone:hover {
+  border-color: #007bff;
+  background: #f0f8ff;
+}
+
+.file-upload__dropzone--dragging {
+  border-color: #007bff;
+  background: #e7f3ff;
+  transform: scale(1.02);
+}
+
+.file-upload__dropzone--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+.file-upload__dropzone--disabled:hover {
+  border-color: #e0e0e0;
+  background: #f5f5f5;
+  transform: none;
+}
+
+.file-upload__preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-upload__preview-image {
+  max-width: 100%;
+  max-height: 180px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.file-upload__preview-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.file-upload__preview:hover .file-upload__preview-overlay {
+  opacity: 1;
+}
+
+.file-upload__remove-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #dc3545;
+}
+
+.file-upload__remove-btn:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.file-upload__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #666;
+}
+
+.file-upload__icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0e0e0;
+  border-radius: 50%;
+  color: #999;
+  font-size: 1.5rem;
+}
+
+.file-upload__text {
+  text-align: center;
+}
+
+.file-upload__primary-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #213547;
+}
+
+.file-upload__secondary-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.file-upload__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+  font-size: 0.875rem;
+}
+
+.file-upload__progress {
+  margin-top: 0.75rem;
+}
+
+.file-upload__progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.file-upload__progress-fill {
+  height: 100%;
+  background: #007bff;
+  border-radius: 2px;
+  animation: progress-loading 2s ease-in-out infinite;
+}
+
+.file-upload__progress-text {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+  display: block;
+}
+
+@keyframes progress-loading {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Team Logo Upload Styles */
+.team-logo-upload {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: #f9f9f9;
+}
+
+.team-logo-upload__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.team-logo-upload__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #213547;
+}
+
+.team-logo-upload__remove {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #dc3545;
+}
+
+.team-logo-upload__remove:hover {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.team-logo-upload__content {
+  margin-bottom: 1rem;
+}
+
+.team-logo-upload__file-upload .file-upload__dropzone {
+  min-height: 150px;
+  padding: 1.5rem;
+}
+
+.team-logo-upload__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+  font-size: 0.875rem;
+}
+
+.team-logo-upload__help {
+  padding: 1rem;
+  background: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 4px;
+}
+
+.team-logo-upload__help-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #213547;
+}
+
+.team-logo-upload__help-list {
+  margin: 0;
+  padding-left: 1.5rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.team-logo-upload__help-list li {
+  margin-bottom: 0.25rem;
+}

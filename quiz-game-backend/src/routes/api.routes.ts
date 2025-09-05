@@ -1,7 +1,8 @@
 import { Request, Response, Router } from 'express';
-import protectedRoutes from './protected.routes';
-import templateRoutes from './template.routes';
 import gameRoutes from './game.routes';
+import protectedRoutes from './protected.routes';
+import teamRoutes from './team.routes';
+import templateRoutes from './template.routes';
 
 const router = Router();
 
@@ -18,7 +19,8 @@ router.get('/', (req: Request, res: Response) => {
       organizations: '/api/organizations',
       users: '/api/users',
       games: '/api/games',
-      templates: '/api/templates'
+      templates: '/api/templates',
+      teams: '/api/teams'
     },
     documentation: '/api/docs',
     timestamp: new Date().toISOString()
@@ -55,6 +57,9 @@ router.use('/games', gameRoutes);
 
 // Роуты шаблонов игр
 router.use('/templates', templateRoutes);
+
+// Роуты команд
+router.use('/teams', teamRoutes);
 
 // Защищенные роуты
 router.use('/protected', protectedRoutes);

@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const team_controller_1 = require("../controllers/team.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const role_middleware_1 = require("../middleware/role.middleware");
+const team_middleware_1 = require("../middleware/team.middleware");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_1.authenticateToken);
+router.get('/', team_middleware_1.validateTeamQuery, team_controller_1.teamController.getTeams);
+router.get('/search', team_controller_1.teamController.searchTeams);
+router.get('/stats', team_controller_1.teamController.getTeamStats);
+router.get('/check-table/:tableNumber', team_controller_1.teamController.checkTableNumber);
+router.get('/organization/:organizationId', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), team_controller_1.teamController.getTeamsByOrganization);
+router.get('/:id', team_controller_1.teamController.getTeamById);
+router.post('/', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), team_middleware_1.validateCreateTeam, team_controller_1.teamController.createTeam);
+router.put('/:id', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), team_middleware_1.validateUpdateTeam, team_controller_1.teamController.updateTeam);
+router.delete('/:id', (0, role_middleware_1.roleMiddleware)(['admin']), team_controller_1.teamController.deleteTeam);
+exports.default = router;
+//# sourceMappingURL=team.routes.js.map

@@ -51,3 +51,77 @@ export const validateGameStateChange = (req: Request, res: Response, next: NextF
 
   next();
 };
+
+/**
+ * Middleware для валидации добавления команд в игру
+ */
+export const validateAddTeamsToGame = (req: Request, res: Response, next: NextFunction): void => {
+  const errors: string[] = [];
+
+  const { teamIds } = req.body;
+
+  if (!teamIds) {
+    errors.push('Список ID команд обязателен');
+  } else if (!Array.isArray(teamIds)) {
+    errors.push('teamIds должен быть массивом');
+  } else if (teamIds.length === 0) {
+    errors.push('Список команд не может быть пустым');
+  } else if (teamIds.length > 20) {
+    errors.push('Максимум 20 команд за раз');
+  } else {
+    // Проверяем, что все ID являются строками
+    for (let i = 0; i < teamIds.length; i++) {
+      if (typeof teamIds[i] !== 'string' || teamIds[i].trim() === '') {
+        errors.push(`ID команды ${i + 1} должен быть непустой строкой`);
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    res.status(400).json({
+      success: false,
+      error: 'ValidationError',
+      message: 'Ошибка валидации данных',
+      details: errors
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Middleware для валидации удаления команд из игры
+ */
+export const validateRemoveTeamsFromGame = (req: Request, res: Response, next: NextFunction): void => {
+  const errors: string[] = [];
+
+  const { teamIds } = req.body;
+
+  if (!teamIds) {
+    errors.push('Список ID команд обязателен');
+  } else if (!Array.isArray(teamIds)) {
+    errors.push('teamIds должен быть массивом');
+  } else if (teamIds.length === 0) {
+    errors.push('Список команд не может быть пустым');
+  } else {
+    // Проверяем, что все ID являются строками
+    for (let i = 0; i < teamIds.length; i++) {
+      if (typeof teamIds[i] !== 'string' || teamIds[i].trim() === '') {
+        errors.push(`ID команды ${i + 1} должен быть непустой строкой`);
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    res.status(400).json({
+      success: false,
+      error: 'ValidationError',
+      message: 'Ошибка валидации данных',
+      details: errors
+    });
+    return;
+  }
+
+  next();
+};

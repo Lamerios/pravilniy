@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CreateGameModal } from '../components/CreateGameModal';
 import { EditGameModal } from '../components/EditGameModal';
 import { GameFiltersComponent } from '../components/GameFilters';
@@ -8,6 +9,7 @@ import { useGames } from '../hooks/useGames';
 import { Game } from '../types/game.types';
 
 export function GamesPage() {
+  const navigate = useNavigate();
   const {
     games,
     loading,
@@ -53,6 +55,10 @@ export function GamesPage() {
     } finally {
       setActionLoading(null);
     }
+  };
+
+  const handleManageTeams = (game: Game) => {
+    navigate(`/games/${game.id}/teams`);
   };
 
   const handleStart = async (game: Game) => {
@@ -199,6 +205,7 @@ export function GamesPage() {
           onStop={handleStop}
           onPause={handlePause}
           onResume={handleResume}
+          onManageTeams={handleManageTeams}
         />
 
         {pagination && (

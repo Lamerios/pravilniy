@@ -13,6 +13,7 @@ import {
     Validate
 } from 'sequelize-typescript';
 import { Game } from './game.model';
+import { GameTemplate } from './game-template.model';
 // Answer модель удалена
 
 /**
@@ -69,6 +70,10 @@ export class Round extends Model<Round> {
   @ForeignKey(() => Game)
   @Column(DataType.UUID)
   gameId!: string;
+
+  @ForeignKey(() => GameTemplate)
+  @Column(DataType.INTEGER)
+  templateId?: number;
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
@@ -156,6 +161,9 @@ export class Round extends Model<Round> {
   // Ассоциации
   @BelongsTo(() => Game)
   game!: Game;
+
+  @BelongsTo(() => GameTemplate)
+  template?: GameTemplate;
 
   // Связь с Answer удалена
 

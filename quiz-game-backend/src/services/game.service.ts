@@ -1,7 +1,9 @@
 import { Op } from 'sequelize';
+import { GameTeam } from '../models/game-team.model';
 import { GameTemplate } from '../models/game-template.model';
 import { Game, GameStatus } from '../models/game.model';
 import { Organization } from '../models/organization.model';
+import { Team } from '../models/team.model';
 import { User } from '../models/user.model';
 import {
     CreateGameDto,
@@ -132,7 +134,7 @@ export class GameService {
   /**
    * Создать новую игру
    */
-  async createGame(createData: CreateGameDto, userId: string): Promise<Game> {
+  async createGame(createData: CreateGameDto, userId: string, organizationId: number): Promise<Game> {
     try {
       // Валидация данных
       const validation = this.validateGameData(createData);
@@ -152,7 +154,7 @@ export class GameService {
         status: GameStatus.DRAFT,
         settings: createData.settings || {},
         createdBy: userId,
-        organizationId: '1' // TODO: Получать из контекста пользователя
+        organizationId: organizationId.toString()
       };
 
       if (createData.description) {
@@ -164,6 +166,11 @@ export class GameService {
       }
 
       const game = await Game.create(gameData);
+
+      // Добавляем команды в игру, если они указаны
+      if (createData.teamIds && createData.teamIds.length > 0) {
+        await this.addTeamsToGame(game.id, createData.teamIds, organizationId);
+      }
 
       logger.info(`Game created: ${game.id} by user: ${userId}`);
 
@@ -484,5 +491,96 @@ export class GameService {
       isValid: errors.length === 0,
       errors
     };
+  }
+
+  /**
+   * Добавить команды в игру
+   */
+  async addTeamsToGame(gameId: string, teamIds: string[], organizationId: number): Promise<void> {
+    try {
+      // Проверяем существование команд и их принадлежность к организации
+      const teams = await Team.findAll({
+        where: {
+          id: { [Op.in]: teamIds },
+          organizationId: organizationId
+        }
+      });
+
+      if (teams.length !== teamIds.length) {
+        throw new Error('Некоторые команды не найдены или не принадлежат организации');
+      }
+
+      // Проверяем, что команды еще не добавлены в игру
+      const existingGameTeams = await GameTeam.findAll({
+        where: {
+          gameId: gameId,
+          teamId: { [Op.in]: teamIds }
+        }
+      });
+
+      if (existingGameTeams.length > 0) {
+        throw new Error('Некоторые команды уже добавлены в игру');
+      }
+
+      // Добавляем команды в игру
+      const gameTeams = teamIds.map((teamId, index) => ({
+        gameId: gameId,
+        teamId: teamId,
+        joinedAt: index + 1,
+        isActive: true,
+        joinedAtDate: new Date()
+      }));
+
+      await GameTeam.bulkCreate(gameTeams as any);
+
+      logger.info(`Added ${teamIds.length} teams to game: ${gameId}`);
+    } catch (error) {
+      logger.error('Error adding teams to game:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Удалить команды из игры
+   */
+  async removeTeamsFromGame(gameId: string, teamIds: string[]): Promise<void> {
+    try {
+      await GameTeam.destroy({
+        where: {
+          gameId: gameId,
+          teamId: { [Op.in]: teamIds }
+        }
+      });
+
+      logger.info(`Removed ${teamIds.length} teams from game: ${gameId}`);
+    } catch (error) {
+      logger.error('Error removing teams from game:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Получить команды игры
+   */
+  async getGameTeams(gameId: string): Promise<Team[]> {
+    try {
+      const game = await Game.findByPk(gameId, {
+        include: [{
+          model: Team,
+          through: {
+            where: { isActive: true }
+          }
+        }]
+      });
+
+      if (!game) {
+        throw new Error('Игра не найдена');
+      }
+
+      return game.teams || [];
+    } catch (error) {
+      logger.error('Error getting game teams:', error);
+      throw error;
+    }
   }
 }
