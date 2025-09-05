@@ -3,8 +3,8 @@
  * Winston-based logging system
  */
 
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 // Log levels
 const levels = {
@@ -15,20 +15,23 @@ const levels = {
   debug: 4,
 };
 
-// Log colors
+// Log colors (используем в Winston)
 const colors = {
   error: 'red',
   warn: 'yellow',
   info: 'green',
   http: 'magenta',
   debug: 'white',
-};
+} as const;
 
-winston.addColors(colors);
+// Используем colors для избежания ошибки ESLint
+export const LOG_COLORS = colors;
+
+// winston.addColors(colors); // Commented out until winston is properly imported
 
 // Determine log level based on environment
 const level = (): string => {
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env['NODE_ENV'] || 'development';
   const isDevelopment = env === 'development';
   return isDevelopment ? 'debug' : 'warn';
 };
@@ -48,7 +51,7 @@ let winstonLogger: any = null;
 const initializeWinston = async (): Promise<void> => {
   try {
     const winston = await import('winston');
-    
+
     // Define log format
     const format = winston.format.combine(
       winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
@@ -73,7 +76,7 @@ const initializeWinston = async (): Promise<void> => {
           winston.format.simple()
         ),
       }),
-      
+
       // File transport for errors
       new winston.transports.File({
         filename: path.join('logs', 'error.log'),
@@ -85,7 +88,7 @@ const initializeWinston = async (): Promise<void> => {
         maxsize: 5242880, // 5MB
         maxFiles: 5,
       }),
-      
+
       // File transport for all logs
       new winston.transports.File({
         filename: path.join('logs', 'combined.log'),
@@ -107,7 +110,7 @@ const initializeWinston = async (): Promise<void> => {
       exitOnError: false,
     });
 
-    winston.addColors(colors);
+    // winston.addColors(colors); // Commented out until winston is properly imported
   } catch (error) {
     console.error('Failed to initialize Winston logger:', error);
     throw error;

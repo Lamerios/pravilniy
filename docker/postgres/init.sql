@@ -11,30 +11,45 @@ CREATE SCHEMA IF NOT EXISTS quiz_app;
 -- Установка search_path
 ALTER DATABASE quiz_game_dev SET search_path TO quiz_app, public;
 
--- Создание пользователя для приложения (если не существует)
+-- Принудительно устанавливаем пароль для основного пользователя
+ALTER USER quiz_user WITH PASSWORD 'dev_password';
+
+-- Создание дополнительного пользователя для приложения (если не существует)
 DO
 $do$
 BEGIN
    IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles 
+      SELECT FROM pg_catalog.pg_roles
       WHERE  rolname = 'quiz_app_user') THEN
-      
+
       CREATE ROLE quiz_app_user LOGIN PASSWORD 'app_password';
    END IF;
 END
 $do$;
 
--- Предоставление прав
+-- Предоставление прав quiz_app_user
 GRANT USAGE ON SCHEMA quiz_app TO quiz_app_user;
 GRANT CREATE ON SCHEMA quiz_app TO quiz_app_user;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA quiz_app TO quiz_app_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA quiz_app TO quiz_app_user;
 
--- Установка прав по умолчанию для новых объектов
-ALTER DEFAULT PRIVILEGES IN SCHEMA quiz_app 
+-- Установка прав по умолчанию для новых объектов для quiz_app_user
+ALTER DEFAULT PRIVILEGES IN SCHEMA quiz_app
     GRANT ALL PRIVILEGES ON TABLES TO quiz_app_user;
-ALTER DEFAULT PRIVILEGES IN SCHEMA quiz_app 
+ALTER DEFAULT PRIVILEGES IN SCHEMA quiz_app
     GRANT ALL PRIVILEGES ON SEQUENCES TO quiz_app_user;
+
+-- Предоставление прав основному пользователю quiz_user (создается через POSTGRES_USER)
+GRANT USAGE ON SCHEMA quiz_app TO quiz_user;
+GRANT CREATE ON SCHEMA quiz_app TO quiz_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA quiz_app TO quiz_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA quiz_app TO quiz_user;
+
+-- Установка прав по умолчанию для новых объектов для quiz_user
+ALTER DEFAULT PRIVILEGES IN SCHEMA quiz_app
+    GRANT ALL PRIVILEGES ON TABLES TO quiz_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA quiz_app
+    GRANT ALL PRIVILEGES ON SEQUENCES TO quiz_user;
 
 -- Создание таблицы для отслеживания миграций
 CREATE TABLE IF NOT EXISTS quiz_app.migrations (
@@ -44,8 +59,8 @@ CREATE TABLE IF NOT EXISTS quiz_app.migrations (
 );
 
 -- Вставка начальной записи о миграции
-INSERT INTO quiz_app.migrations (name) 
-VALUES ('001_initial_setup') 
+INSERT INTO quiz_app.migrations (name)
+VALUES ('001_initial_setup')
 ON CONFLICT (name) DO NOTHING;
 
 -- Создание индексов для производительности

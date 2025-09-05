@@ -55,7 +55,7 @@
     "db:backup": "docker-compose exec postgres pg_dump -U quiz_user -d quiz_game_dev > backups/backup_$(date +%Y%m%d_%H%M%S).sql",
     "db:migrate": "cd quiz-game-backend && npm run db:migrate",
     "db:seed": "cd quiz-game-backend && npm run db:seed",
-    "db:setup": "npm run db:migrate && npm run db:seed",
+    "db:setup": "cd quiz-game-backend && npm run db:setup",
 
     "redis:start": "docker-compose up -d redis",
     "redis:stop": "docker-compose stop redis",

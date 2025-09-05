@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: quiz-postgres-simple
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: quiz_game_dev
+      POSTGRES_USER: quiz_user
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_simple_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_simple_data:
+    driver: local
