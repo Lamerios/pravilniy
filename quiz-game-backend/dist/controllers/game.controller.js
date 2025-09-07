@@ -2,11 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameController = void 0;
 const game_service_1 = require("../services/game.service");
+const position_service_1 = require("../services/position.service");
 const async_handler_util_1 = require("../utils/async-handler.util");
 class GameController {
     gameService;
+    positionService;
     constructor() {
         this.gameService = new game_service_1.GameService();
+        this.positionService = new position_service_1.PositionService();
     }
     getGames = (0, async_handler_util_1.asyncHandler)(async (req, res) => {
         const query = {
@@ -458,6 +461,46 @@ class GameController {
             success: true,
             message: 'Команды игры получены успешно',
             data: teams
+        });
+    });
+    getGameLeaderboard = (0, async_handler_util_1.asyncHandler)(async (req, res) => {
+        const { id } = req.params;
+        const gameId = parseInt(id);
+        if (isNaN(gameId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Некорректный ID игры'
+            });
+        }
+        const leaderboard = await this.positionService.getGameLeaderboard(gameId);
+        return res.json({
+            success: true,
+            message: 'Рейтинг команд получен успешно',
+            data: {
+                gameId,
+                leaderboard,
+                lastUpdated: new Date().toISOString()
+            }
+        });
+    });
+    recalculateGamePositions = (0, async_handler_util_1.asyncHandler)(async (req, res) => {
+        const { id } = req.params;
+        const gameId = parseInt(id);
+        if (isNaN(gameId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Некорректный ID игры'
+            });
+        }
+        const result = await this.positionService.recalculateGamePositions(gameId);
+        return res.json({
+            success: true,
+            message: 'Позиции команд пересчитаны успешно',
+            data: {
+                gameId,
+                positions: result.positions,
+                changes: result.changes
+            }
         });
     });
 }

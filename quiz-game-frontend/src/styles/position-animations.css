@@ -1,263 +1,275 @@
-/**
- * Анимации для изменения позиций команд
- */
-
-/* Основные анимации позиций */
-.position-change {
-  position: relative;
-  transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.position-change--up {
-  animation: positionUp 0.8s ease-out;
-}
-
-.position-change--down {
-  animation: positionDown 0.8s ease-out;
-}
-
-.position-change--new {
-  animation: positionNew 0.6s ease-out;
-}
-
-.position-change--same {
-  /* Плавный переход без анимации */
-  transition: background-color 0.3s ease;
-}
+/* Анимации изменения позиций команд */
 
 /* Анимация подъема в рейтинге */
+.position-animation-up {
+  animation: positionUp 1s ease-out;
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(56, 161, 105, 0.1));
+  border-left: 4px solid #48bb78;
+  transform: translateX(0);
+}
+
 @keyframes positionUp {
   0% {
-    transform: translateY(20px);
-    background-color: rgba(34, 197, 94, 0.1);
-    box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
+    background: rgba(72, 187, 120, 0.3);
+    transform: translateX(-10px) scale(1.02);
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.4);
   }
   50% {
-    transform: translateY(-5px);
-    background-color: rgba(34, 197, 94, 0.2);
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    background: rgba(72, 187, 120, 0.2);
+    transform: translateX(5px) scale(1.05);
+    box-shadow: 0 0 30px rgba(72, 187, 120, 0.6);
   }
   100% {
-    transform: translateY(0);
-    background-color: rgba(34, 197, 94, 0.05);
-    box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+    background: rgba(72, 187, 120, 0.1);
+    transform: translateX(0) scale(1);
+    box-shadow: 0 0 10px rgba(72, 187, 120, 0.2);
   }
 }
 
 /* Анимация падения в рейтинге */
+.position-animation-down {
+  animation: positionDown 1s ease-out;
+  background: linear-gradient(135deg, rgba(229, 62, 62, 0.1), rgba(197, 48, 48, 0.1));
+  border-left: 4px solid #e53e3e;
+  transform: translateX(0);
+}
+
 @keyframes positionDown {
   0% {
-    transform: translateY(-20px);
-    background-color: rgba(239, 68, 68, 0.1);
-    box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+    background: rgba(229, 62, 62, 0.3);
+    transform: translateX(10px) scale(0.98);
+    box-shadow: 0 0 20px rgba(229, 62, 62, 0.4);
   }
   50% {
-    transform: translateY(5px);
-    background-color: rgba(239, 68, 68, 0.2);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    background: rgba(229, 62, 62, 0.2);
+    transform: translateX(-5px) scale(0.95);
+    box-shadow: 0 0 30px rgba(229, 62, 62, 0.6);
   }
   100% {
-    transform: translateY(0);
-    background-color: rgba(239, 68, 68, 0.05);
-    box-shadow: 0 0 0 rgba(239, 68, 68, 0);
+    background: rgba(229, 62, 62, 0.1);
+    transform: translateX(0) scale(1);
+    box-shadow: 0 0 10px rgba(229, 62, 62, 0.2);
   }
 }
 
-/* Анимация для новой команды */
+/* Анимация новой команды */
+.position-animation-new {
+  animation: positionNew 1.5s ease-out;
+  background: linear-gradient(135deg, rgba(237, 137, 54, 0.1), rgba(246, 173, 85, 0.1));
+  border-left: 4px solid #ed8936;
+  transform: translateX(0);
+}
+
 @keyframes positionNew {
   0% {
+    background: rgba(237, 137, 54, 0.4);
+    transform: translateY(-20px) scale(0.9);
     opacity: 0;
-    transform: scale(0.8) translateX(-20px);
-    background-color: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 30px rgba(237, 137, 54, 0.6);
+  }
+  30% {
+    background: rgba(237, 137, 54, 0.3);
+    transform: translateY(0) scale(1.1);
+    opacity: 1;
+    box-shadow: 0 0 40px rgba(237, 137, 54, 0.8);
+  }
+  60% {
+    background: rgba(237, 137, 54, 0.2);
+    transform: translateY(0) scale(1.05);
+    box-shadow: 0 0 25px rgba(237, 137, 54, 0.5);
+  }
+  100% {
+    background: rgba(237, 137, 54, 0.1);
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(237, 137, 54, 0.2);
+  }
+}
+
+/* Анимация изменения позиции в кружке */
+.position-change-up {
+  animation: positionChangeUp 0.8s ease-out;
+}
+
+@keyframes positionChangeUp {
+  0% {
+    transform: scale(1) rotate(0deg);
+    background: #48bb78;
+  }
+  25% {
+    transform: scale(1.3) rotate(-5deg);
+    background: #68d391;
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.05) translateX(0);
-    background-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.2) rotate(5deg);
+    background: #48bb78;
+  }
+  75% {
+    transform: scale(1.1) rotate(-2deg);
+    background: #68d391;
   }
   100% {
-    opacity: 1;
-    transform: scale(1) translateX(0);
-    background-color: rgba(59, 130, 246, 0.05);
+    transform: scale(1) rotate(0deg);
+    background: #48bb78;
   }
 }
 
-/* Индикаторы изменения позиции */
-.position-indicator {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 12px;
-  animation: fadeInScale 0.4s ease-out;
+.position-change-down {
+  animation: positionChangeDown 0.8s ease-out;
 }
 
-.position-indicator--up {
-  color: #16a34a;
-  background-color: rgba(34, 197, 94, 0.1);
-}
-
-.position-indicator--down {
-  color: #dc2626;
-  background-color: rgba(239, 68, 68, 0.1);
-}
-
-.position-indicator--new {
-  color: #2563eb;
-  background-color: rgba(59, 130, 246, 0.1);
-}
-
-.position-indicator__arrow {
-  margin-right: 2px;
-  font-size: 0.8em;
-}
-
-/* Анимация появления индикатора */
-@keyframes fadeInScale {
+@keyframes positionChangeDown {
   0% {
-    opacity: 0;
-    transform: scale(0.5);
+    transform: scale(1) rotate(0deg);
+    background: #e53e3e;
+  }
+  25% {
+    transform: scale(0.8) rotate(5deg);
+    background: #fc8181;
+  }
+  50% {
+    transform: scale(0.9) rotate(-5deg);
+    background: #e53e3e;
+  }
+  75% {
+    transform: scale(0.95) rotate(2deg);
+    background: #fc8181;
   }
   100% {
-    opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
+    background: #e53e3e;
   }
 }
 
-/* Позиционные номера с выделением */
-.position-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
+.position-change-new {
+  animation: positionChangeNew 1.2s ease-out;
 }
 
-.position-number--1 {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #92400e;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+@keyframes positionChangeNew {
+  0% {
+    transform: scale(0) rotate(0deg);
+    background: #ed8936;
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.5) rotate(180deg);
+    background: #f6ad55;
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.2) rotate(360deg);
+    background: #ed8936;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    background: #ed8936;
+    opacity: 1;
+  }
 }
 
-.position-number--2 {
-  background: linear-gradient(135deg, #c0c0c0, #e5e7eb);
-  color: #374151;
-  box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
-}
-
-.position-number--3 {
-  background: linear-gradient(135deg, #cd7f32, #f59e0b);
-  color: #92400e;
-  box-shadow: 0 2px 8px rgba(205, 127, 50, 0.3);
-}
-
-.position-number--default {
-  background-color: #f3f4f6;
-  color: #6b7280;
-}
-
-/* Эффект пульсации для изменившихся позиций */
+/* Анимация пульсации для активных изменений */
 .position-pulse {
-  animation: positionPulse 1s ease-in-out;
+  animation: positionPulse 2s infinite;
 }
 
 @keyframes positionPulse {
   0%, 100% {
-    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
   }
   50% {
-    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
   }
 }
 
-/* Hover эффекты */
-.leaderboard-row:hover .position-number {
-  transform: scale(1.1);
+/* Анимация появления строки */
+.table-row-enter {
+  animation: rowEnter 0.6s ease-out;
 }
 
-.leaderboard-row:hover .position-indicator {
-  transform: scale(1.05);
+@keyframes rowEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Адаптивность */
+/* Анимация исчезновения строки */
+.table-row-exit {
+  animation: rowExit 0.4s ease-in;
+}
+
+@keyframes rowExit {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+}
+
+/* Анимация обновления баллов */
+.points-update {
+  animation: pointsUpdate 0.8s ease-out;
+}
+
+@keyframes pointsUpdate {
+  0% {
+    transform: scale(1);
+    background: linear-gradient(135deg, #48bb78, #38a169);
+  }
+  50% {
+    transform: scale(1.2);
+    background: linear-gradient(135deg, #68d391, #48bb78);
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    box-shadow: 0 0 10px rgba(72, 187, 120, 0.3);
+  }
+}
+
+/* Анимация для больших экранов */
+@media (min-width: 1920px) {
+  .position-animation-up,
+  .position-animation-down,
+  .position-animation-new {
+    animation-duration: 1.2s;
+  }
+
+  .position-change-up,
+  .position-change-down,
+  .position-change-new {
+    animation-duration: 1s;
+  }
+
+  .points-update {
+    animation-duration: 1s;
+  }
+}
+
+/* Анимация для мобильных устройств */
 @media (max-width: 768px) {
-  .position-number {
-    width: 28px;
-    height: 28px;
-    font-size: 1rem;
+  .position-animation-up,
+  .position-animation-down,
+  .position-animation-new {
+    animation-duration: 0.8s;
   }
 
-  .position-indicator {
-    font-size: 0.7rem;
-    padding: 1px 4px;
-  }
-}
-
-/* Темная тема */
-@media (prefers-color-scheme: dark) {
-  .position-change--up {
-    animation: positionUpDark 0.8s ease-out;
+  .position-change-up,
+  .position-change-down,
+  .position-change-new {
+    animation-duration: 0.6s;
   }
 
-  .position-change--down {
-    animation: positionDownDark 0.8s ease-out;
-  }
-
-  .position-change--new {
-    animation: positionNewDark 0.6s ease-out;
-  }
-
-  @keyframes positionUpDark {
-    0% {
-      transform: translateY(20px);
-      background-color: rgba(34, 197, 94, 0.15);
-    }
-    50% {
-      transform: translateY(-5px);
-      background-color: rgba(34, 197, 94, 0.25);
-    }
-    100% {
-      transform: translateY(0);
-      background-color: rgba(34, 197, 94, 0.08);
-    }
-  }
-
-  @keyframes positionDownDark {
-    0% {
-      transform: translateY(-20px);
-      background-color: rgba(239, 68, 68, 0.15);
-    }
-    50% {
-      transform: translateY(5px);
-      background-color: rgba(239, 68, 68, 0.25);
-    }
-    100% {
-      transform: translateY(0);
-      background-color: rgba(239, 68, 68, 0.08);
-    }
-  }
-
-  @keyframes positionNewDark {
-    0% {
-      opacity: 0;
-      transform: scale(0.8) translateX(-20px);
-      background-color: rgba(59, 130, 246, 0.15);
-    }
-    50% {
-      opacity: 0.8;
-      transform: scale(1.05) translateX(0);
-      background-color: rgba(59, 130, 246, 0.25);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1) translateX(0);
-      background-color: rgba(59, 130, 246, 0.08);
-    }
+  .points-update {
+    animation-duration: 0.6s;
   }
 }

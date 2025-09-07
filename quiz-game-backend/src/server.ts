@@ -1,61 +1,123 @@
-import { createServer, Server } from 'http';
+/**
+ * Quiz Game Server с Socket.IO
+ */
+
+import { createServer, Server as HTTPServer } from 'http';
 import { createApp } from './app';
-import { config } from './config/config';
-import { connectDatabase } from './config/database';
+import { SocketService } from './socket/socket.server';
+import { logger } from './utils/logger';
 
 export class QuizGameServer {
-  private app = createApp();
-  private server: Server;
+  private httpServer!: HTTPServer;
+  private socketService!: SocketService;
   private port: number;
 
   constructor() {
-    this.port = config.server.port;
-    this.server = createServer(this.app);
+    this.port = parseInt(process.env['PORT'] || '5000', 10);
   }
 
-  async start(): Promise<void> {
+  /**
+   * Запуск сервера
+   */
+  public async start(): Promise<void> {
     try {
-      // Подключаемся к базе данных
-      await connectDatabase();
+      // Создаем Express приложение
+      const app = createApp();
+
+      // Создаем HTTP сервер
+      this.httpServer = createServer(app);
+
+      // Инициализируем Socket.IO
+      this.socketService = new SocketService(this.httpServer);
 
       // Запускаем сервер
-      this.server.listen(this.port, () => {
-        console.log(`🚀 Server is running on http://${config.server.host}:${this.port}`);
-        console.log(`🌍 Environment: ${config.server.env}`);
-        console.log(`📊 Database: ${config.db.host}:${config.db.port}/${config.db.name}`);
+      this.httpServer.listen(this.port, () => {
+        logger.info(`🚀 Quiz Game Backend started successfully! Port: ${this.port}, Environment: ${process.env['NODE_ENV'] || 'development'}, SocketIO: true`);
       });
 
-      // Graceful shutdown
-      process.on('SIGTERM', () => this.shutdown());
-      process.on('SIGINT', () => this.shutdown());
+      // Обработка ошибок сервера
+      this.httpServer.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.syscall !== 'listen') {
+          throw error;
+        }
+
+        const bind = typeof this.port === 'string' ? 'Pipe ' + this.port : 'Port ' + this.port;
+
+        switch (error.code) {
+          case 'EACCES':
+            logger.error(`${bind} requires elevated privileges`);
+            process.exit(1);
+          case 'EADDRINUSE':
+            logger.error(`${bind} is already in use`);
+            process.exit(1);
+          default:
+            throw error;
+        }
+      });
 
     } catch (error) {
-      console.error('❌ Failed to start server:', error);
-      process.exit(1);
+      logger.error(`Failed to start server: ${(error as Error).message}`);
+      throw error;
     }
   }
 
-  private async shutdown(): Promise<void> {
-    console.log('\n🛑 Shutting down server...');
+  /**
+   * Остановка сервера
+   */
+  public async stop(): Promise<void> {
+    return new Promise((resolve) => {
+      if (this.httpServer) {
+        this.httpServer.close(() => {
+          logger.info('HTTP server stopped');
+          resolve();
+        });
+      }
 
-    this.server.close(() => {
-      console.log('✅ HTTP server closed');
-      process.exit(0);
+      if (this.socketService) {
+        this.socketService.close();
+        logger.info('Socket.IO service stopped');
+      }
     });
+  }
 
-    // Принудительное завершение через 10 секунд
-    setTimeout(() => {
-      console.error('❌ Could not close connections in time, forcefully shutting down');
-      process.exit(1);
-    }, 10000);
+  /**
+   * Получить Socket.IO сервис
+   */
+  public getSocketService(): SocketService {
+    if (!this.socketService) {
+      throw new Error('Socket service not initialized');
+    }
+    return this.socketService;
+  }
+
+  /**
+   * Получить HTTP сервер
+   */
+  public getHttpServer(): HTTPServer {
+    if (!this.httpServer) {
+      throw new Error('HTTP server not initialized');
+    }
+    return this.httpServer;
   }
 }
 
-// Запуск сервера если файл выполняется напрямую
-if (require.main === module) {
-  const server = new QuizGameServer();
-  server.start().catch((error) => {
-    console.error('❌ Server startup failed:', error);
-    process.exit(1);
-  });
+// Глобальная переменная для Socket.IO сервиса (для обратной совместимости)
+export let socketService: SocketService;
+
+export function createServerWithSocket() {
+  const app = createApp();
+  const httpServer = createServer(app);
+
+  // Инициализируем Socket.IO
+  socketService = new SocketService(httpServer);
+
+  return httpServer;
+}
+
+// Экспортируем функцию для получения Socket.IO сервиса
+export function getSocketService(): SocketService {
+  if (!socketService) {
+    throw new Error('Socket service not initialized. Call createServerWithSocket() first.');
+  }
+  return socketService;
 }

@@ -1,15 +1,23 @@
 import { Request } from 'express';
+export type BetType = 'MULTIPLIER' | 'BONUS' | 'FIXED';
 export interface CreateScoreDto {
     gameId: number;
     teamId: number;
     roundId: number;
     points: number;
     bet?: number | undefined;
+    betType?: BetType | undefined;
+    minBet?: number | undefined;
+    maxBet?: number | undefined;
     notes?: string | undefined;
+    enteredBy?: number;
 }
 export interface UpdateScoreDto {
     points?: number | undefined;
     bet?: number | undefined;
+    betType?: BetType | undefined;
+    minBet?: number | undefined;
+    maxBet?: number | undefined;
     notes?: string | undefined;
 }
 export interface ScoreQueryDto {
@@ -37,6 +45,9 @@ export interface ScoreResponse {
     roundId: number;
     points: number;
     bet?: number | undefined;
+    betType?: BetType | undefined;
+    minBet?: number | undefined;
+    maxBet?: number | undefined;
     totalPoints: number;
     notes?: string | undefined;
     createdAt: string;
@@ -86,10 +97,14 @@ export interface GameScoreStats {
 export interface BulkScoreDto {
     gameId: number;
     roundId: number;
+    enteredBy: number;
     scores: Array<{
         teamId: number;
         points: number;
         bet?: number;
+        betType?: BetType;
+        minBet?: number;
+        maxBet?: number;
         notes?: string;
     }>;
 }

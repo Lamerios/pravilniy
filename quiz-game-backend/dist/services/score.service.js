@@ -2,36 +2,42 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scoreService = exports.ScoreService = void 0;
 const database_1 = require("../config/database");
+const game_team_model_1 = require("../models/game-team.model");
 const game_model_1 = require("../models/game.model");
 const round_model_1 = require("../models/round.model");
 const score_correction_model_1 = require("../models/score-correction.model");
 const score_model_1 = require("../models/score.model");
 const team_model_1 = require("../models/team.model");
 const user_model_1 = require("../models/user.model");
+const position_service_1 = require("./position.service");
 class ScoreService {
-    async createScore(scoreData, enteredBy) {
+    positionService;
+    constructor() {
+        this.positionService = new position_service_1.PositionService();
+    }
+    async createScore(scoreData) {
         const transaction = await database_1.sequelize.transaction();
         try {
-            const [game, team, round] = await Promise.all([
-                game_model_1.Game.findByPk(scoreData.gameId, { transaction }),
-                team_model_1.Team.findByPk(scoreData.teamId, { transaction }),
-                round_model_1.Round.findByPk(scoreData.roundId, { transaction })
-            ]);
+            const game = await game_model_1.Game.findByPk(scoreData.gameId);
             if (!game) {
                 throw new Error('Игра не найдена');
             }
+            const team = await team_model_1.Team.findByPk(scoreData.teamId);
             if (!team) {
                 throw new Error('Команда не найдена');
             }
-            if (!round) {
-                throw new Error('Раунд не найден');
-            }
-            const gameTeam = await game.$get('teams', {
-                where: { id: scoreData.teamId },
-                transaction
+            const gameTeam = await game_team_model_1.GameTeam.findAll({
+                where: {
+                    gameId: scoreData.gameId,
+                    teamId: scoreData.teamId
+                }
             });
             if (gameTeam.length === 0) {
                 throw new Error('Команда не участвует в данной игре');
+            }
+            const round = await round_model_1.Round.findByPk(scoreData.roundId);
+            if (!round) {
+                throw new Error('Раунд не найден');
             }
             if (parseInt(round.gameId.toString()) !== scoreData.gameId) {
                 throw new Error('Раунд не принадлежит данной игре');
@@ -41,18 +47,41 @@ class ScoreService {
                     gameId: scoreData.gameId,
                     teamId: scoreData.teamId,
                     roundId: scoreData.roundId
-                },
-                transaction
+                }
             });
             if (existingScore) {
-                throw new Error('Баллы для данной команды в этом раунде уже существуют');
+                throw new Error('Баллы для этой команды в данном раунде уже введены');
             }
+            const pointsValidation = this.validatePoints(scoreData.points);
+            if (pointsValidation.warning) {
+                console.warn(`Score validation warning: ${pointsValidation.warning}`, {
+                    points: scoreData.points,
+                    teamId: scoreData.teamId,
+                    roundId: scoreData.roundId
+                });
+            }
+            this.validateBet(scoreData.bet, scoreData.betType, scoreData.minBet, scoreData.maxBet);
+            const totalPoints = this.calculateTotalPoints(scoreData.points, scoreData.bet, scoreData.betType || 'MULTIPLIER');
             const score = await score_model_1.Score.create({
-                ...scoreData,
-                enteredBy,
-                totalPoints: this.calculateTotalPoints(scoreData.points, scoreData.bet)
+                gameId: scoreData.gameId,
+                teamId: scoreData.teamId,
+                roundId: scoreData.roundId,
+                points: scoreData.points,
+                bet: scoreData.bet,
+                betType: scoreData.betType || 'MULTIPLIER',
+                minBet: scoreData.minBet,
+                maxBet: scoreData.maxBet,
+                totalPoints,
+                notes: scoreData.notes,
+                enteredBy: scoreData.enteredBy
             }, { transaction });
             await transaction.commit();
+            try {
+                await this.positionService.recalculateGamePositions(scoreData.gameId);
+            }
+            catch (positionError) {
+                console.error('Failed to recalculate positions after score creation:', positionError);
+            }
             const result = await this.getScoreById(score.id);
             if (!result) {
                 throw new Error('Ошибка при получении созданной записи о баллах');
@@ -67,19 +96,26 @@ class ScoreService {
     async updateScore(scoreId, scoreData) {
         const transaction = await database_1.sequelize.transaction();
         try {
-            const score = await score_model_1.Score.findByPk(scoreId, { transaction });
+            const score = await score_model_1.Score.findByPk(scoreId);
             if (!score) {
-                await transaction.rollback();
                 return null;
             }
-            const oldPoints = score.points;
-            const newPoints = scoreData.points ?? score.points;
-            const newBet = scoreData.bet ?? score.bet;
+            const newPoints = scoreData.points !== undefined ? scoreData.points : score.points;
+            const newBet = scoreData.bet !== undefined ? scoreData.bet : score.bet;
+            const newBetType = scoreData.betType !== undefined ? scoreData.betType : (score.betType || 'MULTIPLIER');
+            this.validateBet(newBet, newBetType, scoreData.minBet, scoreData.maxBet);
+            const totalPoints = this.calculateTotalPoints(newPoints, newBet, newBetType);
             await score.update({
                 ...scoreData,
-                totalPoints: this.calculateTotalPoints(newPoints, newBet)
+                totalPoints
             }, { transaction });
             await transaction.commit();
+            try {
+                await this.positionService.recalculateGamePositions(score.gameId);
+            }
+            catch (positionError) {
+                console.error('Failed to recalculate positions after score update:', positionError);
+            }
             return this.getScoreById(scoreId);
         }
         catch (error) {
@@ -88,31 +124,29 @@ class ScoreService {
         }
     }
     async getScoreById(scoreId) {
-        return score_model_1.Score.findByPk(scoreId, {
+        const score = await score_model_1.Score.findByPk(scoreId, {
             include: [
                 {
-                    model: game_model_1.Game,
-                    attributes: ['id', 'name']
-                },
-                {
                     model: team_model_1.Team,
+                    as: 'team',
                     attributes: ['id', 'name', 'tableNumber']
                 },
                 {
                     model: round_model_1.Round,
+                    as: 'round',
                     attributes: ['id', 'name', 'roundNumber']
                 },
                 {
-                    model: user_model_1.User,
-                    as: 'enteredByUser',
-                    attributes: ['id', 'username']
+                    model: game_model_1.Game,
+                    as: 'game',
+                    attributes: ['id', 'name']
                 }
             ]
         });
+        return score ? this.mapScoreToResponse(score) : null;
     }
-    async getScores(query = {}) {
-        const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'DESC', gameId, teamId, roundId } = query;
-        const offset = (page - 1) * limit;
+    async getScores(query) {
+        const { gameId, teamId, roundId, page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
         const where = {};
         if (gameId)
             where['gameId'] = gameId;
@@ -120,25 +154,24 @@ class ScoreService {
             where['teamId'] = teamId;
         if (roundId)
             where['roundId'] = roundId;
+        const offset = (page - 1) * limit;
         const { count, rows } = await score_model_1.Score.findAndCountAll({
             where,
             include: [
                 {
-                    model: game_model_1.Game,
-                    attributes: ['id', 'name']
-                },
-                {
                     model: team_model_1.Team,
+                    as: 'team',
                     attributes: ['id', 'name', 'tableNumber']
                 },
                 {
                     model: round_model_1.Round,
+                    as: 'round',
                     attributes: ['id', 'name', 'roundNumber']
                 },
                 {
-                    model: user_model_1.User,
-                    as: 'enteredByUser',
-                    attributes: ['id', 'username']
+                    model: game_model_1.Game,
+                    as: 'game',
+                    attributes: ['id', 'name']
                 }
             ],
             order: [[sortBy, sortOrder]],
@@ -146,41 +179,53 @@ class ScoreService {
             offset
         });
         return {
-            scores: rows.map(this.mapScoreToResponse),
+            scores: rows.map(score => this.mapScoreToResponse(score)),
             pagination: {
+                total: count,
                 page,
                 limit,
-                total: count,
                 totalPages: Math.ceil(count / limit)
             }
         };
     }
     async getTeamScores(gameId, teamId) {
         const scores = await score_model_1.Score.findAll({
-            where: { gameId, teamId },
+            where: {
+                gameId,
+                teamId
+            },
             include: [
                 {
+                    model: team_model_1.Team,
+                    as: 'team',
+                    attributes: ['id', 'name', 'tableNumber']
+                },
+                {
                     model: round_model_1.Round,
+                    as: 'round',
                     attributes: ['id', 'name', 'roundNumber']
+                },
+                {
+                    model: game_model_1.Game,
+                    as: 'game',
+                    attributes: ['id', 'name']
                 }
             ],
-            order: [['roundId', 'ASC']]
+            order: [['createdAt', 'ASC']]
         });
-        return scores.map(this.mapScoreToResponse);
+        return scores.map(score => this.mapScoreToResponse(score));
     }
     async getTeamScoreStats(gameId, teamId) {
-        const [team, scores] = await Promise.all([
-            team_model_1.Team.findByPk(teamId),
-            this.getTeamScores(gameId, teamId)
-        ]);
+        const team = await team_model_1.Team.findByPk(teamId);
         if (!team) {
             throw new Error('Команда не найдена');
         }
+        const scores = await this.getTeamScores(gameId, teamId);
         const totalPoints = scores.reduce((sum, score) => sum + score.totalPoints, 0);
         const roundsPlayed = scores.length;
         const averagePoints = roundsPlayed > 0 ? totalPoints / roundsPlayed : 0;
-        const maxPoints = scores.length > 0 ? Math.max(...scores.map(s => s.totalPoints)) : 0;
-        const minPoints = scores.length > 0 ? Math.min(...scores.map(s => s.totalPoints)) : 0;
+        const maxPoints = roundsPlayed > 0 ? Math.max(...scores.map(s => s.totalPoints)) : 0;
+        const minPoints = roundsPlayed > 0 ? Math.min(...scores.map(s => s.totalPoints)) : 0;
         const allTeamStats = await this.getGameScoreStats(gameId);
         const currentPosition = allTeamStats.leaderboard.findIndex(entry => entry.teamId === teamId) + 1;
         return {
@@ -197,21 +242,23 @@ class ScoreService {
         };
     }
     async getGameScoreStats(gameId) {
-        const [game, teams, rounds] = await Promise.all([
-            game_model_1.Game.findByPk(gameId),
-            game_model_1.Game.findByPk(gameId, {
-                include: [{
-                        model: team_model_1.Team,
-                        attributes: ['id', 'name', 'tableNumber']
-                    }]
-            }).then(g => g?.teams || []),
-            round_model_1.Round.findAll({
-                where: { gameId },
-                order: [['roundNumber', 'ASC']]
-            })
-        ]);
+        const game = await game_model_1.Game.findByPk(gameId);
         if (!game) {
             throw new Error('Игра не найдена');
+        }
+        const teams = await team_model_1.Team.findAll({
+            include: [{
+                    model: game_model_1.Game,
+                    as: 'games',
+                    where: { id: gameId },
+                    through: { attributes: [] }
+                }]
+        });
+        const rounds = await round_model_1.Round.findAll({
+            where: { gameId }
+        });
+        if (teams.length === 0) {
+            throw new Error('В игре нет команд');
         }
         const teamStats = [];
         for (const team of teams) {
@@ -238,16 +285,11 @@ class ScoreService {
             leaderboard
         };
     }
-    async bulkCreateScores(bulkData, enteredBy) {
+    async bulkCreateScores(bulkData) {
         const transaction = await database_1.sequelize.transaction();
-        const result = {
-            success: true,
-            created: 0,
-            updated: 0,
-            errors: [],
-            scores: []
-        };
         try {
+            const results = [];
+            const errors = [];
             for (const scoreData of bulkData.scores) {
                 try {
                     const createData = {
@@ -255,22 +297,28 @@ class ScoreService {
                         roundId: bulkData.roundId,
                         teamId: scoreData.teamId,
                         points: scoreData.points,
-                        bet: scoreData.bet,
-                        notes: scoreData.notes
+                        bet: scoreData.bet || undefined,
+                        notes: scoreData.notes || undefined,
+                        enteredBy: bulkData.enteredBy
                     };
-                    const score = await this.createScore(createData, enteredBy);
-                    result.scores.push(this.mapScoreToResponse(score));
-                    result.created++;
+                    const score = await this.createScore(createData);
+                    results.push(score);
                 }
                 catch (error) {
-                    result.errors.push({
+                    errors.push({
                         teamId: scoreData.teamId,
                         error: error instanceof Error ? error.message : 'Неизвестная ошибка'
                     });
                 }
             }
             await transaction.commit();
-            return result;
+            return {
+                success: true,
+                created: results.length,
+                updated: 0,
+                errors,
+                scores: results
+            };
         }
         catch (error) {
             await transaction.rollback();
@@ -280,23 +328,29 @@ class ScoreService {
     async correctScore(correctionData) {
         const transaction = await database_1.sequelize.transaction();
         try {
-            const score = await score_model_1.Score.findByPk(correctionData.scoreId, { transaction });
+            const score = await score_model_1.Score.findByPk(correctionData.scoreId);
             if (!score) {
                 throw new Error('Запись о баллах не найдена');
             }
-            const oldPoints = score.points;
             await score_correction_model_1.ScoreCorrection.create({
                 scoreId: correctionData.scoreId,
-                oldPoints,
+                oldPoints: score.points,
                 newPoints: correctionData.newPoints,
                 reason: correctionData.reason,
                 correctedBy: correctionData.correctedBy
             }, { transaction });
+            const totalPoints = this.calculateTotalPoints(correctionData.newPoints, score.bet, score.betType || 'MULTIPLIER');
             await score.update({
                 points: correctionData.newPoints,
-                totalPoints: this.calculateTotalPoints(correctionData.newPoints, score.bet)
+                totalPoints
             }, { transaction });
             await transaction.commit();
+            try {
+                await this.positionService.recalculateGamePositions(score.gameId);
+            }
+            catch (positionError) {
+                console.error('Failed to recalculate positions after score correction:', positionError);
+            }
             const result = await this.getScoreById(correctionData.scoreId);
             if (!result) {
                 throw new Error('Ошибка при получении исправленной записи о баллах');
@@ -311,10 +365,13 @@ class ScoreService {
     async getScoreCorrectionHistory(scoreId) {
         const corrections = await score_correction_model_1.ScoreCorrection.findAll({
             where: { scoreId },
-            include: [{
+            include: [
+                {
                     model: user_model_1.User,
-                    attributes: ['id', 'username']
-                }],
+                    as: 'correctedByUser',
+                    attributes: ['id', 'email']
+                }
+            ],
             order: [['correctedAt', 'DESC']]
         });
         return corrections.map(correction => ({
@@ -331,32 +388,247 @@ class ScoreService {
             } : undefined
         }));
     }
-    async deleteScore(scoreId) {
-        const transaction = await database_1.sequelize.transaction();
-        try {
-            const score = await score_model_1.Score.findByPk(scoreId, { transaction });
-            if (!score) {
-                await transaction.rollback();
-                return false;
+    async getGameScoresHistory(gameId, query) {
+        const { teamId, roundId, page = 1, limit = 50, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
+        const where = { gameId };
+        if (teamId)
+            where['teamId'] = teamId;
+        if (roundId)
+            where['roundId'] = roundId;
+        const offset = (page - 1) * limit;
+        const { count, rows } = await score_model_1.Score.findAndCountAll({
+            where,
+            include: [
+                {
+                    model: team_model_1.Team,
+                    as: 'team',
+                    attributes: ['id', 'name', 'tableNumber']
+                },
+                {
+                    model: round_model_1.Round,
+                    as: 'round',
+                    attributes: ['id', 'name', 'roundNumber']
+                },
+                {
+                    model: game_model_1.Game,
+                    as: 'game',
+                    attributes: ['id', 'name']
+                }
+            ],
+            order: [[sortBy, sortOrder]],
+            limit,
+            offset
+        });
+        return {
+            scores: rows.map(score => this.mapScoreToResponse(score)),
+            pagination: {
+                total: count,
+                page,
+                limit,
+                totalPages: Math.ceil(count / limit)
             }
-            await score_correction_model_1.ScoreCorrection.destroy({
-                where: { scoreId },
-                transaction
-            });
-            await score.destroy({ transaction });
-            await transaction.commit();
-            return true;
+        };
+    }
+    async getRoundScores(gameId, roundId) {
+        const scores = await score_model_1.Score.findAll({
+            where: {
+                gameId,
+                roundId
+            },
+            include: [
+                {
+                    model: team_model_1.Team,
+                    as: 'team',
+                    attributes: ['id', 'name', 'tableNumber']
+                },
+                {
+                    model: round_model_1.Round,
+                    as: 'round',
+                    attributes: ['id', 'name', 'roundNumber']
+                },
+                {
+                    model: game_model_1.Game,
+                    as: 'game',
+                    attributes: ['id', 'name']
+                }
+            ],
+            order: [['totalPoints', 'DESC'], ['createdAt', 'ASC']]
+        });
+        return scores.map(score => this.mapScoreToResponse(score));
+    }
+    async getGameLeaderboard(gameId) {
+        const gameStats = await this.getGameScoreStats(gameId);
+        const game = await game_model_1.Game.findByPk(gameId);
+        if (!game) {
+            throw new Error('Игра не найдена');
         }
-        catch (error) {
-            await transaction.rollback();
-            throw error;
+        const rounds = await round_model_1.Round.findAll({
+            where: { gameId }
+        });
+        const leaderboardWithActivity = [];
+        for (const teamStats of gameStats.teamStats) {
+            const lastScore = await score_model_1.Score.findOne({
+                where: {
+                    gameId,
+                    teamId: teamStats.teamId
+                },
+                order: [['updatedAt', 'DESC']]
+            });
+            leaderboardWithActivity.push({
+                position: teamStats.currentPosition,
+                teamId: teamStats.teamId,
+                teamName: teamStats.teamName,
+                tableNumber: teamStats.tableNumber || undefined,
+                totalPoints: teamStats.totalPoints,
+                roundsPlayed: teamStats.roundsPlayed,
+                averagePoints: teamStats.averagePoints,
+                lastActivity: lastScore ? lastScore.updatedAt.toISOString() : new Date().toISOString()
+            });
+        }
+        leaderboardWithActivity.sort((a, b) => a.position - b.position);
+        return {
+            leaderboard: leaderboardWithActivity,
+            gameInfo: {
+                gameId: parseInt(game.id.toString()),
+                gameName: game.name,
+                totalRounds: rounds.length,
+                totalTeams: gameStats.totalTeams
+            }
+        };
+    }
+    async getGameRoundsSummary(gameId) {
+        const rounds = await round_model_1.Round.findAll({
+            where: { gameId },
+            order: [['roundNumber', 'ASC']]
+        });
+        const roundsSummary = [];
+        for (const round of rounds) {
+            const roundScores = await score_model_1.Score.findAll({
+                where: {
+                    gameId,
+                    roundId: round.id
+                }
+            });
+            if (roundScores.length > 0) {
+                const totalPoints = roundScores.reduce((sum, score) => sum + score.totalPoints, 0);
+                const pointsArray = roundScores.map(score => score.totalPoints);
+                roundsSummary.push({
+                    roundId: parseInt(round.id.toString()),
+                    roundName: round.name,
+                    roundNumber: round.roundNumber,
+                    totalScores: roundScores.length,
+                    averagePoints: Math.round((totalPoints / roundScores.length) * 100) / 100,
+                    maxPoints: Math.max(...pointsArray),
+                    minPoints: Math.min(...pointsArray),
+                    teamsParticipated: roundScores.length
+                });
+            }
+            else {
+                roundsSummary.push({
+                    roundId: parseInt(round.id.toString()),
+                    roundName: round.name,
+                    roundNumber: round.roundNumber,
+                    totalScores: 0,
+                    averagePoints: 0,
+                    maxPoints: 0,
+                    minPoints: 0,
+                    teamsParticipated: 0
+                });
+            }
+        }
+        return { rounds: roundsSummary };
+    }
+    async deleteScore(scoreId) {
+        const score = await score_model_1.Score.findByPk(scoreId);
+        if (!score) {
+            return false;
+        }
+        await score.destroy();
+        return true;
+    }
+    calculateTotalPoints(points, bet, betType = 'MULTIPLIER') {
+        if (!bet) {
+            return points;
+        }
+        let totalPoints;
+        switch (betType) {
+            case 'MULTIPLIER':
+                totalPoints = points * bet;
+                break;
+            case 'BONUS':
+                totalPoints = points + bet;
+                break;
+            case 'FIXED':
+                totalPoints = bet;
+                break;
+            default:
+                totalPoints = points;
+        }
+        return Math.round(totalPoints * 100) / 100;
+    }
+    validatePoints(points) {
+        if (points < -100) {
+            return {
+                isValid: true,
+                warning: 'Критически низкие баллы. Убедитесь в корректности ввода.'
+            };
+        }
+        if (points > 1000) {
+            return {
+                isValid: true,
+                warning: 'Критически высокие баллы. Убедитесь в корректности ввода.'
+            };
+        }
+        return { isValid: true };
+    }
+    async validateEntities(gameId, teamId, roundId) {
+        const game = await game_model_1.Game.findByPk(gameId);
+        if (!game) {
+            throw new Error('Игра не найдена');
+        }
+        const team = await team_model_1.Team.findByPk(teamId);
+        if (!team) {
+            throw new Error('Команда не найдена');
+        }
+        const round = await round_model_1.Round.findByPk(roundId);
+        if (!round) {
+            throw new Error('Раунд не найден');
+        }
+        if (parseInt(round.gameId.toString()) !== gameId) {
+            throw new Error('Раунд не принадлежит указанной игре');
         }
     }
-    calculateTotalPoints(points, bet) {
-        if (bet && bet > 0) {
-            return points > 0 ? points + bet : 0;
+    validateBet(bet, betType, minBet, maxBet) {
+        if (!bet) {
+            return;
         }
-        return points;
+        if (bet <= 0) {
+            throw new Error('Ставка должна быть положительным числом');
+        }
+        if (minBet && bet < minBet) {
+            throw new Error(`Ставка не может быть меньше ${minBet}`);
+        }
+        if (maxBet && bet > maxBet) {
+            throw new Error(`Ставка не может быть больше ${maxBet}`);
+        }
+        if (betType === 'MULTIPLIER') {
+            if (bet > 10) {
+                throw new Error('Множитель не может быть больше 10');
+            }
+            if (bet < 0.1) {
+                throw new Error('Множитель не может быть меньше 0.1');
+            }
+        }
+        else if (betType === 'BONUS') {
+            if (bet > 100) {
+                throw new Error('Бонус не может быть больше 100 баллов');
+            }
+        }
+        else if (betType === 'FIXED') {
+            if (bet > 200) {
+                throw new Error('Фиксированные баллы не могут быть больше 200');
+            }
+        }
     }
     mapScoreToResponse(score) {
         const response = {
@@ -366,6 +638,9 @@ class ScoreService {
             roundId: score.roundId,
             points: score.points,
             bet: score.bet || undefined,
+            betType: score.betType || undefined,
+            minBet: score.minBet || undefined,
+            maxBet: score.maxBet || undefined,
             totalPoints: score.totalPoints,
             notes: score.notes || undefined,
             createdAt: score.createdAt.toISOString(),
@@ -392,6 +667,60 @@ class ScoreService {
             };
         }
         return response;
+    }
+    async getGameCorrections(gameId, options) {
+        const { page, limit } = options;
+        const offset = (page - 1) * limit;
+        const { count, rows: corrections } = await score_correction_model_1.ScoreCorrection.findAndCountAll({
+            include: [
+                {
+                    model: score_model_1.Score,
+                    as: 'score',
+                    where: { gameId },
+                    include: [
+                        {
+                            model: team_model_1.Team,
+                            as: 'team',
+                            attributes: ['name']
+                        },
+                        {
+                            model: round_model_1.Round,
+                            as: 'round',
+                            attributes: ['name', 'roundNumber']
+                        }
+                    ]
+                },
+                {
+                    model: user_model_1.User,
+                    as: 'corrector',
+                    attributes: ['username', 'email']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+            limit,
+            offset
+        });
+        const formattedCorrections = corrections.map(correction => ({
+            id: parseInt(correction.id.toString()),
+            scoreId: parseInt(correction.scoreId.toString()),
+            teamName: correction.score.team.name,
+            roundName: `${correction.score.round.name} (Раунд ${correction.score.round.roundNumber})`,
+            oldPoints: correction.oldPoints,
+            newPoints: correction.newPoints,
+            reason: correction.reason,
+            correctedBy: String(correction.correctedBy || 'Система'),
+            correctedAt: correction.createdAt
+        }));
+        const totalPages = Math.ceil(count / limit);
+        return {
+            corrections: formattedCorrections,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems: count,
+                itemsPerPage: limit
+            }
+        };
     }
 }
 exports.ScoreService = ScoreService;

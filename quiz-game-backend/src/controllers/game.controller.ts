@@ -3,7 +3,9 @@ import { GameService } from '../services/game.service';
 import { PositionService } from '../services/position.service';
 import { AuthenticatedRequest } from '../types/auth.types';
 import { CreateGameDto, GameQueryDto, GameStateChangeDto, UpdateGameDto } from '../types/game.types';
+import { PublicScoreboardData } from '../types/scoreboard.types';
 import { asyncHandler } from '../utils/async-handler.util';
+import { logger } from '../utils/logger';
 
 export class GameController {
   private gameService: GameService;
@@ -640,5 +642,66 @@ export class GameController {
         changes: result.changes
       }
     });
+  });
+
+  /**
+   * Получить публичное табло игры (без аутентификации)
+   */
+  getGameScoreboard = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const gameId = parseInt(id!);
+
+    if (isNaN(gameId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Некорректный ID игры'
+      });
+    }
+
+    try {
+      // Получаем leaderboard через PositionService
+      const leaderboard = await this.positionService.getGameLeaderboard(gameId);
+
+      // Получаем базовую информацию об игре
+      const game = await this.gameService.getGameById(gameId);
+      if (!game) {
+        return res.status(404).json({
+          success: false,
+          message: 'Игра не найдена'
+        });
+      }
+
+      // Формируем публичные данные табло
+      const scoreboardData: PublicScoreboardData = {
+        gameId,
+        gameName: game.name,
+        gameStatus: game.status,
+        totalRounds: game.totalRounds || 0,
+        totalTeams: leaderboard.length,
+        leaderboard: leaderboard.map(team => ({
+          position: team.position,
+          teamId: team.teamId,
+          teamName: team.teamName,
+          tableNumber: team.tableNumber,
+          totalPoints: team.totalPoints,
+          positionChange: team.positionChange,
+          lastUpdated: team.lastUpdated
+        })),
+        lastUpdated: new Date().toISOString()
+      };
+
+      return res.json({
+        success: true,
+        message: 'Табло игры получено успешно',
+        data: scoreboardData
+      });
+
+    } catch (error) {
+      logger.error(`Failed to get game scoreboard: ${(error as Error).message}`);
+      return res.status(500).json({
+        success: false,
+        message: 'Ошибка получения табло игры'
+      });
+    }
   });
 }

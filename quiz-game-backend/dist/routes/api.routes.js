@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const express_1 = require("express");
+const game_scores_routes_1 = tslib_1.__importDefault(require("./game-scores.routes"));
 const game_routes_1 = tslib_1.__importDefault(require("./game.routes"));
 const protected_routes_1 = tslib_1.__importDefault(require("./protected.routes"));
 const score_routes_1 = tslib_1.__importDefault(require("./score.routes"));
@@ -49,6 +50,7 @@ router.get('/users', (req, res) => {
     });
 });
 router.use('/games', game_routes_1.default);
+router.use('/games', game_scores_routes_1.default);
 router.use('/templates', template_routes_1.default);
 router.use('/teams', team_routes_1.default);
 router.use('/scores', score_routes_1.default);

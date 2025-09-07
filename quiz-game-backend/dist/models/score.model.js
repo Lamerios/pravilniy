@@ -13,7 +13,11 @@ let Score = class Score extends sequelize_typescript_1.Model {
     roundId;
     points;
     bet;
+    betType;
+    minBet;
+    maxBet;
     totalPoints;
+    position;
     notes;
     enteredBy;
     game;
@@ -62,21 +66,54 @@ tslib_1.__decorate([
 ], Score.prototype, "points", void 0);
 tslib_1.__decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.INTEGER,
+        type: sequelize_typescript_1.DataType.DECIMAL(10, 2),
         allowNull: true,
-        comment: 'Ставка команды (если есть)'
+        comment: 'Ставка команды (множитель или бонус)'
     }),
     tslib_1.__metadata("design:type", Number)
 ], Score.prototype, "bet", void 0);
 tslib_1.__decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.INTEGER,
+        type: sequelize_typescript_1.DataType.ENUM('MULTIPLIER', 'BONUS', 'FIXED'),
+        allowNull: true,
+        defaultValue: 'MULTIPLIER',
+        comment: 'Тип ставки: MULTIPLIER (умножение), BONUS (добавление), FIXED (фиксированные баллы)'
+    }),
+    tslib_1.__metadata("design:type", String)
+], Score.prototype, "betType", void 0);
+tslib_1.__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.DECIMAL(10, 2),
+        allowNull: true,
+        comment: 'Минимальная ставка для данного раунда'
+    }),
+    tslib_1.__metadata("design:type", Number)
+], Score.prototype, "minBet", void 0);
+tslib_1.__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.DECIMAL(10, 2),
+        allowNull: true,
+        comment: 'Максимальная ставка для данного раунда'
+    }),
+    tslib_1.__metadata("design:type", Number)
+], Score.prototype, "maxBet", void 0);
+tslib_1.__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0,
         comment: 'Общее количество баллов с учетом ставки'
     }),
     tslib_1.__metadata("design:type", Number)
 ], Score.prototype, "totalPoints", void 0);
+tslib_1.__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.INTEGER,
+        allowNull: true,
+        comment: 'Позиция команды в рейтинге на момент записи баллов'
+    }),
+    tslib_1.__metadata("design:type", Number)
+], Score.prototype, "position", void 0);
 tslib_1.__decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.TEXT,

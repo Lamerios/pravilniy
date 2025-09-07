@@ -232,4 +232,11 @@ router.post(
   gameController.recalculateGamePositions
 );
 
+/**
+ * @route GET /api/games/:id/scoreboard
+ * @desc Получить публичное табло игры (без аутентификации)
+ * @access Public
+ */
+router.get('/:id/scoreboard', gameController.getGameScoreboard);
+
 export default router;

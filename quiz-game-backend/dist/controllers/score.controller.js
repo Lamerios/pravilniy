@@ -5,9 +5,11 @@ const score_service_1 = require("../services/score.service");
 class ScoreController {
     async createScore(req, res) {
         try {
-            const scoreData = req.body;
-            const enteredBy = req.user?.userId;
-            const score = await score_service_1.scoreService.createScore(scoreData, enteredBy);
+            const scoreData = {
+                ...req.body,
+                enteredBy: req.user?.userId
+            };
+            const score = await score_service_1.scoreService.createScore(scoreData);
             res.status(201).json({
                 success: true,
                 data: score,
@@ -129,28 +131,11 @@ class ScoreController {
             });
         }
     }
-    async getGameScoreStats(req, res) {
-        try {
-            const { gameId } = req.params;
-            const stats = await score_service_1.scoreService.getGameScoreStats(parseInt(gameId));
-            res.json({
-                success: true,
-                data: stats,
-                message: 'Статистика баллов игры успешно получена'
-            });
-        }
-        catch (error) {
-            res.status(500).json({
-                success: false,
-                message: error instanceof Error ? error.message : 'Ошибка получения статистики игры'
-            });
-        }
-    }
     async bulkCreateScores(req, res) {
         try {
             const bulkData = req.body;
             const enteredBy = req.user?.userId;
-            const result = await score_service_1.scoreService.bulkCreateScores(bulkData, enteredBy);
+            const result = await score_service_1.scoreService.bulkCreateScores(bulkData);
             res.status(201).json({
                 success: true,
                 data: result,
@@ -203,6 +188,25 @@ class ScoreController {
             });
         }
     }
+    async getGameCorrections(req, res) {
+        try {
+            const { gameId } = req.params;
+            const page = parseInt(req.query['page']) || 1;
+            const limit = parseInt(req.query['limit']) || 20;
+            const corrections = await score_service_1.scoreService.getGameCorrections(parseInt(gameId), { page, limit });
+            res.json({
+                success: true,
+                data: corrections,
+                message: 'Исправления игры успешно получены'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения исправлений игры'
+            });
+        }
+    }
     async deleteScore(req, res) {
         try {
             const { id } = req.params;
@@ -223,6 +227,99 @@ class ScoreController {
             res.status(500).json({
                 success: false,
                 message: error instanceof Error ? error.message : 'Ошибка удаления баллов'
+            });
+        }
+    }
+    async getGameScoresHistory(req, res) {
+        try {
+            const { gameId } = req.params;
+            const query = {
+                teamId: req.query['teamId'] ? parseInt(req.query['teamId']) : undefined,
+                roundId: req.query['roundId'] ? parseInt(req.query['roundId']) : undefined,
+                page: req.query['page'] ? parseInt(req.query['page']) : 1,
+                limit: req.query['limit'] ? parseInt(req.query['limit']) : 50,
+                sortBy: req.query['sortBy'] || 'createdAt',
+                sortOrder: req.query['sortOrder'] || 'DESC'
+            };
+            const result = await score_service_1.scoreService.getGameScoresHistory(parseInt(gameId), query);
+            res.json({
+                success: true,
+                data: result,
+                message: 'История баллов игры успешно получена'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения истории баллов'
+            });
+        }
+    }
+    async getGameScoreStats(req, res) {
+        try {
+            const { gameId } = req.params;
+            const stats = await score_service_1.scoreService.getGameScoreStats(parseInt(gameId));
+            res.json({
+                success: true,
+                data: stats,
+                message: 'Статистика баллов игры успешно получена'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения статистики баллов игры'
+            });
+        }
+    }
+    async getGameLeaderboard(req, res) {
+        try {
+            const { gameId } = req.params;
+            const leaderboard = await score_service_1.scoreService.getGameLeaderboard(parseInt(gameId));
+            res.json({
+                success: true,
+                data: leaderboard,
+                message: 'Лидерборд игры успешно получен'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения лидерборда'
+            });
+        }
+    }
+    async getRoundScores(req, res) {
+        try {
+            const { gameId, roundId } = req.params;
+            const scores = await score_service_1.scoreService.getRoundScores(parseInt(gameId), parseInt(roundId));
+            res.json({
+                success: true,
+                data: scores,
+                message: 'Баллы раунда успешно получены'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения баллов раунда'
+            });
+        }
+    }
+    async getGameRoundsSummary(req, res) {
+        try {
+            const { gameId } = req.params;
+            const summary = await score_service_1.scoreService.getGameRoundsSummary(parseInt(gameId));
+            res.json({
+                success: true,
+                data: summary,
+                message: 'Сводка по раундам успешно получена'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения сводки по раундам'
             });
         }
     }

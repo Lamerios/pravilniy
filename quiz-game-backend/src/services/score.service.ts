@@ -7,6 +7,7 @@ import { ScoreCorrection } from '../models/score-correction.model';
 import { Score } from '../models/score.model';
 import { Team } from '../models/team.model';
 import { User } from '../models/user.model';
+import { getSocketService } from '../server';
 import {
     BulkScoreDto,
     BulkScoreResult,
@@ -125,8 +126,9 @@ export class ScoreService {
       await transaction.commit();
 
       // Пересчитываем позиции команд в игре
+      let positionResult;
       try {
-        await this.positionService.recalculateGamePositions(scoreData.gameId);
+        positionResult = await this.positionService.recalculateGamePositions(scoreData.gameId);
       } catch (positionError) {
         console.error('Failed to recalculate positions after score creation:', positionError);
         // Не блокируем основную операцию из-за ошибки пересчета позиций
@@ -137,6 +139,29 @@ export class ScoreService {
       if (!result) {
         throw new Error('Ошибка при получении созданной записи о баллах');
       }
+
+      // Отправляем WebSocket события
+      try {
+        const socketService = getSocketService();
+
+        // Отправляем обновление баллов
+        socketService.emitScoreUpdate(scoreData.gameId, {
+          teamId: scoreData.teamId,
+          teamName: team.name,
+          roundId: scoreData.roundId,
+          points: scoreData.points,
+          totalPoints: result.totalPoints
+        });
+
+        // Отправляем обновление позиций, если пересчет прошел успешно
+        if (positionResult) {
+          socketService.emitPositionsUpdate(scoreData.gameId, positionResult.positions, positionResult.changes);
+        }
+      } catch (socketError) {
+        console.error('Failed to emit WebSocket events after score creation:', socketError);
+        // Не блокируем основную операцию из-за ошибки WebSocket
+      }
+
       return result;
     } catch (error) {
       await transaction.rollback();
@@ -174,14 +199,46 @@ export class ScoreService {
       await transaction.commit();
 
       // Пересчитываем позиции команд в игре
+      let positionResult;
       try {
-        await this.positionService.recalculateGamePositions(score.gameId);
+        positionResult = await this.positionService.recalculateGamePositions(score.gameId);
       } catch (positionError) {
         console.error('Failed to recalculate positions after score update:', positionError);
         // Не блокируем основную операцию из-за ошибки пересчета позиций
       }
 
-      return this.getScoreById(scoreId);
+      const result = await this.getScoreById(scoreId);
+      if (!result) {
+        throw new Error('Ошибка при получении обновленной записи о баллах');
+      }
+
+      // Отправляем WebSocket события
+      try {
+        const socketService = getSocketService();
+
+        // Получаем информацию о команде
+        const team = await Team.findByPk(score.teamId);
+        if (team) {
+          // Отправляем обновление баллов
+          socketService.emitScoreUpdate(score.gameId, {
+            teamId: score.teamId,
+            teamName: team.name,
+            roundId: score.roundId,
+            points: newPoints,
+            totalPoints: result.totalPoints
+          });
+        }
+
+        // Отправляем обновление позиций, если пересчет прошел успешно
+        if (positionResult) {
+          socketService.emitPositionsUpdate(score.gameId, positionResult.positions, positionResult.changes);
+        }
+      } catch (socketError) {
+        console.error('Failed to emit WebSocket events after score update:', socketError);
+        // Не блокируем основную операцию из-за ошибки WebSocket
+      }
+
+      return result;
     } catch (error) {
       await transaction.rollback();
       throw error;
@@ -435,6 +492,24 @@ export class ScoreService {
 
       await transaction.commit();
 
+      // Отправляем WebSocket события для массового ввода
+      try {
+        const socketService = getSocketService();
+
+        // Отправляем обновление позиций для игры
+        if (results.length > 0) {
+          const gameId = bulkData.gameId;
+          const positionResult = await this.positionService.recalculateGamePositions(gameId);
+
+          if (positionResult) {
+            socketService.emitPositionsUpdate(gameId, positionResult.positions, positionResult.changes);
+          }
+        }
+      } catch (socketError) {
+        console.error('Failed to emit WebSocket events after bulk score creation:', socketError);
+        // Не блокируем основную операцию из-за ошибки WebSocket
+      }
+
       return {
         success: true,
         created: results.length,
@@ -479,8 +554,9 @@ export class ScoreService {
       await transaction.commit();
 
       // Пересчитываем позиции команд в игре
+      let positionResult;
       try {
-        await this.positionService.recalculateGamePositions(score.gameId);
+        positionResult = await this.positionService.recalculateGamePositions(score.gameId);
       } catch (positionError) {
         console.error('Failed to recalculate positions after score correction:', positionError);
         // Не блокируем основную операцию из-за ошибки пересчета позиций
@@ -490,6 +566,44 @@ export class ScoreService {
       if (!result) {
         throw new Error('Ошибка при получении исправленной записи о баллах');
       }
+
+      // Отправляем WebSocket события
+      try {
+        const socketService = getSocketService();
+
+        // Получаем информацию о команде
+        const team = await Team.findByPk(score.teamId);
+        if (team) {
+          // Отправляем коррекцию баллов
+          socketService.emitScoreCorrection(score.gameId, {
+            scoreId: correctionData.scoreId,
+            teamId: score.teamId,
+            teamName: team.name,
+            oldPoints: score.points || 0,
+            newPoints: correctionData.newPoints,
+            reason: correctionData.reason,
+            correctedBy: String(correctionData.correctedBy || 'Система')
+          });
+
+          // Отправляем обновление баллов
+          socketService.emitScoreUpdate(score.gameId, {
+            teamId: score.teamId,
+            teamName: team.name,
+            roundId: score.roundId,
+            points: correctionData.newPoints,
+            totalPoints: result.totalPoints
+          });
+        }
+
+        // Отправляем обновление позиций, если пересчет прошел успешно
+        if (positionResult) {
+          socketService.emitPositionsUpdate(score.gameId, positionResult.positions, positionResult.changes);
+        }
+      } catch (socketError) {
+        console.error('Failed to emit WebSocket events after score correction:', socketError);
+        // Не блокируем основную операцию из-за ошибки WebSocket
+      }
+
       return result;
     } catch (error) {
       await transaction.rollback();

@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import { GamesPage } from './pages/GamesPage';
 import { GameTeamsPage } from './pages/GameTeamsPage';
 import LoginPage from './pages/LoginPage';
+import PublicScoreboardPage from './pages/PublicScoreboardPage';
 import { ScoreboardPage } from './pages/ScoreboardPage';
 import { ScoreInputPage } from './pages/ScoreInputPage';
 import './styles/auth.css';
@@ -31,6 +32,12 @@ const App: React.FC = () => {
                   <LoginPage />
                 </WithoutAuth>
               }
+            />
+
+            {/* Публичное табло без аутентификации */}
+            <Route
+              path="/public/scoreboard/:gameId"
+              element={<PublicScoreboardPage />}
             />
 
             {/* Защищенные роуты */}

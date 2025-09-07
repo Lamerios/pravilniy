@@ -1,0 +1,79 @@
+/* Кнопка полноэкранного режима */
+.fullscreen-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.fullscreen-toggle:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: #667eea;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.fullscreen-toggle.active {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.fullscreen-toggle svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .fullscreen-toggle {
+    top: 15px;
+    right: 15px;
+    padding: 10px;
+  }
+
+  .fullscreen-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Большие экраны */
+@media (min-width: 1920px) {
+  .fullscreen-toggle {
+    top: 30px;
+    right: 30px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .fullscreen-toggle svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Очень большие экраны */
+@media (min-width: 3840px) {
+  .fullscreen-toggle {
+    top: 40px;
+    right: 40px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .fullscreen-toggle svg {
+    width: 32px;
+    height: 32px;
+  }
+}

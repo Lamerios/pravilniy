@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 export declare class GameController {
     private gameService;
+    private positionService;
     constructor();
     getGames: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getGameById: (req: Request, res: Response, next: import("express").NextFunction) => void;
@@ -16,5 +17,7 @@ export declare class GameController {
     addTeamsToGame: (req: Request, res: Response, next: import("express").NextFunction) => void;
     removeTeamsFromGame: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getGameTeams: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getGameLeaderboard: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    recalculateGamePositions: (req: Request, res: Response, next: import("express").NextFunction) => void;
 }
 //# sourceMappingURL=game.controller.d.ts.map

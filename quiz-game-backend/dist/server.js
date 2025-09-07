@@ -1,52 +1,87 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QuizGameServer = void 0;
+exports.socketService = exports.QuizGameServer = void 0;
+exports.createServerWithSocket = createServerWithSocket;
+exports.getSocketService = getSocketService;
 const http_1 = require("http");
 const app_1 = require("./app");
-const config_1 = require("./config/config");
-const database_1 = require("./config/database");
+const socket_server_1 = require("./socket/socket.server");
+const logger_1 = require("./utils/logger");
 class QuizGameServer {
-    app = (0, app_1.createApp)();
-    server;
+    httpServer;
+    socketService;
     port;
     constructor() {
-        this.port = config_1.config.server.port;
-        this.server = (0, http_1.createServer)(this.app);
+        this.port = parseInt(process.env['PORT'] || '5000', 10);
     }
     async start() {
         try {
-            await (0, database_1.connectDatabase)();
-            this.server.listen(this.port, () => {
-                console.log(`🚀 Server is running on http://${config_1.config.server.host}:${this.port}`);
-                console.log(`🌍 Environment: ${config_1.config.server.env}`);
-                console.log(`📊 Database: ${config_1.config.db.host}:${config_1.config.db.port}/${config_1.config.db.name}`);
+            const app = (0, app_1.createApp)();
+            this.httpServer = (0, http_1.createServer)(app);
+            this.socketService = new socket_server_1.SocketService(this.httpServer);
+            this.httpServer.listen(this.port, () => {
+                logger_1.logger.info(`🚀 Quiz Game Backend started successfully! Port: ${this.port}, Environment: ${process.env['NODE_ENV'] || 'development'}, SocketIO: true`);
             });
-            process.on('SIGTERM', () => this.shutdown());
-            process.on('SIGINT', () => this.shutdown());
+            this.httpServer.on('error', (error) => {
+                if (error.syscall !== 'listen') {
+                    throw error;
+                }
+                const bind = typeof this.port === 'string' ? 'Pipe ' + this.port : 'Port ' + this.port;
+                switch (error.code) {
+                    case 'EACCES':
+                        logger_1.logger.error(`${bind} requires elevated privileges`);
+                        process.exit(1);
+                    case 'EADDRINUSE':
+                        logger_1.logger.error(`${bind} is already in use`);
+                        process.exit(1);
+                    default:
+                        throw error;
+                }
+            });
         }
         catch (error) {
-            console.error('❌ Failed to start server:', error);
-            process.exit(1);
+            logger_1.logger.error(`Failed to start server: ${error.message}`);
+            throw error;
         }
     }
-    async shutdown() {
-        console.log('\n🛑 Shutting down server...');
-        this.server.close(() => {
-            console.log('✅ HTTP server closed');
-            process.exit(0);
+    async stop() {
+        return new Promise((resolve) => {
+            if (this.httpServer) {
+                this.httpServer.close(() => {
+                    logger_1.logger.info('HTTP server stopped');
+                    resolve();
+                });
+            }
+            if (this.socketService) {
+                this.socketService.close();
+                logger_1.logger.info('Socket.IO service stopped');
+            }
         });
-        setTimeout(() => {
-            console.error('❌ Could not close connections in time, forcefully shutting down');
-            process.exit(1);
-        }, 10000);
+    }
+    getSocketService() {
+        if (!this.socketService) {
+            throw new Error('Socket service not initialized');
+        }
+        return this.socketService;
+    }
+    getHttpServer() {
+        if (!this.httpServer) {
+            throw new Error('HTTP server not initialized');
+        }
+        return this.httpServer;
     }
 }
 exports.QuizGameServer = QuizGameServer;
-if (require.main === module) {
-    const server = new QuizGameServer();
-    server.start().catch((error) => {
-        console.error('❌ Server startup failed:', error);
-        process.exit(1);
-    });
+function createServerWithSocket() {
+    const app = (0, app_1.createApp)();
+    const httpServer = (0, http_1.createServer)(app);
+    exports.socketService = new socket_server_1.SocketService(httpServer);
+    return httpServer;
+}
+function getSocketService() {
+    if (!exports.socketService) {
+        throw new Error('Socket service not initialized. Call createServerWithSocket() first.');
+    }
+    return exports.socketService;
 }
 //# sourceMappingURL=server.js.map

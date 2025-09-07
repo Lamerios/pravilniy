@@ -10,7 +10,11 @@ export declare class Score extends Model {
     roundId: number;
     points: number;
     bet?: number;
+    betType?: 'MULTIPLIER' | 'BONUS' | 'FIXED';
+    minBet?: number;
+    maxBet?: number;
     totalPoints: number;
+    position?: number;
     notes?: string;
     enteredBy?: number;
     createdAt: Date;

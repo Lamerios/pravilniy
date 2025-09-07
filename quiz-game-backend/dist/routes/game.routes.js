@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const game_controller_1 = require("../controllers/game.controller");
+const score_controller_1 = require("../controllers/score.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const game_middleware_1 = require("../middleware/game.middleware");
 const router = (0, express_1.Router)();
 const gameController = new game_controller_1.GameController();
+const scoreController = new score_controller_1.ScoreController();
 router.get('/', game_middleware_1.validateGameQuery, gameController.getGames);
 router.get('/search', game_middleware_1.validateGameQuery, gameController.searchGames);
 router.get('/stats', gameController.getGameStats);
@@ -20,5 +22,8 @@ router.post('/:id/resume', auth_middleware_1.authenticateToken, auth_middleware_
 router.post('/:id/teams', auth_middleware_1.authenticateToken, auth_middleware_1.requireActiveUser, auth_middleware_1.requireAdminOrModerator, game_middleware_1.validateAddTeamsToGame, gameController.addTeamsToGame);
 router.delete('/:id/teams', auth_middleware_1.authenticateToken, auth_middleware_1.requireActiveUser, auth_middleware_1.requireAdminOrModerator, game_middleware_1.validateRemoveTeamsFromGame, gameController.removeTeamsFromGame);
 router.get('/:id/teams', auth_middleware_1.authenticateToken, auth_middleware_1.requireActiveUser, gameController.getGameTeams);
+router.get('/:gameId/corrections', auth_middleware_1.authenticateToken, auth_middleware_1.requireActiveUser, auth_middleware_1.requireAdminOrModerator, scoreController.getGameCorrections);
+router.get('/:id/leaderboard', gameController.getGameLeaderboard);
+router.post('/:id/recalculate-positions', auth_middleware_1.authenticateToken, auth_middleware_1.requireActiveUser, auth_middleware_1.requireAdminOrModerator, gameController.recalculateGamePositions);
 exports.default = router;
 //# sourceMappingURL=game.routes.js.map

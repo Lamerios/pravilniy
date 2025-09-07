@@ -1,34 +1,74 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkScoreAccess = exports.validateScoreQuery = exports.validateCorrectScore = exports.validateBulkScore = exports.validateUpdateScore = exports.validateCreateScore = void 0;
+exports.validateRoundScoresParams = exports.validateGameScoresQuery = exports.checkScoreAccess = exports.validateScoreQuery = exports.validateCorrectScore = exports.validateBulkScore = exports.validateUpdateScore = exports.validateCreateScore = void 0;
 const zod_1 = require("zod");
 const createScoreSchema = zod_1.z.object({
     gameId: zod_1.z.number().int().positive('ID игры должен быть положительным числом'),
     teamId: zod_1.z.number().int().positive('ID команды должен быть положительным числом'),
     roundId: zod_1.z.number().int().positive('ID раунда должен быть положительным числом'),
-    points: zod_1.z.number().int().min(0, 'Баллы не могут быть отрицательными'),
-    bet: zod_1.z.number().int().min(0, 'Ставка не может быть отрицательной').optional(),
+    points: zod_1.z.number().int('Баллы должны быть целым числом'),
+    bet: zod_1.z.number().min(0, 'Ставка не может быть отрицательной').optional(),
+    betType: zod_1.z.enum(['MULTIPLIER', 'BONUS', 'FIXED']).optional(),
+    minBet: zod_1.z.number().min(0, 'Минимальная ставка не может быть отрицательной').optional(),
+    maxBet: zod_1.z.number().min(0, 'Максимальная ставка не может быть отрицательной').optional(),
     notes: zod_1.z.string().max(500, 'Заметки не могут превышать 500 символов').optional()
+}).refine(data => {
+    if (data.minBet !== undefined && data.maxBet !== undefined) {
+        return data.minBet <= data.maxBet;
+    }
+    return true;
+}, {
+    message: 'Минимальная ставка должна быть меньше или равна максимальной'
+}).refine(data => {
+    if (data.bet !== undefined && data.betType) {
+        switch (data.betType) {
+            case 'MULTIPLIER':
+                return data.bet >= 0.1 && data.bet <= 10;
+            case 'BONUS':
+                return data.bet >= -100 && data.bet <= 100;
+            case 'FIXED':
+                return data.bet >= 0 && data.bet <= 1000;
+            default:
+                return true;
+        }
+    }
+    return true;
+}, {
+    message: 'Ставка не соответствует выбранному типу',
+    path: ['bet']
 });
 const updateScoreSchema = zod_1.z.object({
-    points: zod_1.z.number().int().min(0, 'Баллы не могут быть отрицательными').optional(),
-    bet: zod_1.z.number().int().min(0, 'Ставка не может быть отрицательной').optional(),
+    points: zod_1.z.number().int('Баллы должны быть целым числом').optional(),
+    bet: zod_1.z.number().min(0, 'Ставка не может быть отрицательной').optional(),
+    betType: zod_1.z.enum(['MULTIPLIER', 'BONUS', 'FIXED']).optional(),
+    minBet: zod_1.z.number().min(0, 'Минимальная ставка не может быть отрицательной').optional(),
+    maxBet: zod_1.z.number().min(0, 'Максимальная ставка не может быть отрицательной').optional(),
     notes: zod_1.z.string().max(500, 'Заметки не могут превышать 500 символов').optional()
 }).refine(data => Object.keys(data).length > 0, {
     message: 'Необходимо указать хотя бы одно поле для обновления'
+}).refine(data => {
+    if (data.minBet !== undefined && data.maxBet !== undefined) {
+        return data.minBet <= data.maxBet;
+    }
+    return true;
+}, {
+    message: 'Минимальная ставка должна быть меньше или равна максимальной'
 });
 const bulkScoreSchema = zod_1.z.object({
     gameId: zod_1.z.number().int().positive('ID игры должен быть положительным числом'),
     roundId: zod_1.z.number().int().positive('ID раунда должен быть положительным числом'),
     scores: zod_1.z.array(zod_1.z.object({
         teamId: zod_1.z.number().int().positive('ID команды должен быть положительным числом'),
-        points: zod_1.z.number().int().min(0, 'Баллы не могут быть отрицательными'),
-        bet: zod_1.z.number().int().min(0, 'Ставка не может быть отрицательной').optional(),
+        points: zod_1.z.number().int('Баллы должны быть целым числом'),
+        bet: zod_1.z.number().min(0, 'Ставка не может быть отрицательной').optional(),
+        betType: zod_1.z.enum(['MULTIPLIER', 'BONUS', 'FIXED']).optional(),
+        minBet: zod_1.z.number().min(0, 'Минимальная ставка не может быть отрицательной').optional(),
+        maxBet: zod_1.z.number().min(0, 'Максимальная ставка не может быть отрицательной').optional(),
         notes: zod_1.z.string().max(500, 'Заметки не могут превышать 500 символов').optional()
     })).min(1, 'Необходимо указать хотя бы одну команду')
 });
 const correctScoreSchema = zod_1.z.object({
-    newPoints: zod_1.z.number().int().min(0, 'Баллы не могут быть отрицательными'),
+    newPoints: zod_1.z.number().int('Новые баллы должны быть целым числом'),
     reason: zod_1.z.string().min(1, 'Необходимо указать причину исправления').max(500, 'Причина не может превышать 500 символов')
 });
 const scoreQuerySchema = zod_1.z.object({
@@ -225,4 +265,73 @@ const checkScoreAccess = (req, res, next) => {
     }
 };
 exports.checkScoreAccess = checkScoreAccess;
+const validateGameScoresQuery = (req, res, next) => {
+    try {
+        const gameId = parseInt(req.params['gameId']);
+        if (isNaN(gameId) || gameId <= 0) {
+            res.status(400).json({
+                success: false,
+                message: 'ID игры должен быть положительным числом',
+                errors: [{ field: 'gameId', message: 'Неверный формат ID игры' }]
+            });
+            return;
+        }
+        const querySchema = zod_1.z.object({
+            teamId: zod_1.z.string().transform(val => parseInt(val)).refine(val => !isNaN(val) && val > 0).optional(),
+            roundId: zod_1.z.string().transform(val => parseInt(val)).refine(val => !isNaN(val) && val > 0).optional(),
+            page: zod_1.z.string().transform(val => parseInt(val)).refine(val => !isNaN(val) && val > 0).optional(),
+            limit: zod_1.z.string().transform(val => parseInt(val)).refine(val => !isNaN(val) && val > 0 && val <= 100).optional(),
+            sortBy: zod_1.z.enum(['createdAt', 'updatedAt', 'points', 'totalPoints', 'teamId', 'roundId']).optional(),
+            sortOrder: zod_1.z.enum(['ASC', 'DESC']).optional()
+        });
+        querySchema.parse(req.query);
+        next();
+    }
+    catch (error) {
+        if (error instanceof zod_1.z.ZodError) {
+            res.status(400).json({
+                success: false,
+                message: 'Ошибка валидации параметров запроса',
+                errors: error.issues.map((err) => ({
+                    field: err.path.join('.'),
+                    message: err.message
+                }))
+            });
+            return;
+        }
+        res.status(500).json({
+            success: false,
+            message: 'Ошибка валидации'
+        });
+    }
+};
+exports.validateGameScoresQuery = validateGameScoresQuery;
+const validateRoundScoresParams = (req, res, next) => {
+    try {
+        const gameId = parseInt(req.params['gameId']);
+        const roundId = parseInt(req.params['roundId']);
+        if (isNaN(gameId) || gameId <= 0) {
+            res.status(400).json({
+                success: false,
+                message: 'ID игры должен быть положительным числом'
+            });
+            return;
+        }
+        if (isNaN(roundId) || roundId <= 0) {
+            res.status(400).json({
+                success: false,
+                message: 'ID раунда должен быть положительным числом'
+            });
+            return;
+        }
+        next();
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Ошибка валидации параметров'
+        });
+    }
+};
+exports.validateRoundScoresParams = validateRoundScoresParams;
 //# sourceMappingURL=score.middleware.js.map
