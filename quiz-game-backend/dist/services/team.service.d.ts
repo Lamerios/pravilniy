@@ -10,6 +10,18 @@ export declare class TeamService {
     getTeamStats(organizationId?: number): Promise<TeamStats>;
     getTeamsByOrganization(organizationId: string, isActive?: boolean): Promise<Team[]>;
     isTableNumberUnique(organizationId: number, tableNumber: number, excludeId?: string): Promise<boolean>;
+    checkTableNumber(tableNumber: number, organizationId: number, excludeTeamId?: string): Promise<{
+        isUnique: boolean;
+        existingTeam?: Team | undefined;
+    }>;
+    getNextAvailableTableNumber(organizationId: number): Promise<number>;
+    validateTableNumbers(tableNumbers: number[], organizationId: number): Promise<{
+        valid: boolean;
+        conflicts: Array<{
+            tableNumber: number;
+            team: Team;
+        }>;
+    }>;
 }
 export declare const teamService: TeamService;
 //# sourceMappingURL=team.service.d.ts.map

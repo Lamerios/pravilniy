@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupAssociations = exports.ScoreType = exports.RoundType = exports.RoundStatus = exports.GameStatus = exports.Score = exports.User = exports.Team = exports.Round = exports.Organization = exports.Game = exports.GameTemplate = void 0;
+exports.setupAssociations = exports.RoundType = exports.RoundStatus = exports.GameStatus = exports.Score = exports.User = exports.Team = exports.Round = exports.Organization = exports.Game = exports.GameTemplate = void 0;
 var game_template_model_1 = require("./game-template.model");
 Object.defineProperty(exports, "GameTemplate", { enumerable: true, get: function () { return game_template_model_1.GameTemplate; } });
 var game_model_1 = require("./game.model");
@@ -20,8 +20,6 @@ Object.defineProperty(exports, "GameStatus", { enumerable: true, get: function (
 var round_model_2 = require("./round.model");
 Object.defineProperty(exports, "RoundStatus", { enumerable: true, get: function () { return round_model_2.RoundStatus; } });
 Object.defineProperty(exports, "RoundType", { enumerable: true, get: function () { return round_model_2.RoundType; } });
-var score_model_2 = require("./score.model");
-Object.defineProperty(exports, "ScoreType", { enumerable: true, get: function () { return score_model_2.ScoreType; } });
 var associations_1 = require("./associations");
 Object.defineProperty(exports, "setupAssociations", { enumerable: true, get: function () { return associations_1.setupAssociations; } });
 //# sourceMappingURL=index.js.map

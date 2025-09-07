@@ -11,6 +11,8 @@ router.get('/', team_middleware_1.validateTeamQuery, team_controller_1.teamContr
 router.get('/search', team_controller_1.teamController.searchTeams);
 router.get('/stats', team_controller_1.teamController.getTeamStats);
 router.get('/check-table/:tableNumber', team_controller_1.teamController.checkTableNumber);
+router.get('/next-table-number', team_controller_1.teamController.getNextTableNumber);
+router.post('/validate-table-numbers', team_controller_1.teamController.validateTableNumbers);
 router.get('/organization/:organizationId', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), team_controller_1.teamController.getTeamsByOrganization);
 router.get('/:id', team_controller_1.teamController.getTeamById);
 router.post('/', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), team_middleware_1.validateCreateTeam, team_controller_1.teamController.createTeam);

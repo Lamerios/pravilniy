@@ -11,9 +11,9 @@ export interface TeamMember {
 }
 
 export interface ContactInfo {
-  email?: string;
-  phone?: string;
-  address?: string;
+  email?: string | undefined;
+  phone?: string | undefined;
+  address?: string | undefined;
   [key: string]: any;
 }
 
@@ -43,31 +43,31 @@ export interface Team {
 
 export interface CreateTeamDto {
   name: string;
-  description?: string;
-  tableNumber?: number;
-  logoUrl?: string;
-  members?: TeamMember[];
-  contactInfo?: ContactInfo;
+  description?: string | undefined;
+  tableNumber?: number | undefined;
+  logoUrl?: string | undefined;
+  members?: TeamMember[] | undefined;
+  contactInfo?: ContactInfo | undefined;
 }
 
 export interface UpdateTeamDto {
-  name?: string;
-  description?: string;
-  tableNumber?: number;
-  logoUrl?: string;
-  members?: TeamMember[];
-  contactInfo?: ContactInfo;
-  isActive?: boolean;
+  name?: string | undefined;
+  description?: string | undefined;
+  tableNumber?: number | undefined;
+  logoUrl?: string | undefined;
+  members?: TeamMember[] | undefined;
+  contactInfo?: ContactInfo | undefined;
+  isActive?: boolean | undefined;
 }
 
 export interface TeamQueryDto {
-  page?: number;
-  limit?: number;
-  search?: string;
-  sortBy?: string;
-  sortOrder?: 'ASC' | 'DESC';
-  isActive?: boolean;
-  organizationId?: number;
+  page?: number | undefined;
+  limit?: number | undefined;
+  search?: string | undefined;
+  sortBy?: string | undefined;
+  sortOrder?: 'ASC' | 'DESC' | undefined;
+  isActive?: boolean | undefined;
+  organizationId?: number | undefined;
 }
 
 export interface TeamListResult {
@@ -106,14 +106,23 @@ export interface TeamSearchResult {
 }
 
 export interface TeamFilters {
-  search?: string;
-  isActive?: boolean;
-  sortBy?: string;
-  sortOrder?: 'ASC' | 'DESC';
+  search?: string | undefined;
+  isActive?: boolean | undefined;
+  sortBy?: string | undefined;
+  sortOrder?: 'ASC' | 'DESC' | undefined;
 }
 
 export interface TeamSelection {
   teamId: string;
   team: Team;
   selected: boolean;
+}
+
+export interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNext?: boolean;
+  hasPrev?: boolean;
 }

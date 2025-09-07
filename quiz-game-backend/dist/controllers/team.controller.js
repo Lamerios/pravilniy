@@ -63,6 +63,16 @@ class TeamController {
                 });
                 return;
             }
+            if (teamData.tableNumber) {
+                const isUnique = await team_service_1.teamService.isTableNumberUnique(organizationId, teamData.tableNumber);
+                if (!isUnique) {
+                    res.status(400).json({
+                        success: false,
+                        message: `Номер стола ${teamData.tableNumber} уже используется в вашей организации`
+                    });
+                    return;
+                }
+            }
             const team = await team_service_1.teamService.createTeam(teamData, organizationId);
             res.status(201).json({
                 success: true,
@@ -81,6 +91,24 @@ class TeamController {
         try {
             const { id } = req.params;
             const teamData = req.body;
+            const organizationId = req.user?.organizationId;
+            if (!organizationId) {
+                res.status(400).json({
+                    success: false,
+                    message: 'ID организации не указан'
+                });
+                return;
+            }
+            if (teamData.tableNumber) {
+                const isUnique = await team_service_1.teamService.isTableNumberUnique(organizationId, teamData.tableNumber, id);
+                if (!isUnique) {
+                    res.status(400).json({
+                        success: false,
+                        message: `Номер стола ${teamData.tableNumber} уже используется в вашей организации`
+                    });
+                    return;
+                }
+            }
             const team = await team_service_1.teamService.updateTeam(id, teamData);
             if (!team) {
                 res.status(404).json({
@@ -122,6 +150,62 @@ class TeamController {
             res.status(500).json({
                 success: false,
                 message: error instanceof Error ? error.message : 'Ошибка удаления команды'
+            });
+        }
+    }
+    async getNextTableNumber(req, res) {
+        try {
+            const organizationId = req.user?.organizationId;
+            if (!organizationId) {
+                res.status(400).json({
+                    success: false,
+                    message: 'ID организации не указан'
+                });
+                return;
+            }
+            const nextNumber = await team_service_1.teamService.getNextAvailableTableNumber(organizationId);
+            res.json({
+                success: true,
+                data: { nextTableNumber: nextNumber },
+                message: 'Следующий номер стола получен'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка получения номера стола'
+            });
+        }
+    }
+    async validateTableNumbers(req, res) {
+        try {
+            const { tableNumbers } = req.body;
+            const organizationId = req.user?.organizationId;
+            if (!organizationId) {
+                res.status(400).json({
+                    success: false,
+                    message: 'ID организации не указан'
+                });
+                return;
+            }
+            if (!Array.isArray(tableNumbers)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Номера столов должны быть переданы в виде массива'
+                });
+                return;
+            }
+            const result = await team_service_1.teamService.validateTableNumbers(tableNumbers, organizationId);
+            res.json({
+                success: true,
+                data: result,
+                message: result.valid ? 'Все номера столов свободны' : 'Найдены конфликты номеров столов'
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Ошибка валидации номеров столов'
             });
         }
     }

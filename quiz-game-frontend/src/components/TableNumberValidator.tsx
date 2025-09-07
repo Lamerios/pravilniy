@@ -52,7 +52,7 @@ export const TableNumberValidator: React.FC<TableNumberValidatorProps> = ({
     setValidation(prev => ({ ...prev, isChecking: true }));
 
     try {
-      const isUnique = await teamService.checkTableNumber(number, user.organizationId, excludeTeamId);
+      const isUnique = await teamService.checkTableNumber(number, parseInt(user.organizationId), excludeTeamId);
 
       const newValidation: ValidationState = {
         isValid: isUnique,
@@ -151,7 +151,7 @@ export const useTableNumberValidation = (
     setValidation(prev => ({ ...prev, isChecking: true }));
 
     try {
-      const isUnique = await teamService.checkTableNumber(number, user.organizationId, excludeTeamId);
+      const isUnique = await teamService.checkTableNumber(number, parseInt(user.organizationId), excludeTeamId);
 
       setValidation({
         isValid: isUnique,

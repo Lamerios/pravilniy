@@ -109,6 +109,39 @@ class GameService {
   }
 
   /**
+   * Получить команды игры
+   */
+  async getGameTeams(gameId: string): Promise<any[]> {
+    return this.request<any[]>(`/games/${gameId}/teams`);
+  }
+
+  /**
+   * Добавить команды в игру
+   */
+  async addTeamsToGame(gameId: string, teamIds: number[]): Promise<void> {
+    return this.request<void>(`/games/${gameId}/teams`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ teamIds }),
+    });
+  }
+
+  /**
+   * Удалить команды из игры
+   */
+  async removeTeamsFromGame(gameId: string, teamIds: number[]): Promise<void> {
+    return this.request<void>(`/games/${gameId}/teams`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ teamIds }),
+    });
+  }
+
+  /**
    * Получить статистику игр
    */
   async getGameStats(): Promise<{ success: boolean; data: GameStats; message: string }> {

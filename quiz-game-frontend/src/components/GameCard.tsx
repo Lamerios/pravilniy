@@ -184,6 +184,24 @@ export function GameCard({
             </button>
           )}
 
+          {canEdit && (
+            <button
+              onClick={() => window.location.href = `/games/${game.id}/scores`}
+              disabled={loading}
+              className="control-btn scores-btn"
+            >
+              🎯 Баллы
+            </button>
+          )}
+
+          <button
+            onClick={() => window.location.href = `/games/${game.id}/scoreboard`}
+            disabled={loading}
+            className="control-btn scoreboard-btn"
+          >
+            📊 Табло
+          </button>
+
           {canStart && onStart && (
             <button
               onClick={() => onStart(game)}

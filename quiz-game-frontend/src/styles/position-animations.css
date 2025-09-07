@@ -1,0 +1,263 @@
+/**
+ * Анимации для изменения позиций команд
+ */
+
+/* Основные анимации позиций */
+.position-change {
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.position-change--up {
+  animation: positionUp 0.8s ease-out;
+}
+
+.position-change--down {
+  animation: positionDown 0.8s ease-out;
+}
+
+.position-change--new {
+  animation: positionNew 0.6s ease-out;
+}
+
+.position-change--same {
+  /* Плавный переход без анимации */
+  transition: background-color 0.3s ease;
+}
+
+/* Анимация подъема в рейтинге */
+@keyframes positionUp {
+  0% {
+    transform: translateY(20px);
+    background-color: rgba(34, 197, 94, 0.1);
+    box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    transform: translateY(-5px);
+    background-color: rgba(34, 197, 94, 0.2);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  }
+  100% {
+    transform: translateY(0);
+    background-color: rgba(34, 197, 94, 0.05);
+    box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+/* Анимация падения в рейтинге */
+@keyframes positionDown {
+  0% {
+    transform: translateY(-20px);
+    background-color: rgba(239, 68, 68, 0.1);
+    box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    transform: translateY(5px);
+    background-color: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+  100% {
+    transform: translateY(0);
+    background-color: rgba(239, 68, 68, 0.05);
+    box-shadow: 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* Анимация для новой команды */
+@keyframes positionNew {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateX(-20px);
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) translateX(0);
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+    background-color: rgba(59, 130, 246, 0.05);
+  }
+}
+
+/* Индикаторы изменения позиции */
+.position-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 12px;
+  animation: fadeInScale 0.4s ease-out;
+}
+
+.position-indicator--up {
+  color: #16a34a;
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.position-indicator--down {
+  color: #dc2626;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.position-indicator--new {
+  color: #2563eb;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.position-indicator__arrow {
+  margin-right: 2px;
+  font-size: 0.8em;
+}
+
+/* Анимация появления индикатора */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Позиционные номера с выделением */
+.position-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.position-number--1 {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #92400e;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.position-number--2 {
+  background: linear-gradient(135deg, #c0c0c0, #e5e7eb);
+  color: #374151;
+  box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
+}
+
+.position-number--3 {
+  background: linear-gradient(135deg, #cd7f32, #f59e0b);
+  color: #92400e;
+  box-shadow: 0 2px 8px rgba(205, 127, 50, 0.3);
+}
+
+.position-number--default {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Эффект пульсации для изменившихся позиций */
+.position-pulse {
+  animation: positionPulse 1s ease-in-out;
+}
+
+@keyframes positionPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Hover эффекты */
+.leaderboard-row:hover .position-number {
+  transform: scale(1.1);
+}
+
+.leaderboard-row:hover .position-indicator {
+  transform: scale(1.05);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .position-number {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+
+  .position-indicator {
+    font-size: 0.7rem;
+    padding: 1px 4px;
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  .position-change--up {
+    animation: positionUpDark 0.8s ease-out;
+  }
+
+  .position-change--down {
+    animation: positionDownDark 0.8s ease-out;
+  }
+
+  .position-change--new {
+    animation: positionNewDark 0.6s ease-out;
+  }
+
+  @keyframes positionUpDark {
+    0% {
+      transform: translateY(20px);
+      background-color: rgba(34, 197, 94, 0.15);
+    }
+    50% {
+      transform: translateY(-5px);
+      background-color: rgba(34, 197, 94, 0.25);
+    }
+    100% {
+      transform: translateY(0);
+      background-color: rgba(34, 197, 94, 0.08);
+    }
+  }
+
+  @keyframes positionDownDark {
+    0% {
+      transform: translateY(-20px);
+      background-color: rgba(239, 68, 68, 0.15);
+    }
+    50% {
+      transform: translateY(5px);
+      background-color: rgba(239, 68, 68, 0.25);
+    }
+    100% {
+      transform: translateY(0);
+      background-color: rgba(239, 68, 68, 0.08);
+    }
+  }
+
+  @keyframes positionNewDark {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) translateX(-20px);
+      background-color: rgba(59, 130, 246, 0.15);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05) translateX(0);
+      background-color: rgba(59, 130, 246, 0.25);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+      background-color: rgba(59, 130, 246, 0.08);
+    }
+  }
+}

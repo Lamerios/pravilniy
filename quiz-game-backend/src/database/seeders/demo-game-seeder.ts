@@ -2,7 +2,7 @@ import { GameTemplate } from '../../models/game-template.model';
 import { Game, GameStatus } from '../../models/game.model';
 import { Organization } from '../../models/organization.model';
 import { Round, RoundStatus, RoundType } from '../../models/round.model';
-import { Score, ScoreType } from '../../models/score.model';
+import { Score } from '../../models/score.model';
 import { Team } from '../../models/team.model';
 import { User } from '../../models/user.model';
 
@@ -284,43 +284,28 @@ export async function seedDemoGame(): Promise<void> {
         gameId: demoGame.id,
         teamId: teams[0]!.id,
         roundId: rounds[0]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 25,
-        basePoints: 25,
-        multiplier: 1.0,
-        roundNumber: 1,
-        reason: 'Отличные знания в разминочном раунде',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 6600000)
+        totalPoints: 25,
+        notes: 'Отличные знания в разминочном раунде',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[0]!.id,
         roundId: rounds[1]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 35,
-        basePoints: 35,
-        multiplier: 1.0,
-        roundNumber: 2,
-        reason: 'Лучший результат в основном раунде',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 5400000)
+        totalPoints: 35,
+        notes: 'Лучший результат в основном раунде',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[0]!.id,
         roundId: rounds[2]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 25,
-        basePoints: 25,
-        multiplier: 1.0,
-        roundNumber: 3,
-        reason: 'Стабильный результат в финале',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
+        totalPoints: 25,
+        notes: 'Стабильный результат в финале',
+        enteredBy: adminUser.id
       },
 
       // Команда "Эрудиты" - 2 место (78 баллов)
@@ -328,43 +313,28 @@ export async function seedDemoGame(): Promise<void> {
         gameId: demoGame.id,
         teamId: teams[1]!.id,
         roundId: rounds[0]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 22,
-        basePoints: 22,
-        multiplier: 1.0,
-        roundNumber: 1,
-        reason: 'Хороший старт',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 6600000)
+        totalPoints: 22,
+        notes: 'Хороший старт',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[1]!.id,
         roundId: rounds[1]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 30,
-        basePoints: 30,
-        multiplier: 1.0,
-        roundNumber: 2,
-        reason: 'Сильный результат в основном раунде',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 5400000)
+        totalPoints: 30,
+        notes: 'Сильный результат в основном раунде',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[1]!.id,
         roundId: rounds[2]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 26,
-        basePoints: 26,
-        multiplier: 1.0,
-        roundNumber: 3,
-        reason: 'Хороший финиш',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
+        totalPoints: 26,
+        notes: 'Хороший финиш',
+        enteredBy: adminUser.id
       },
 
       // Команда "Мудрецы" - 3 место (72 балла)
@@ -372,43 +342,28 @@ export async function seedDemoGame(): Promise<void> {
         gameId: demoGame.id,
         teamId: teams[2]!.id,
         roundId: rounds[0]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 20,
-        basePoints: 20,
-        multiplier: 1.0,
-        roundNumber: 1,
-        reason: 'Неспешный старт',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 6600000)
+        totalPoints: 20,
+        notes: 'Неспешный старт',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[2]!.id,
         roundId: rounds[1]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 28,
-        basePoints: 28,
-        multiplier: 1.0,
-        roundNumber: 2,
-        reason: 'Опыт дает о себе знать',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 5400000)
+        totalPoints: 28,
+        notes: 'Опыт дает о себе знать',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[2]!.id,
         roundId: rounds[2]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 24,
-        basePoints: 24,
-        multiplier: 1.0,
-        roundNumber: 3,
-        reason: 'Достойное завершение',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
+        totalPoints: 24,
+        notes: 'Достойное завершение',
+        enteredBy: adminUser.id
       },
 
       // Команда "Новички" - 4 место (65 баллов)
@@ -416,84 +371,28 @@ export async function seedDemoGame(): Promise<void> {
         gameId: demoGame.id,
         teamId: teams[3]!.id,
         roundId: rounds[0]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 18,
-        basePoints: 18,
-        multiplier: 1.0,
-        roundNumber: 1,
-        reason: 'Первый опыт',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 6600000)
+        totalPoints: 18,
+        notes: 'Первый опыт',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[3]!.id,
         roundId: rounds[1]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 22,
-        basePoints: 22,
-        multiplier: 1.0,
-        roundNumber: 2,
-        reason: 'Прогресс налицо',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 5400000)
+        totalPoints: 22,
+        notes: 'Прогресс налицо',
+        enteredBy: adminUser.id
       },
       {
         gameId: demoGame.id,
         teamId: teams[3]!.id,
         roundId: rounds[2]!.id,
-        scoreType: ScoreType.ROUND_SCORE,
         points: 25,
-        basePoints: 25,
-        multiplier: 1.0,
-        roundNumber: 3,
-        reason: 'Сильное завершение!',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
-      },
-
-      // Бонусные очки за активность
-      {
-        gameId: demoGame.id,
-        teamId: teams[0]!.id,
-        scoreType: ScoreType.BONUS,
-        points: 5,
-        basePoints: 5,
-        multiplier: 1.0,
-        reason: 'Бонус за лидерство',
-        description: 'Дополнительные очки за лучший результат',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
-      },
-      {
-        gameId: demoGame.id,
-        teamId: teams[1]!.id,
-        scoreType: ScoreType.BONUS,
-        points: 3,
-        basePoints: 3,
-        multiplier: 1.0,
-        reason: 'Бонус за активность',
-        description: 'Дополнительные очки за активное участие',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
-      },
-      {
-        gameId: demoGame.id,
-        teamId: teams[2]!.id,
-        scoreType: ScoreType.BONUS,
-        points: 2,
-        basePoints: 2,
-        multiplier: 1.0,
-        reason: 'Бонус за опыт',
-        description: 'Дополнительные очки за мудрые ответы',
-        isValid: true,
-        awardedBy: adminUser.id.toString(),
-        awardedAt: new Date(Date.now() - 3600000)
+        totalPoints: 25,
+        notes: 'Сильное завершение!',
+        enteredBy: adminUser.id
       }
     ] as any);
 
@@ -504,7 +403,7 @@ export async function seedDemoGame(): Promise<void> {
     console.log('   👥 Teams: 4 teams with different compositions');
     console.log('   🎯 Rounds: 3 rounds (Разминка, Основной, Финал)');
     console.log('   🏆 Results: Знатоки (85), Эрудиты (78), Мудрецы (72), Новички (65)');
-    console.log('   💯 Scores: Admin entered scores for each team per round + bonuses');
+    console.log('   💯 Scores: Admin entered scores for each team per round');
     console.log('   🎮 Business process: No questions/answers stored - only admin-entered scores');
 
     console.log('🎉 Demo game seeding completed successfully!');

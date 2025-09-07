@@ -405,7 +405,7 @@ export function validateAndSanitizeText(value: string, maxLength?: number): { va
  */
 export function validateCreateTeamForm(data: {
   name: string;
-  tableNumber?: number;
+  tableNumber?: number | undefined;
   members: Array<{ name: string; email?: string; role?: string }>;
 }): Record<string, string> {
   const errors: Record<string, string> = {};
@@ -465,9 +465,9 @@ export function validateCreateTeamForm(data: {
  * Валидация формы обновления команды
  */
 export function validateUpdateTeamForm(data: {
-  name?: string;
-  tableNumber?: number;
-  members?: Array<{ name: string; email?: string; role?: string }>;
+  name?: string | undefined;
+  tableNumber?: number | undefined;
+  members?: Array<{ name: string; email?: string; role?: string }> | undefined;
 }): Record<string, string> {
   const errors: Record<string, string> = {};
 

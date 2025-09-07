@@ -6,10 +6,14 @@ import DashboardPage from './pages/DashboardPage';
 import { GamesPage } from './pages/GamesPage';
 import { GameTeamsPage } from './pages/GameTeamsPage';
 import LoginPage from './pages/LoginPage';
+import { ScoreboardPage } from './pages/ScoreboardPage';
+import { ScoreInputPage } from './pages/ScoreInputPage';
 import './styles/auth.css';
 import './styles/file-upload.css';
 import './styles/forms.css';
 import './styles/game-teams.css';
+import './styles/score-input.css';
+import './styles/scoreboard.css';
 import './styles/team-components.css';
 import './styles/ui-components.css';
 
@@ -53,6 +57,24 @@ const App: React.FC = () => {
               element={
                 <WithAuth>
                   <GameTeamsPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games/:gameId/scores"
+              element={
+                <WithAuth>
+                  <ScoreInputPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games/:gameId/scoreboard"
+              element={
+                <WithAuth>
+                  <ScoreboardPage />
                 </WithAuth>
               }
             />

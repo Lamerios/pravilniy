@@ -12,7 +12,7 @@ export { Score } from './score.model';
 export { GameData, GameSettings, GameStatus, ScoringSystem } from './game.model';
 export { RoundSettings, RoundStatistics, RoundStatus, RoundType } from './round.model';
 // AnswerMetadata удален вместе с Answer моделью
-export { ScoreMetadata, ScoreType } from './score.model';
+// ScoreMetadata, ScoreType не экспортируются из score.model
 export { ContactInfo, TeamMember, TeamStatistics } from './team.model';
 
 // Экспорт ассоциаций

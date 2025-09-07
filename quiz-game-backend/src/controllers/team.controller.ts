@@ -199,47 +199,6 @@ export class TeamController {
     }
   }
 
-  /**
-   * Проверить уникальность номера стола
-   * GET /api/teams/check-table/:tableNumber
-   */
-  async checkTableNumber(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { tableNumber } = req.params;
-      const organizationId = req.user?.organizationId;
-      const excludeId = req.query['excludeId'] as string;
-
-      if (!organizationId) {
-        res.status(400).json({
-          success: false,
-          message: 'ID организации не указан'
-        });
-        return;
-      }
-
-      const tableNum = parseInt(tableNumber);
-      if (isNaN(tableNum)) {
-        res.status(400).json({
-          success: false,
-          message: 'Некорректный номер стола'
-        });
-        return;
-      }
-
-      const result = await teamService.checkTableNumber(tableNum, organizationId, excludeId);
-
-      res.json({
-        success: true,
-        data: result,
-        message: result.isUnique ? 'Номер стола свободен' : 'Номер стола уже используется'
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error instanceof Error ? error.message : 'Ошибка проверки номера стола'
-      });
-    }
-  }
 
   /**
    * Получить следующий доступный номер стола

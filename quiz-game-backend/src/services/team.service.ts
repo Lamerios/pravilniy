@@ -345,7 +345,7 @@ export class TeamService {
     tableNumber: number,
     organizationId: number,
     excludeTeamId?: string
-  ): Promise<{ isUnique: boolean; existingTeam?: Team }> {
+  ): Promise<{ isUnique: boolean; existingTeam?: Team | undefined }> {
     const where: WhereOptions = {
       tableNumber,
       organizationId
@@ -360,7 +360,7 @@ export class TeamService {
 
     return {
       isUnique: !existingTeam,
-      existingTeam: existingTeam || undefined
+      existingTeam: existingTeam ? existingTeam : undefined
     };
   }
 
@@ -372,7 +372,7 @@ export class TeamService {
       where: { organizationId }
     });
 
-    return (maxTableNumber || 0) + 1;
+    return (maxTableNumber as number || 0) + 1;
   }
 
   /**

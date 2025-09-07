@@ -1,134 +1,67 @@
 import { DataTypes, QueryInterface } from 'sequelize';
 
-/**
- * Миграция для создания таблицы scores
- * Создает таблицу для хранения детализированной информации об очках команд
- */
-
-export async function up(queryInterface: QueryInterface): Promise<void> {
+export const up = async (queryInterface: QueryInterface): Promise<void> => {
+  // Создаем таблицу scores
   await queryInterface.createTable('scores', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false,
-      comment: 'Уникальный идентификатор записи очков'
+      autoIncrement: true,
+      allowNull: false
     },
     gameId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'games',
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      comment: 'Ссылка на игровую сессию'
+      onDelete: 'CASCADE'
     },
     teamId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'teams',
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      comment: 'Ссылка на команду'
+      onDelete: 'CASCADE'
     },
     roundId: {
-      type: DataTypes.UUID,
-      allowNull: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'rounds',
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      comment: 'Ссылка на раунд (null для общего счета)'
-    },
-    answerId: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: 'answers',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      comment: 'Ссылка на ответ (если очки за конкретный ответ)'
-    },
-    scoreType: {
-      type: DataTypes.ENUM(
-        'ANSWER', 'BONUS', 'PENALTY', 'TIME_BONUS', 'STREAK_BONUS',
-        'PARTICIPATION', 'MANUAL', 'ADJUSTMENT'
-      ),
-      allowNull: false,
-      comment: 'Тип начисления очков'
+      onDelete: 'CASCADE'
     },
     points: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      comment: 'Количество очков (может быть отрицательным для штрафов)'
+      comment: 'Количество баллов за раунд'
     },
-    basePoints: {
+    bet: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-      comment: 'Базовые очки без бонусов'
-    },
-    bonusPoints: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-      comment: 'Бонусные очки'
-    },
-    multiplier: {
-      type: DataTypes.DECIMAL(5, 2),
-      allowNull: false,
-      defaultValue: 1.0,
-      comment: 'Множитель очков'
-    },
-    reason: {
-      type: DataTypes.STRING(255),
       allowNull: true,
-      comment: 'Причина начисления/снятия очков'
+      comment: 'Ставка команды (если есть)'
     },
-    description: {
+    totalPoints: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      comment: 'Общее количество баллов с учетом ставки'
+    },
+    notes: {
       type: DataTypes.TEXT,
       allowNull: true,
-      comment: 'Подробное описание начисления очков'
+      comment: 'Дополнительные заметки'
     },
-    questionNumber: {
+    enteredBy: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: 'Номер вопроса (если применимо)'
-    },
-    roundNumber: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: 'Номер раунда (для быстрого доступа)'
-    },
-    isValid: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-      comment: 'Флаг валидности записи очков'
-    },
-    isManual: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-      comment: 'Флаг ручного начисления очков'
-    },
-    metadata: {
-      type: DataTypes.JSONB,
-      allowNull: true,
-      defaultValue: {},
-      comment: 'Дополнительные данные начисления в формате JSON'
-    },
-    awardedBy: {
-      type: DataTypes.UUID,
       allowNull: true,
       references: {
         model: 'users',
@@ -136,55 +69,118 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
-      comment: 'Пользователь, начисливший очки (для ручных начислений)'
-    },
-    awardedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-      comment: 'Дата и время начисления очков'
+      comment: 'Пользователь, который ввел баллы'
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
-      comment: 'Дата и время создания записи'
+      defaultValue: DataTypes.NOW
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
-      comment: 'Дата и время последнего обновления записи'
+      defaultValue: DataTypes.NOW
     }
   });
 
-  // Создание индексов
-  await queryInterface.addIndex('scores', ['gameId']);
-  await queryInterface.addIndex('scores', ['teamId']);
-  await queryInterface.addIndex('scores', ['roundId']);
-  await queryInterface.addIndex('scores', ['answerId']);
-  await queryInterface.addIndex('scores', ['scoreType']);
-  await queryInterface.addIndex('scores', ['points']);
-  await queryInterface.addIndex('scores', ['isValid']);
-  await queryInterface.addIndex('scores', ['isManual']);
-  await queryInterface.addIndex('scores', ['awardedBy']);
-  await queryInterface.addIndex('scores', ['awardedAt']);
-  await queryInterface.addIndex('scores', ['createdAt']);
+  // Создаем уникальный индекс для предотвращения дублирования баллов
+  await queryInterface.addIndex('scores', {
+    fields: ['gameId', 'teamId', 'roundId'],
+    unique: true,
+    name: 'unique_game_team_round'
+  });
 
-  // Композитные индексы для производительности
-  await queryInterface.addIndex('scores', ['gameId', 'teamId']);
-  await queryInterface.addIndex('scores', ['teamId', 'roundId']);
-  await queryInterface.addIndex('scores', ['gameId', 'roundId']);
-  await queryInterface.addIndex('scores', ['teamId', 'scoreType']);
-  await queryInterface.addIndex('scores', ['roundNumber', 'questionNumber']);
+  // Создаем индексы для оптимизации запросов
+  await queryInterface.addIndex('scores', {
+    fields: ['gameId'],
+    name: 'idx_scores_game_id'
+  });
 
-  // Индекс для быстрого подсчета очков команды
-  await queryInterface.addIndex('scores', ['teamId', 'isValid', 'points']);
+  await queryInterface.addIndex('scores', {
+    fields: ['teamId'],
+    name: 'idx_scores_team_id'
+  });
 
-  console.log('✅ Migration: scores table created');
-}
+  await queryInterface.addIndex('scores', {
+    fields: ['roundId'],
+    name: 'idx_scores_round_id'
+  });
 
-export async function down(queryInterface: QueryInterface): Promise<void> {
+  await queryInterface.addIndex('scores', {
+    fields: ['createdAt'],
+    name: 'idx_scores_created_at'
+  });
+
+  // Создаем таблицу score_corrections
+  await queryInterface.createTable('score_corrections', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
+    scoreId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'scores',
+        key: 'id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    oldPoints: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      comment: 'Старые баллы'
+    },
+    newPoints: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      comment: 'Новые баллы'
+    },
+    reason: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      comment: 'Причина исправления'
+    },
+    correctedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+      comment: 'Пользователь, который исправил баллы'
+    },
+    correctedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    }
+  });
+
+  // Создаем индексы для таблицы исправлений
+  await queryInterface.addIndex('score_corrections', {
+    fields: ['scoreId'],
+    name: 'idx_score_corrections_score_id'
+  });
+
+  await queryInterface.addIndex('score_corrections', {
+    fields: ['correctedBy'],
+    name: 'idx_score_corrections_corrected_by'
+  });
+
+  await queryInterface.addIndex('score_corrections', {
+    fields: ['correctedAt'],
+    name: 'idx_score_corrections_corrected_at'
+  });
+};
+
+export const down = async (queryInterface: QueryInterface): Promise<void> => {
+  // Удаляем таблицы в обратном порядке
+  await queryInterface.dropTable('score_corrections');
   await queryInterface.dropTable('scores');
-  console.log('✅ Migration rollback: scores table dropped');
-}
+};

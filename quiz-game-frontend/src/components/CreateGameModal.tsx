@@ -18,7 +18,7 @@ interface FormData {
   description: string;
   templateId: string;
   scheduledAt: string;
-  teamIds: string[];
+  teamIds: number[];
   settings: GameSettings;
 }
 
@@ -344,10 +344,10 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
                 Выберите команды, которые будут участвовать в игре. Команды можно добавить позже.
               </p>
               <TeamSelector
-                selectedTeamIds={formData.teamIds}
-                onSelectionChange={(teamIds) => setFormData(prev => ({ ...prev, teamIds }))}
+                selectedTeamIds={formData.teamIds.map(id => id.toString())}
+                onSelectionChange={(teamIds) => setFormData(prev => ({ ...prev, teamIds: teamIds.map(id => parseInt(id)) }))}
                 maxTeams={formData.settings.maxTeams || 20}
-                organizationId={user.organizationId}
+                organizationId={parseInt(user.organizationId)}
                 showSearch={true}
                 showFilters={true}
                 compact={true}

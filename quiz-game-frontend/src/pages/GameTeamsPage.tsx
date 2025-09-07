@@ -7,7 +7,8 @@ import { TeamSelector } from '../components/TeamSelector';
 import { useAuth } from '../hooks/useAuth';
 import { gameService } from '../services/game.service';
 import { teamService } from '../services/team.service';
-import { Game, Team } from '../types/team.types';
+import { Game, GameStatus } from '../types/game.types';
+import { Team } from '../types/team.types';
 
 interface GameTeamsPageProps {}
 
@@ -39,7 +40,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
 
       // Загружаем данные игры
       const gameData = await gameService.getGameById(gameId!);
-      setGame(gameData);
+      setGame(gameData.data);
 
       // Загружаем команды игры
       const gameTeams = await gameService.getGameTeams(gameId!);
@@ -47,7 +48,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
 
       // Загружаем доступные команды организации
       if (user?.organizationId) {
-        const orgTeams = await teamService.getTeamsByOrganization(user.organizationId);
+        const orgTeams = await teamService.getTeamsByOrganization(parseInt(user.organizationId));
         setAvailableTeams(orgTeams);
       }
     } catch (err) {
@@ -59,7 +60,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
 
   const handleAddTeams = async (teamIds: string[]) => {
     try {
-      await gameService.addTeamsToGame(gameId!, teamIds);
+      await gameService.addTeamsToGame(gameId!, teamIds.map(id => parseInt(id)));
       await loadGameData(); // Перезагружаем данные
       setShowAddTeams(false);
     } catch (err) {
@@ -73,7 +74,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
     }
 
     try {
-      await gameService.removeTeamsFromGame(gameId!, [teamId]);
+      await gameService.removeTeamsFromGame(gameId!, [parseInt(teamId)]);
       await loadGameData(); // Перезагружаем данные
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка удаления команды');
@@ -195,9 +196,9 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
           <div className="game-stats__item">
             <span className="game-stats__label">Статус игры:</span>
             <span className={`game-stats__value game-stats__value--${game.status}`}>
-              {game.status === 'scheduled' ? 'Запланирована' :
-               game.status === 'active' ? 'Активна' :
-               game.status === 'completed' ? 'Завершена' : 'Отменена'}
+              {game.status === GameStatus.WAITING ? 'Запланирована' :
+               game.status === GameStatus.ACTIVE ? 'Активна' :
+               game.status === GameStatus.FINISHED ? 'Завершена' : 'Отменена'}
             </span>
           </div>
         </div>
@@ -305,7 +306,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
                 selectedTeamIds={teams.map(team => team.id)}
                 onSelectionChange={handleAddTeams}
                 maxTeams={game.settings?.maxTeams || 20}
-                organizationId={user?.organizationId || 0}
+                organizationId={parseInt(user?.organizationId || '0')}
                 showSearch={true}
                 showFilters={true}
                 compact={false}

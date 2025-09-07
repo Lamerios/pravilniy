@@ -1,6 +1,8 @@
 import { Request, Response, Router } from 'express';
+import gameScoreRoutes from './game-scores.routes';
 import gameRoutes from './game.routes';
 import protectedRoutes from './protected.routes';
+import scoreRoutes from './score.routes';
 import teamRoutes from './team.routes';
 import templateRoutes from './template.routes';
 
@@ -20,7 +22,8 @@ router.get('/', (req: Request, res: Response) => {
       users: '/api/users',
       games: '/api/games',
       templates: '/api/templates',
-      teams: '/api/teams'
+      teams: '/api/teams',
+      scores: '/api/scores'
     },
     documentation: '/api/docs',
     timestamp: new Date().toISOString()
@@ -55,11 +58,17 @@ router.get('/users', (req: Request, res: Response) => {
 // Роуты игр
 router.use('/games', gameRoutes);
 
+// Роуты истории баллов игр
+router.use('/games', gameScoreRoutes);
+
 // Роуты шаблонов игр
 router.use('/templates', templateRoutes);
 
 // Роуты команд
 router.use('/teams', teamRoutes);
+
+// Роуты баллов
+router.use('/scores', scoreRoutes);
 
 // Защищенные роуты
 router.use('/protected', protectedRoutes);

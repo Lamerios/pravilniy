@@ -23,9 +23,9 @@ interface FormData {
 }
 
 interface FormErrors {
-  name?: string;
-  tableNumber?: string;
-  general?: string;
+  name?: string | undefined;
+  tableNumber?: string | undefined;
+  general?: string | undefined;
 }
 
 export function EditTeamModal({ isOpen, onClose, onSuccess, team }: EditTeamModalProps) {
@@ -134,9 +134,9 @@ export function EditTeamModal({ isOpen, onClose, onSuccess, team }: EditTeamModa
         logoUrl: formData.logoUrl || undefined,
         members: formData.members.filter(member => member.name.trim()),
         contactInfo: {
-          email: formData.contactInfo.email.trim() || undefined,
-          phone: formData.contactInfo.phone.trim() || undefined,
-          address: formData.contactInfo.address.trim() || undefined
+          email: formData.contactInfo.email?.trim() || undefined,
+          phone: formData.contactInfo.phone?.trim() || undefined,
+          address: formData.contactInfo.address?.trim() || undefined
         },
         isActive: formData.isActive
       };

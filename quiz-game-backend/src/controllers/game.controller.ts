@@ -1,14 +1,17 @@
 import { Request, Response } from 'express';
 import { GameService } from '../services/game.service';
+import { PositionService } from '../services/position.service';
 import { AuthenticatedRequest } from '../types/auth.types';
 import { CreateGameDto, GameQueryDto, GameStateChangeDto, UpdateGameDto } from '../types/game.types';
 import { asyncHandler } from '../utils/async-handler.util';
 
 export class GameController {
   private gameService: GameService;
+  private positionService: PositionService;
 
   constructor() {
     this.gameService = new GameService();
+    this.positionService = new PositionService();
   }
 
   /**
@@ -582,6 +585,60 @@ export class GameController {
       success: true,
       message: 'Команды игры получены успешно',
       data: teams
+    });
+  });
+
+  /**
+   * Получить leaderboard игры (рейтинг команд с позициями)
+   */
+  getGameLeaderboard = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const gameId = parseInt(id!);
+
+    if (isNaN(gameId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Некорректный ID игры'
+      });
+    }
+
+    const leaderboard = await this.positionService.getGameLeaderboard(gameId);
+
+    return res.json({
+      success: true,
+      message: 'Рейтинг команд получен успешно',
+      data: {
+        gameId,
+        leaderboard,
+        lastUpdated: new Date().toISOString()
+      }
+    });
+  });
+
+  /**
+   * Пересчитать позиции команд в игре
+   */
+  recalculateGamePositions = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const gameId = parseInt(id!);
+
+    if (isNaN(gameId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Некорректный ID игры'
+      });
+    }
+
+    const result = await this.positionService.recalculateGamePositions(gameId);
+
+    return res.json({
+      success: true,
+      message: 'Позиции команд пересчитаны успешно',
+      data: {
+        gameId,
+        positions: result.positions,
+        changes: result.changes
+      }
     });
   });
 }

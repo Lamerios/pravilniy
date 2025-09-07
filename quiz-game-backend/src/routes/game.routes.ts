@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { GameController } from '../controllers/game.controller';
+import { ScoreController } from '../controllers/score.controller';
 import {
     authenticateToken,
     requireActiveUser,
@@ -16,6 +17,7 @@ import {
 
 const router = Router();
 const gameController = new GameController();
+const scoreController = new ScoreController();
 
 /**
  * @route GET /api/games
@@ -192,6 +194,42 @@ router.get(
   authenticateToken,
   requireActiveUser,
   gameController.getGameTeams
+);
+
+/**
+ * @route GET /api/games/:gameId/corrections
+ * @desc Получить все исправления баллов по игре
+ * @access Private (Admin, Manager)
+ */
+router.get(
+  '/:gameId/corrections',
+  authenticateToken,
+  requireActiveUser,
+  requireAdminOrModerator,
+  scoreController.getGameCorrections
+);
+
+/**
+ * @route GET /api/games/:id/leaderboard
+ * @desc Получить рейтинг команд игры с позициями
+ * @access Public
+ */
+router.get(
+  '/:id/leaderboard',
+  gameController.getGameLeaderboard
+);
+
+/**
+ * @route POST /api/games/:id/recalculate-positions
+ * @desc Пересчитать позиции команд в игре
+ * @access Private (Admin, Manager)
+ */
+router.post(
+  '/:id/recalculate-positions',
+  authenticateToken,
+  requireActiveUser,
+  requireAdminOrModerator,
+  gameController.recalculateGamePositions
 );
 
 export default router;

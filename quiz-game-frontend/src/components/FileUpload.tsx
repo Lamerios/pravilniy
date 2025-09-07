@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
@@ -9,7 +9,7 @@ interface FileUploadProps {
   disabled?: boolean;
   placeholder?: string;
   showPreview?: boolean;
-  currentUrl?: string;
+  currentUrl?: string | undefined;
 }
 
 /**
@@ -44,7 +44,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       const acceptedTypes = accept.split(',').map(type => type.trim());
       const fileType = file.type;
       const fileName = file.name.toLowerCase();
-      
+
       const isAccepted = acceptedTypes.some(type => {
         if (type.startsWith('.')) {
           return fileName.endsWith(type);
@@ -115,14 +115,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     if (disabled) return;
 
     const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
+    if (files.length > 0 && files[0]) {
       handleFileSelect(files[0]);
     }
   }, [disabled, handleFileSelect]);
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
+    if (files && files.length > 0 && files[0]) {
       handleFileSelect(files[0]);
     }
   }, [handleFileSelect]);

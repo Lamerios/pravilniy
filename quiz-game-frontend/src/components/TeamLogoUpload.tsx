@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
-import { FileUpload } from './FileUpload';
+import React, { useCallback, useState } from 'react';
 import { uploadService } from '../services/upload.service';
+import { FileUpload } from './FileUpload';
 
 interface TeamLogoUploadProps {
   currentLogoUrl?: string;
@@ -36,10 +36,10 @@ export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
 
       // Загружаем файл
       const logoUrl = await uploadService.uploadTeamLogo(file);
-      
+
       // Уведомляем родительский компонент об изменении
       onLogoChange(logoUrl);
-      
+
       return logoUrl;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки логотипа';
@@ -56,7 +56,7 @@ export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
         // Удаляем файл с сервера
         await uploadService.deleteFile(currentLogoUrl);
       }
-      
+
       // Уведомляем родительский компонент об удалении
       onLogoChange(null);
       setError(null);
@@ -89,7 +89,7 @@ export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
           onFileUpload={handleFileUpload}
           accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
           maxSize={2 * 1024 * 1024} // 2MB
-          currentUrl={currentLogoUrl}
+          currentUrl={currentLogoUrl || undefined}
           disabled={disabled || isUploading}
           placeholder="Выберите логотип команды"
           showPreview={true}

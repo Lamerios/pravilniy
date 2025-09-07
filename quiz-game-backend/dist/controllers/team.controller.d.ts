@@ -6,6 +6,8 @@ export declare class TeamController {
     createTeam(req: AuthenticatedRequest, res: Response): Promise<void>;
     updateTeam(req: AuthenticatedRequest, res: Response): Promise<void>;
     deleteTeam(req: AuthenticatedRequest, res: Response): Promise<void>;
+    getNextTableNumber(req: AuthenticatedRequest, res: Response): Promise<void>;
+    validateTableNumbers(req: AuthenticatedRequest, res: Response): Promise<void>;
     searchTeams(req: AuthenticatedRequest, res: Response): Promise<void>;
     getTeamStats(req: AuthenticatedRequest, res: Response): Promise<void>;
     getTeamsByOrganization(req: AuthenticatedRequest, res: Response): Promise<void>;

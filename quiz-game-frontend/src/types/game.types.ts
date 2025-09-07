@@ -56,6 +56,7 @@ export interface CreateGameDto {
   templateId: number;
   scheduledAt?: string | undefined;
   settings?: GameSettings | undefined;
+  teamIds?: number[] | undefined;
 }
 
 export interface UpdateGameDto {

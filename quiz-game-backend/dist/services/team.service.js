@@ -244,6 +244,48 @@ class TeamService {
         const existingTeam = await team_model_1.Team.findOne({ where });
         return !existingTeam;
     }
+    async checkTableNumber(tableNumber, organizationId, excludeTeamId) {
+        const where = {
+            tableNumber,
+            organizationId
+        };
+        if (excludeTeamId) {
+            where['id'] = { [sequelize_1.Op.ne]: excludeTeamId };
+        }
+        const existingTeam = await team_model_1.Team.findOne({ where });
+        return {
+            isUnique: !existingTeam,
+            existingTeam: existingTeam ? existingTeam : undefined
+        };
+    }
+    async getNextAvailableTableNumber(organizationId) {
+        const maxTableNumber = await team_model_1.Team.max('tableNumber', {
+            where: { organizationId }
+        });
+        return (maxTableNumber || 0) + 1;
+    }
+    async validateTableNumbers(tableNumbers, organizationId) {
+        const conflicts = [];
+        for (const tableNumber of tableNumbers) {
+            const { isUnique, existingTeam } = await this.checkTableNumber(tableNumber, organizationId);
+            if (!isUnique && existingTeam) {
+                conflicts.push({ tableNumber, team: existingTeam });
+            }
+        }
+        const duplicates = tableNumbers.filter((num, index) => tableNumbers.indexOf(num) !== index);
+        for (const duplicate of duplicates) {
+            const existingTeam = await team_model_1.Team.findOne({
+                where: { tableNumber: duplicate, organizationId }
+            });
+            if (existingTeam) {
+                conflicts.push({ tableNumber: duplicate, team: existingTeam });
+            }
+        }
+        return {
+            valid: conflicts.length === 0,
+            conflicts
+        };
+    }
 }
 exports.TeamService = TeamService;
 exports.teamService = new TeamService();

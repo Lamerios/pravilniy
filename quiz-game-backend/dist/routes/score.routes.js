@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const score_controller_1 = require("../controllers/score.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const role_middleware_1 = require("../middleware/role.middleware");
+const score_middleware_1 = require("../middleware/score.middleware");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_1.authenticateToken);
+router.use(score_middleware_1.checkScoreAccess);
+router.post('/', (0, role_middleware_1.roleMiddleware)(['admin', 'manager', 'user']), score_middleware_1.validateCreateScore, score_controller_1.scoreController.createScore);
+router.post('/bulk', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), score_middleware_1.validateBulkScore, score_controller_1.scoreController.bulkCreateScores);
+router.get('/', score_middleware_1.validateScoreQuery, score_controller_1.scoreController.getScores);
+router.get('/game/:gameId/stats', score_controller_1.scoreController.getGameScoreStats);
+router.get('/team/:gameId/:teamId', score_controller_1.scoreController.getTeamScores);
+router.get('/team/:gameId/:teamId/stats', score_controller_1.scoreController.getTeamScoreStats);
+router.get('/:id', score_controller_1.scoreController.getScoreById);
+router.put('/:id', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), score_middleware_1.validateUpdateScore, score_controller_1.scoreController.updateScore);
+router.post('/:id/correct', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), score_middleware_1.validateCorrectScore, score_controller_1.scoreController.correctScore);
+router.get('/:id/corrections', (0, role_middleware_1.roleMiddleware)(['admin', 'manager']), score_controller_1.scoreController.getScoreCorrectionHistory);
+router.delete('/:id', (0, role_middleware_1.roleMiddleware)(['admin']), score_controller_1.scoreController.deleteScore);
+exports.default = router;
+//# sourceMappingURL=score.routes.js.map

@@ -32,8 +32,8 @@ export const useTeams = (initialQuery: TeamQueryDto = {}): UseTeamsReturn => {
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [filters, setFilters] = useState<TeamFilters>({
-    search: initialQuery.search,
-    isActive: initialQuery.isActive,
+    search: initialQuery.search || undefined,
+    isActive: initialQuery.isActive || undefined,
     sortBy: initialQuery.sortBy || 'createdAt',
     sortOrder: initialQuery.sortOrder || 'DESC'
   });
@@ -50,11 +50,11 @@ export const useTeams = (initialQuery: TeamQueryDto = {}): UseTeamsReturn => {
       const queryParams: TeamQueryDto = {
         page: query.page || 1,
         limit: query.limit || 10,
-        search: query.search || filters.search,
-        sortBy: query.sortBy || filters.sortBy,
-        sortOrder: query.sortOrder || filters.sortOrder,
-        isActive: query.isActive !== undefined ? query.isActive : filters.isActive,
-        organizationId: query.organizationId
+        search: query.search || filters.search || undefined,
+        sortBy: query.sortBy || filters.sortBy || undefined,
+        sortOrder: query.sortOrder || filters.sortOrder || undefined,
+        isActive: query.isActive !== undefined ? query.isActive : filters.isActive || undefined,
+        organizationId: query.organizationId || undefined
       };
 
       const result: TeamListResult = await teamService.getTeams(queryParams);
