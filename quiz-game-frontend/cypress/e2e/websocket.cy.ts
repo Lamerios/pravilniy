@@ -18,7 +18,7 @@ describe('WebSocket Integration', () => {
   describe('Public Scoreboard WebSocket Connection', () => {
     it('should establish WebSocket connection on scoreboard page', () => {
       cy.visit(`/public/scoreboard/${gameId}`);
-      
+
       // Wait for page to load
       cy.waitForPageLoad();
 
@@ -74,7 +74,7 @@ describe('WebSocket Integration', () => {
       });
 
       cy.visit(`/public/scoreboard/${gameId}`);
-      
+
       // Should show error status
       cy.get('[data-cy="connection-status"]', { timeout: 5000 })
         .should('contain.text', 'Ошибка')
@@ -142,7 +142,7 @@ describe('WebSocket Integration', () => {
       // Check for animation classes
       cy.get('[data-cy="team-row"]').first()
         .should('have.class', 'position-up');
-      
+
       cy.get('[data-cy="team-row"]').eq(1)
         .should('have.class', 'position-down');
     });
@@ -270,12 +270,12 @@ describe('WebSocket Integration', () => {
       cy.window().then((win) => {
         let attemptCount = 0;
         const originalWebSocket = win.WebSocket;
-        
+
         (win as any).WebSocket = class extends originalWebSocket {
           constructor(url: string, protocols?: string | string[]) {
             super(url, protocols);
             attemptCount++;
-            
+
             if (attemptCount < 3) {
               // Fail first 2 attempts
               setTimeout(() => {
@@ -291,7 +291,7 @@ describe('WebSocket Integration', () => {
       // Should show reconnection attempts
       cy.get('[data-cy="connection-status"]', { timeout: 5000 })
         .should('contain.text', 'Переподключение');
-      
+
       cy.get('[data-cy="reconnect-attempts"]')
         .should('be.visible')
         .and('contain', 'попытка');
@@ -371,7 +371,7 @@ describe('WebSocket Integration', () => {
       // Check initial memory usage
       cy.window().then((win) => {
         const initialMemory = (win.performance as any).memory?.usedJSHeapSize || 0;
-        
+
         // Navigate away and back multiple times
         for (let i = 0; i < 5; i++) {
           cy.visit('/dashboard');
@@ -446,11 +446,10 @@ describe('WebSocket Integration', () => {
 
       // Should be able to trigger manual reconnect with Enter
       cy.focused().type('{enter}');
-      
+
       // Connection should attempt to reconnect
       cy.get('[data-cy="connection-status"]')
         .should('contain.text', 'Переподключение');
     });
   });
 });
-
