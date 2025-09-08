@@ -1,0 +1,1179 @@
+/* Страница ввода баллов */
+.score-input-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.score-input-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-title h1 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.game-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.game-name {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.game-status {
+  padding: 0.25rem 0.75rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.score-input-page__controls {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 2rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.round-selector,
+.input-mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.round-selector label,
+.input-mode-selector label {
+  font-weight: 600;
+  color: #555;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: normal;
+}
+
+.score-input-page__content {
+  flex: 1;
+  overflow: auto;
+  padding: 2rem;
+}
+
+.score-input-page__sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 320px;
+  height: 100vh;
+  background: #fff;
+  border-left: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-section {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-section h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.leaderboard,
+.round-scores {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.leaderboard-entry,
+.round-score-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.position {
+  font-weight: bold;
+  color: #007bff;
+  min-width: 30px;
+}
+
+.team-name {
+  flex: 1;
+  margin: 0 0.5rem;
+}
+
+.points {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.bet-info {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-left: 0.5rem;
+}
+
+.sidebar-actions {
+  padding: 1rem;
+  margin-top: auto;
+}
+
+/* Форма ввода баллов */
+.score-input-form {
+  max-width: 600px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.score-input-form__header {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.score-input-form__header h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.team-info,
+.round-info {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.team-name,
+.round-name {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.table-number,
+.round-number {
+  padding: 0.25rem 0.5rem;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.score-input-form__form {
+  padding: 1.5rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.score-input-form__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.score-input-form__preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.score-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.score-preview__label {
+  color: #555;
+}
+
+.score-preview__value {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #28a745;
+}
+
+.score-preview__details {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Управление ставками */
+.betting-controls {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.betting-controls__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.betting-controls__header h4 {
+  margin: 0;
+  color: #333;
+}
+
+.betting-controls__toggle label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.betting-controls__content {
+  padding: 1rem;
+}
+
+.betting-controls__row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.betting-controls__field {
+  flex: 1;
+}
+
+.betting-controls__field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.betting-controls__select,
+.betting-controls__input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.betting-controls__select:focus,
+.betting-controls__input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.betting-controls__description {
+  display: block;
+  margin-top: 0.25rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.betting-controls__error {
+  padding: 0.75rem;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.betting-controls__preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.betting-controls__calculation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calculation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calculation-row--total {
+  border-top: 1px solid #ddd;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.total-points {
+  font-size: 1.25rem;
+  color: #28a745;
+}
+
+/* Массовый ввод баллов */
+.bulk-score-input {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.bulk-score-input__header {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.bulk-score-input__header h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.bulk-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.bulk-stats span {
+  padding: 0.5rem 1rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.bulk-score-input__controls {
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.quick-fill {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.quick-fill__buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.global-betting {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.global-betting__controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.bulk-score-input__form {
+  padding: 1.5rem;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.team-score-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.team-score-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-score-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.team-score-card__inputs {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.score-input,
+.betting-input,
+.notes-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.betting-input {
+  flex-direction: row;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.betting-type {
+  width: 60px;
+}
+
+.form-select--small,
+.form-input--small {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.form-textarea--small {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  min-height: 60px;
+  resize: vertical;
+}
+
+.team-score-card__result {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-points {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #28a745;
+}
+
+.calculation {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.team-score-card__error {
+  padding: 0.75rem;
+  background: #f8d7da;
+  color: #721c24;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+}
+
+.bulk-score-input__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Режим одиночного ввода */
+.single-input-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.team-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
+
+.team-selector label {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Стили для компонентов валидации */
+.score-validation-alerts {
+  margin-bottom: 1rem;
+}
+
+.validation-alert {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-left-color: #ffc107;
+  color: #856404;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  border-left-color: #dc3545;
+  color: #721c24;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-left-color: #17a2b8;
+  color: #0c5460;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-left-color: #28a745;
+  color: #155724;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alert-icon {
+  font-size: 1.2rem;
+}
+
+.alert-message {
+  font-weight: 600;
+  flex: 1;
+}
+
+.alert-dismiss {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.alert-dismiss:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.alert-details {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+/* Критический алерт */
+.critical-score-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.critical-score-modal {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 1.5rem 1.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-title {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.modal-content {
+  padding: 1.5rem;
+}
+
+.score-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.preview-label {
+  font-weight: 600;
+  color: #666;
+}
+
+.preview-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.preview-value.negative {
+  color: #dc3545;
+}
+
+.preview-value.positive {
+  color: #28a745;
+}
+
+.warning-tips {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.warning-tips p {
+  margin: 0 0 0.5rem 0;
+}
+
+.warning-tips ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.warning-tips li {
+  margin-bottom: 0.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn--warning {
+  background-color: #ffc107;
+  color: #212529;
+  border: 1px solid #ffc107;
+}
+
+.btn--warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+
+/* Стили для исправления баллов */
+.round-score-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.score-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.score-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn--xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  min-width: auto;
+}
+
+.btn--link {
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.btn--link:hover {
+  color: #0056b3;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Стили для модальных окон исправлений */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.score-correction-modal,
+.score-history-modal,
+.game-corrections-modal {
+  min-width: 500px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.modal-content {
+  padding: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Информация о баллах */
+.score-info {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #666;
+}
+
+.info-row .value {
+  color: #333;
+}
+
+.current-points {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #007bff;
+}
+
+/* Форма исправления */
+.correction-form .form-field {
+  margin-bottom: 1rem;
+}
+
+.points-preview {
+  background: #f8f9fa;
+  border-left: 4px solid;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.points-preview.increase {
+  border-left-color: #28a745;
+  background-color: #d4edda;
+}
+
+.points-preview.decrease {
+  border-left-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.preview-header {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.preview-calculation {
+  font-family: monospace;
+  font-size: 1.1em;
+}
+
+.difference.positive {
+  color: #28a745;
+}
+
+.difference.negative {
+  color: #dc3545;
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* История исправлений */
+.history-section {
+  margin-top: 1.5rem;
+}
+
+.section-title {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.section-title .count {
+  color: #666;
+  font-weight: normal;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Элементы истории исправлений */
+.correction-history-item,
+.game-correction-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.correction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.correction-change {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: monospace;
+  font-size: 1.1em;
+}
+
+.old-points {
+  color: #666;
+  text-decoration: line-through;
+}
+
+.new-points {
+  font-weight: bold;
+  color: #333;
+}
+
+.arrow {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.correction-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.corrector {
+  font-weight: 600;
+  color: #333;
+}
+
+.correction-reason {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+}
+
+/* Исправления игры */
+.corrections-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.team-round {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.team-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.round-name {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* Пагинация */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.page-info {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .score-input-page {
+    flex-direction: column;
+  }
+
+  .score-input-page__sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .score-input-page__controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .betting-controls__row {
+    flex-direction: column;
+  }
+
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bulk-score-input__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Состояния загрузки */
+.loading,
+.loading-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loading-small {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Ошибки */
+.error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error h2 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.error p {
+  color: #6c757d;
+  margin-bottom: 2rem;
+}

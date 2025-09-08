@@ -17,15 +17,17 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
   observe() {}
   disconnect() {}
   unobserve() {}
-};
+  takeRecords() { return []; }
+  root = null;
+  rootMargin = '';
+  thresholds = [];
+} as any;
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
   observe() {}
   disconnect() {}
   unobserve() {}

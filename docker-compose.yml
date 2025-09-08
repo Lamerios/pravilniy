@@ -15,7 +15,9 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./docker/postgres/01-setup-auth.sh:/docker-entrypoint-initdb.d/01-setup-auth.sh:ro
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/02-init.sql:ro
+      - ./docker/postgres/pg_hba.conf:/docker-entrypoint-initdb.d/pg_hba.conf:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U quiz_user -d quiz_game_dev"]
       interval: 10s

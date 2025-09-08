@@ -1,0 +1,1 @@
+{"version":3,"file":"012-add-position-to-scores.d.ts","sourceRoot":"","sources":["../../../src/database/migrations/012-add-position-to-scores.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,cAAc,EAAE,MAAM,WAAW,CAAC;AAEtD,wBAAsB,EAAE,CAAC,cAAc,EAAE,cAAc,GAAG,OAAO,CAAC,IAAI,CAAC,CAWtE;AAED,wBAAsB,IAAI,CAAC,cAAc,EAAE,cAAc,GAAG,OAAO,CAAC,IAAI,CAAC,CAGxE"}

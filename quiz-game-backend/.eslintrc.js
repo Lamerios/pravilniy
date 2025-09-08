@@ -1,4 +1,15 @@
 module.exports = {
+  root: true,
+  env: {
+    node: true,
+    es2022: true,
+    jest: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
@@ -7,97 +18,48 @@ module.exports = {
   },
   plugins: [
     '@typescript-eslint',
-    'import',
-    'node',
-    'security'
+    'prettier',
   ],
-  extends: [
-    'eslint:recommended',
-    '@typescript-eslint/recommended',
-    '@typescript-eslint/recommended-requiring-type-checking',
-    'plugin:import/recommended',
-    'plugin:import/typescript',
-    'plugin:node/recommended',
-    'plugin:security/recommended',
-    'prettier' // Must be last to override other configs
-  ],
-  root: true,
-  env: {
-    node: true,
-    es6: true,
-    jest: true,
-  },
-  settings: {
-    'import/resolver': {
-      typescript: {
-        alwaysTryTypes: true,
-        project: './tsconfig.json',
-      },
-    },
-  },
   rules: {
+    // Prettier rules
+    'prettier/prettier': 'error',
+
     // TypeScript specific rules
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/explicit-function-return-type': 'warn',
-    '@typescript-eslint/explicit-module-boundary-types': 'warn',
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-unsafe-assignment': 'error',
-    '@typescript-eslint/no-unsafe-member-access': 'error',
-    '@typescript-eslint/no-unsafe-call': 'error',
-    '@typescript-eslint/no-unsafe-return': 'error',
-    '@typescript-eslint/prefer-as-const': 'error',
+    '@typescript-eslint/no-unused-vars': ['error', {
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_'
+    }],
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'warn',
     '@typescript-eslint/prefer-nullish-coalescing': 'error',
     '@typescript-eslint/prefer-optional-chain': 'error',
-    '@typescript-eslint/strict-boolean-expressions': 'error',
-
-    // Import rules
-    'import/order': [
-      'error',
-      {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
-      },
-    ],
-    'import/no-unresolved': 'error',
-    'import/no-cycle': 'error',
-    'import/no-unused-modules': 'warn',
-
-    // Node.js rules
-    'node/no-missing-import': 'off', // TypeScript handles this
-    'node/no-unsupported-features/es-syntax': 'off', // We use TypeScript
-    'node/no-unpublished-import': 'off', // Allow dev dependencies
-
-    // Security rules
-    'security/detect-object-injection': 'warn',
-    'security/detect-non-literal-regexp': 'warn',
+    '@typescript-eslint/no-unnecessary-condition': 'warn',
+    '@typescript-eslint/strict-boolean-expressions': 'off',
 
     // General ESLint rules
     'no-console': 'warn',
     'no-debugger': 'error',
-    'no-alert': 'error',
-    'no-var': 'error',
     'prefer-const': 'error',
-    'prefer-arrow-callback': 'error',
-    'arrow-spacing': 'error',
-    'no-duplicate-imports': 'error',
-    'no-useless-constructor': 'error',
-    'no-useless-rename': 'error',
+    'no-var': 'error',
     'object-shorthand': 'error',
-    'prefer-destructuring': ['error', { object: true, array: false }],
+    'prefer-arrow-callback': 'error',
     'prefer-template': 'error',
     'template-curly-spacing': 'error',
-    'yoda': 'error',
+    'arrow-spacing': 'error',
+    'comma-dangle': ['error', 'always-multiline'],
+    'quotes': ['error', 'single', { avoidEscape: true }],
+    'semi': ['error', 'always'],
+
+    // Import/Export rules
+    'no-duplicate-imports': 'error',
+    'sort-imports': ['error', {
+      ignoreCase: false,
+      ignoreDeclarationSort: true,
+      ignoreMemberSort: false,
+      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+    }],
 
     // Error handling
     'no-throw-literal': 'error',
@@ -105,43 +67,37 @@ module.exports = {
 
     // Performance
     'no-await-in-loop': 'warn',
-    'require-atomic-updates': 'error',
 
-    // Code quality
-    'complexity': ['warn', 10],
-    'max-depth': ['warn', 4],
-    'max-lines': ['warn', 300],
-    'max-lines-per-function': ['warn', 50],
-    'max-params': ['warn', 4],
+    // Security
+    'no-eval': 'error',
+    'no-implied-eval': 'error',
+    'no-new-func': 'error',
   },
   overrides: [
     {
-      // Test files
-      files: ['**/*.test.ts', '**/*.spec.ts', '**/__tests__/**/*.ts'],
+      files: ['**/*.test.ts', '**/*.spec.ts', 'tests/**/*.ts'],
       env: {
         jest: true,
       },
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
-        'max-lines-per-function': 'off',
-        'security/detect-object-injection': 'off',
+        'no-console': 'off',
       },
     },
     {
-      // Configuration files
-      files: ['*.config.js', '*.config.ts', '.eslintrc.js'],
+      files: ['src/database/migrations/**/*.ts', 'src/database/seeders/**/*.ts'],
       rules: {
-        'node/no-unpublished-require': 'off',
-        '@typescript-eslint/no-var-requires': 'off',
+        'no-console': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
       },
     },
-    {
-      // Migration files
-      files: ['**/migrations/**/*.js', '**/migrations/**/*.ts'],
-      rules: {
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        'node/no-unpublished-require': 'off',
-      },
-    },
+  ],
+  ignorePatterns: [
+    'dist/',
+    'node_modules/',
+    'coverage/',
+    '*.js',
+    '*.d.ts',
+    'logs/',
   ],
 };

@@ -1,11 +1,9 @@
 # Dependencies
 node_modules/
-package-lock.json
 
-# Build output
+# Build outputs
 dist/
 build/
-*.tsbuildinfo
 
 # Coverage reports
 coverage/
@@ -14,24 +12,30 @@ coverage/
 logs/
 *.log
 
-# Database
-*.db
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database files
 *.sqlite
+*.sqlite3
+*.db
 
 # Generated files
-*.generated.ts
-*.generated.js
+**/*.d.ts
 
-# Migration files (auto-generated)
-migrations/*.js
-
-# Config files
-.eslintrc.js
-jest.config.js
-
-# Markdown files (preserve formatting)
-*.md
-
-# JSON files that should maintain specific formatting
-tsconfig.json
-.vscode/settings.json
+# Configuration files
+*.config.js
+*.config.mjs

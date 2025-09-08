@@ -1,0 +1,1 @@
+{"version":3,"file":"008-create-scores.d.ts","sourceRoot":"","sources":["../../../src/database/migrations/008-create-scores.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,cAAc,EAAE,MAAM,WAAW,CAAC;AAEtD,eAAO,MAAM,EAAE,GAAU,gBAAgB,cAAc,KAAG,OAAO,CAAC,IAAI,CAiLrE,CAAC;AAEF,eAAO,MAAM,IAAI,GAAU,gBAAgB,cAAc,KAAG,OAAO,CAAC,IAAI,CAIvE,CAAC"}

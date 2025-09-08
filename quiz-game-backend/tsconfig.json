@@ -79,9 +79,7 @@
     "node_modules",
     "dist",
     "build",
-    "coverage",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "coverage"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"],

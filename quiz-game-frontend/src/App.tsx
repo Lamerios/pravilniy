@@ -1,63 +1,101 @@
 import React from 'react';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import './App.css';
+import { AuthProvider, WithAuth, WithoutAuth } from './contexts/AuthContext';
+import DashboardPage from './pages/DashboardPage';
+import { GamesPage } from './pages/GamesPage';
+import { GameTeamsPage } from './pages/GameTeamsPage';
+import LoginPage from './pages/LoginPage';
+import PublicScoreboardPage from './pages/PublicScoreboardPage';
+import { ScoreboardPage } from './pages/ScoreboardPage';
+import { ScoreInputPage } from './pages/ScoreInputPage';
+import './styles/auth.css';
+import './styles/file-upload.css';
+import './styles/forms.css';
+import './styles/game-teams.css';
+import './styles/score-input.css';
+import './styles/scoreboard.css';
+import './styles/team-components.css';
+import './styles/ui-components.css';
 
 const App: React.FC = () => {
-  const [count, setCount] = React.useState(0);
-
-  const handleClick = (): void => {
-    setCount(prev => prev + 1);
-  };
-
   return (
-    <div className='app'>
-      <header className='app-header'>
-        <h1>🎯 Quiz Game</h1>
-        <p>Система управления интеллектуальными играми</p>
-      </header>
+    <AuthProvider>
+      <Router>
+        <div className="app">
+          <Routes>
+            {/* Публичные роуты */}
+            <Route
+              path="/login"
+              element={
+                <WithoutAuth>
+                  <LoginPage />
+                </WithoutAuth>
+              }
+            />
 
-      <main className='app-main'>
-        <div className='card'>
-          <button onClick={handleClick} type='button'>
-            Счетчик: {count}
-          </button>
-          <p>
-            Отредактируйте <code>src/App.tsx</code> и сохраните для
-            перезагрузки.
-          </p>
+            {/* Публичное табло без аутентификации */}
+            <Route
+              path="/public/scoreboard/:gameId"
+              element={<PublicScoreboardPage />}
+            />
+
+            {/* Защищенные роуты */}
+            <Route
+              path="/dashboard"
+              element={
+                <WithAuth>
+                  <DashboardPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games"
+              element={
+                <WithAuth>
+                  <GamesPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games/:id/teams"
+              element={
+                <WithAuth>
+                  <GameTeamsPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games/:gameId/scores"
+              element={
+                <WithAuth>
+                  <ScoreInputPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/games/:gameId/scoreboard"
+              element={
+                <WithAuth>
+                  <ScoreboardPage />
+                </WithAuth>
+              }
+            />
+
+            {/* Перенаправление */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+            {/* 404 */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
         </div>
-
-        <div className='features'>
-          <div className='feature'>
-            <h3>⚙️ Backend</h3>
-            <p>Node.js + TypeScript + Express</p>
-          </div>
-          <div className='feature'>
-            <h3>🎨 Frontend</h3>
-            <p>React + TypeScript + Vite</p>
-          </div>
-          <div className='feature'>
-            <h3>🗄️ Database</h3>
-            <p>PostgreSQL + Redis</p>
-          </div>
-        </div>
-
-        <div className='status'>
-          <h3>📊 Статус разработки</h3>
-          <ul>
-            <li>✅ Git репозиторий настроен</li>
-            <li>✅ Docker Compose настроен</li>
-            <li>✅ Backend ESLint + Prettier</li>
-            <li>✅ Frontend ESLint + Prettier</li>
-            <li>⏳ Базовая структура проекта</li>
-          </ul>
-        </div>
-      </main>
-
-      <footer className='app-footer'>
-        <p>Sprint 0: Инфраструктура и настройка</p>
-      </footer>
-    </div>
+      </Router>
+    </AuthProvider>
   );
 };
 

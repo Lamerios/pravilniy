@@ -1,0 +1,1 @@
+{"version":3,"file":"008-create-game-teams.d.ts","sourceRoot":"","sources":["../../../src/database/migrations/008-create-game-teams.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,cAAc,EAAE,MAAM,WAAW,CAAC;;yBAGzB,cAAc,KAAG,OAAO,CAAC,IAAI,CAAC;2BAgE5B,cAAc,KAAG,OAAO,CAAC,IAAI,CAAC;;AAjE7D,kBAoEE"}

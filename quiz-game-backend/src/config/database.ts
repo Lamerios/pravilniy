@@ -1,142 +1,104 @@
-/**
- * Database Configuration
- * PostgreSQL connection settings
- */
+// Загружаем переменные окружения в самом начале
+import 'dotenv/config';
 
-// Load environment variables (dotenv will be installed later)
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('dotenv').config();
-} catch {
-  // dotenv not installed yet, use process.env directly
-}
+import { Sequelize } from 'sequelize-typescript';
+import { config } from './config';
 
-// Simple logger for now (will be replaced when utils/logger is available)
-const logger = {
-  info: (msg: string) => process.stdout.write(`[INFO] ${msg}\n`),
-  error: (msg: string, error?: any) => process.stderr.write(`[ERROR] ${msg} ${error ? String(error) : ''}\n`),
-  debug: (msg: string) => process.stdout.write(`[DEBUG] ${msg}\n`),
-};
+// Импортируем модели
+// Answer модель удалена
+import { GameTeam } from '../models/game-team.model';
+import { GameTemplate } from '../models/game-template.model';
+import { Game } from '../models/game.model';
+import { Organization } from '../models/organization.model';
+import { Round } from '../models/round.model';
+import { Score } from '../models/score.model';
+import { Team } from '../models/team.model';
+import { User } from '../models/user.model';
 
-// Database configuration interface
+// Интерфейс для конфигурации БД
 interface DatabaseConfig {
-  development: Record<string, any>;
-  test: Record<string, any>;
-  production: Record<string, any>;
+  host: string;
+  port: number;
+  database: string;
+  username: string;
+  password: string;
+  dialect: 'postgres';
+  logging: boolean;
+  pool: {
+    min: number;
+    max: number;
+    acquire: number;
+    idle: number;
+  };
+  dialectOptions?: {
+    ssl: boolean;
+    connectTimeout: number;
+  };
+  models: any[];
 }
 
-// Environment variables with defaults
-const DB_HOST = process.env.DB_HOST || 'localhost';
-const DB_PORT = parseInt(process.env.DB_PORT || '5432', 10);
-const DB_NAME = process.env.DB_NAME || 'quiz_game_dev';
-const DB_USER = process.env.DB_USER || 'quiz_user';
-const DB_PASSWORD = process.env.DB_PASSWORD || 'dev_password';
-const NODE_ENV = process.env.NODE_ENV || 'development';
-
-// Base configuration
-const baseConfig = {
-  host: DB_HOST,
-  port: DB_PORT,
-  dialect: 'postgres' as const,
-  dialectOptions: {
-    charset: 'utf8',
-    collate: 'utf8_unicode_ci',
-  },
-  define: {
-    timestamps: true,
-    underscored: true,
-    freezeTableName: true,
-  },
+// Конфигурация подключения к БД
+const dbConfig: DatabaseConfig = {
+  host: config.db.host === 'localhost' ? '127.0.0.1' : config.db.host, // Принудительно IPv4
+  port: config.db.port,
+  database: config.db.name,
+  username: config.db.user,
+  password: config.db.password,
+  dialect: 'postgres',
+  logging: config.db.logging,
   pool: {
-    max: 10,
-    min: 0,
+    min: config.db.pool.min,
+    max: config.db.pool.max,
     acquire: 30000,
     idle: 10000,
   },
-  logging: (msg: string) => logger.debug(msg),
+  dialectOptions: {
+    // Дополнительные опции для pg драйвера
+    ssl: false,
+    connectTimeout: 60000,
+  },
+  models: [Organization, User, GameTemplate, Game, GameTeam, Team, Round, Score],
 };
 
-// Environment-specific configurations
-export const config: DatabaseConfig = {
-  development: {
-    ...baseConfig,
-    database: DB_NAME,
-    username: DB_USER,
-    password: DB_PASSWORD,
-    logging: (msg: string) => logger.debug(`[DB] ${msg}`),
-  },
-  test: {
-    ...baseConfig,
-    database: `${DB_NAME}_test`,
-    username: DB_USER,
-    password: DB_PASSWORD,
-    logging: false,
-  },
-  production: {
-    ...baseConfig,
-    database: DB_NAME,
-    username: DB_USER,
-    password: DB_PASSWORD,
-    logging: false,
-    dialectOptions: {
-      ...baseConfig.dialectOptions,
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
-    pool: {
-      max: 20,
-      min: 5,
-      acquire: 60000,
-      idle: 10000,
-    },
-  },
-};
+// Отладочная информация
+console.log('🔍 Database config:', {
+  host: dbConfig.host,
+  port: dbConfig.port,
+  database: dbConfig.database,
+  username: dbConfig.username,
+  password: dbConfig.password ? '***' : 'undefined',
+});
 
-// Sequelize instance will be created when sequelize package is installed
-export let sequelize: any = null;
+// Создание экземпляра Sequelize
+export const sequelize = new Sequelize(dbConfig);
 
-// Initialize Sequelize (will be called after npm install)
-export const initializeSequelize = async (): Promise<void> => {
-  try {
-    // Dynamic import to avoid errors before package installation
-    const { Sequelize } = await import('sequelize');
-    const currentConfig = config[NODE_ENV as keyof DatabaseConfig];
-    sequelize = new Sequelize(currentConfig);
-    logger.info('✅ Sequelize initialized');
-  } catch (error) {
-    logger.error('❌ Failed to initialize Sequelize:', error);
-    throw error;
-  }
-};
-
-// Test database connection
-export const testConnection = async (): Promise<void> => {
-  if (!sequelize) {
-    await initializeSequelize();
-  }
-  
+// Функция для подключения к БД
+export async function connectDatabase(): Promise<void> {
   try {
     await sequelize.authenticate();
-    logger.info('✅ Database connection established successfully');
+    console.log('✅ Database connection established successfully.');
+
+    // Синхронизация моделей (в development режиме)
+    if (config.server.env === 'development') {
+      await sequelize.sync({ alter: true });
+      console.log('✅ Database models synchronized.');
+    }
   } catch (error) {
-    logger.error('❌ Unable to connect to the database:', error);
+    console.error('❌ Unable to connect to the database:', error);
     throw error;
   }
-};
+}
 
-// Close database connection
-export const closeConnection = async (): Promise<void> => {
-  if (!sequelize) {
-    return;
-  }
-  
+// Функция для закрытия соединения
+export async function closeDatabase(): Promise<void> {
   try {
     await sequelize.close();
-    logger.info('🔒 Database connection closed');
+    console.log('✅ Database connection closed.');
   } catch (error) {
-    logger.error('❌ Error closing database connection:', error);
+    console.error('❌ Error closing database connection:', error);
     throw error;
   }
-};
+}
+
+// Экспорт для использования в других модулях
+export default sequelize;

@@ -1,0 +1,1 @@
+{"version":3,"file":"006-create-rounds.d.ts","sourceRoot":"","sources":["../../../src/database/migrations/006-create-rounds.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,cAAc,EAAE,MAAM,WAAW,CAAC;AAOtD,wBAAsB,EAAE,CAAC,cAAc,EAAE,cAAc,GAAG,OAAO,CAAC,IAAI,CAAC,CAgJtE;AAED,wBAAsB,IAAI,CAAC,cAAc,EAAE,cAAc,GAAG,OAAO,CAAC,IAAI,CAAC,CAGxE"}

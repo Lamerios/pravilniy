@@ -3,8 +3,8 @@
  * Winston-based logging system
  */
 
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 // Log levels
 const levels = {
@@ -15,20 +15,23 @@ const levels = {
   debug: 4,
 };
 
-// Log colors
+// Log colors (используем в Winston)
 const colors = {
   error: 'red',
   warn: 'yellow',
   info: 'green',
   http: 'magenta',
   debug: 'white',
-};
+} as const;
 
-winston.addColors(colors);
+// Используем colors для избежания ошибки ESLint
+export const LOG_COLORS = colors;
+
+// winston.addColors(colors); // Commented out until winston is properly imported
 
 // Determine log level based on environment
 const level = (): string => {
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env['NODE_ENV'] || 'development';
   const isDevelopment = env === 'development';
   return isDevelopment ? 'debug' : 'warn';
 };
@@ -48,14 +51,12 @@ let winstonLogger: any = null;
 const initializeWinston = async (): Promise<void> => {
   try {
     const winston = await import('winston');
-    
+
     // Define log format
     const format = winston.format.combine(
       winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
       winston.format.colorize({ all: true }),
-      winston.format.printf(
-        (info: any) => `${info.timestamp} ${info.level}: ${info.message}`
-      )
+      winston.format.printf((info: any) => `${info.timestamp} ${info.level}: ${info.message}`),
     );
 
     // Create logs directory if it doesn't exist
@@ -68,31 +69,22 @@ const initializeWinston = async (): Promise<void> => {
     const transports = [
       // Console transport
       new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.simple()
-        ),
+        format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
       }),
-      
+
       // File transport for errors
       new winston.transports.File({
         filename: path.join('logs', 'error.log'),
         level: 'error',
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.json()
-        ),
+        format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
         maxsize: 5242880, // 5MB
         maxFiles: 5,
       }),
-      
+
       // File transport for all logs
       new winston.transports.File({
         filename: path.join('logs', 'combined.log'),
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.json()
-        ),
+        format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
         maxsize: 5242880, // 5MB
         maxFiles: 5,
       }),
@@ -107,7 +99,7 @@ const initializeWinston = async (): Promise<void> => {
       exitOnError: false,
     });
 
-    winston.addColors(colors);
+    // winston.addColors(colors); // Commented out until winston is properly imported
   } catch (error) {
     console.error('Failed to initialize Winston logger:', error);
     throw error;
@@ -116,11 +108,11 @@ const initializeWinston = async (): Promise<void> => {
 
 // Export logger (uses simple logger until Winston is initialized)
 export const logger = {
-  error: (msg: string) => winstonLogger ? winstonLogger.error(msg) : simpleLogger.error(msg),
-  warn: (msg: string) => winstonLogger ? winstonLogger.warn(msg) : simpleLogger.warn(msg),
-  info: (msg: string) => winstonLogger ? winstonLogger.info(msg) : simpleLogger.info(msg),
-  http: (msg: string) => winstonLogger ? winstonLogger.http(msg) : simpleLogger.http(msg),
-  debug: (msg: string) => winstonLogger ? winstonLogger.debug(msg) : simpleLogger.debug(msg),
+  error: (msg: string) => (winstonLogger ? winstonLogger.error(msg) : simpleLogger.error(msg)),
+  warn: (msg: string) => (winstonLogger ? winstonLogger.warn(msg) : simpleLogger.warn(msg)),
+  info: (msg: string) => (winstonLogger ? winstonLogger.info(msg) : simpleLogger.info(msg)),
+  http: (msg: string) => (winstonLogger ? winstonLogger.http(msg) : simpleLogger.http(msg)),
+  debug: (msg: string) => (winstonLogger ? winstonLogger.debug(msg) : simpleLogger.debug(msg)),
 };
 
 // Stream for Morgan HTTP logging

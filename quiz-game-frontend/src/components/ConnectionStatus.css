@@ -1,0 +1,165 @@
+/* Индикатор статуса подключения */
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.connection-status.connected {
+  background: rgba(72, 187, 120, 0.1);
+  border: 1px solid rgba(72, 187, 120, 0.3);
+  color: #48bb78;
+}
+
+.connection-status.connecting {
+  background: rgba(237, 137, 54, 0.1);
+  border: 1px solid rgba(237, 137, 54, 0.3);
+  color: #ed8936;
+}
+
+.connection-status.disconnected {
+  background: rgba(229, 62, 62, 0.1);
+  border: 1px solid rgba(229, 62, 62, 0.3);
+  color: #e53e3e;
+}
+
+.connection-status.error {
+  background: rgba(229, 62, 62, 0.15);
+  border: 1px solid rgba(229, 62, 62, 0.4);
+  color: #e53e3e;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-text {
+  white-space: nowrap;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.loading-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: loading-dots 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loading-dots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.reconnect-button {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(229, 62, 62, 0.3);
+  color: #e53e3e;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reconnect-button:hover {
+  background: #e53e3e;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(229, 62, 62, 0.3);
+}
+
+.reconnect-progress {
+  flex: 1;
+  min-width: 100px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ed8936, #f6ad55);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  animation: progress-pulse 2s infinite;
+}
+
+@keyframes progress-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .connection-status {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    gap: 8px;
+  }
+
+  .reconnect-button {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .loading-dots span {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* Большие экраны */
+@media (min-width: 1920px) {
+  .connection-status {
+    padding: 12px 20px;
+    font-size: 1rem;
+    gap: 16px;
+  }
+
+  .reconnect-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .loading-dots span {
+    width: 8px;
+    height: 8px;
+  }
+}

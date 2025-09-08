@@ -1,0 +1,99 @@
+{
+  "users": {
+    "admin": {
+      "email": "admin@test.com",
+      "password": "Test123!",
+      "name": "Test Admin",
+      "role": "ADMIN"
+    },
+    "organizer": {
+      "email": "organizer@test.com",
+      "password": "Test123!",
+      "name": "Test Organizer",
+      "role": "ORGANIZER"
+    }
+  },
+  "organizations": {
+    "testOrg": {
+      "name": "Test Organization E2E",
+      "description": "Тестовая организация для E2E тестов"
+    }
+  },
+  "teams": [
+    {
+      "name": "Команда Alpha",
+      "tableNumber": 1,
+      "contactInfo": "alpha@test.com"
+    },
+    {
+      "name": "Команда Beta",
+      "tableNumber": 2,
+      "contactInfo": "beta@test.com"
+    },
+    {
+      "name": "Команда Gamma",
+      "tableNumber": 3,
+      "contactInfo": "gamma@test.com"
+    },
+    {
+      "name": "Команда Delta",
+      "tableNumber": 4,
+      "contactInfo": "delta@test.com"
+    }
+  ],
+  "games": {
+    "testGame": {
+      "name": "Тестовая игра E2E",
+      "description": "Игра для автоматизированного тестирования",
+      "totalRounds": 5,
+      "status": "WAITING"
+    },
+    "activeGame": {
+      "name": "Активная игра E2E",
+      "description": "Игра в процессе для тестирования",
+      "totalRounds": 3,
+      "status": "ACTIVE"
+    }
+  },
+  "scores": [
+    {
+      "teamId": 1,
+      "roundId": 1,
+      "points": 15,
+      "bet": 10,
+      "betType": "MULTIPLIER"
+    },
+    {
+      "teamId": 2,
+      "roundId": 1,
+      "points": 12,
+      "bet": 8,
+      "betType": "MULTIPLIER"
+    },
+    {
+      "teamId": 3,
+      "roundId": 1,
+      "points": 18,
+      "bet": 12,
+      "betType": "MULTIPLIER"
+    }
+  ],
+  "rounds": [
+    {
+      "name": "Раунд 1",
+      "description": "Первый тестовый раунд",
+      "maxPoints": 20
+    },
+    {
+      "name": "Раунд 2",
+      "description": "Второй тестовый раунд",
+      "maxPoints": 25
+    },
+    {
+      "name": "Раунд 3",
+      "description": "Третий тестовый раунд",
+      "maxPoints": 30
+    }
+  ]
+}
+
