@@ -3,6 +3,7 @@
  */
 
 import React, { FormEvent, useState } from 'react';
+
 import { useAuthContext } from '../contexts/AuthContext';
 import { LoginData } from '../types/auth.types';
 
@@ -151,7 +152,7 @@ export function LoginForm({ onSuccess, className = '' }: LoginFormProps) {
         >
           {isLoading ? (
             <>
-              <span className="loading-spinner"></span>
+              <span className="loading-spinner" />
               Вход...
             </>
           ) : (

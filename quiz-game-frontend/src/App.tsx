@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+
 import './App.css';
 import { AuthProvider, WithAuth, WithoutAuth } from './contexts/AuthContext';
 import DashboardPage from './pages/DashboardPage';

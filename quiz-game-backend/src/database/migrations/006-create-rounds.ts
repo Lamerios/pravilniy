@@ -12,91 +12,91 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
-      comment: 'Уникальный идентификатор раунда'
+      comment: 'Уникальный идентификатор раунда',
     },
     gameId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'games',
-        key: 'id'
+        key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
-      comment: 'Ссылка на игровую сессию'
+      comment: 'Ссылка на игровую сессию',
     },
     roundNumber: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      comment: 'Номер раунда в игре'
+      comment: 'Номер раунда в игре',
     },
     name: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      comment: 'Название раунда'
+      comment: 'Название раунда',
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-      comment: 'Описание раунда'
+      comment: 'Описание раунда',
     },
     type: {
       type: DataTypes.ENUM('STANDARD', 'BLITZ', 'BONUS', 'FINAL', 'TIEBREAKER'),
       allowNull: false,
       defaultValue: 'STANDARD',
-      comment: 'Тип раунда'
+      comment: 'Тип раунда',
     },
     status: {
       type: DataTypes.ENUM('PENDING', 'ACTIVE', 'PAUSED', 'FINISHED', 'CANCELLED'),
       allowNull: false,
       defaultValue: 'PENDING',
-      comment: 'Статус раунда'
+      comment: 'Статус раунда',
     },
     timeLimit: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      comment: 'Время на раунд в секундах'
+      comment: 'Время на раунд в секундах',
     },
     questionTimeLimit: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      comment: 'Время на вопрос в секундах'
+      comment: 'Время на вопрос в секундах',
     },
     totalQuestions: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 1,
-      comment: 'Общее количество вопросов в раунде'
+      comment: 'Общее количество вопросов в раунде',
     },
     currentQuestion: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: 'Номер текущего вопроса'
+      comment: 'Номер текущего вопроса',
     },
     maxPoints: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 10,
-      comment: 'Максимальное количество очков за раунд'
+      comment: 'Максимальное количество очков за раунд',
     },
     multiplier: {
       type: DataTypes.DECIMAL(3, 2),
       allowNull: false,
       defaultValue: 1.0,
-      comment: 'Множитель очков для раунда'
+      comment: 'Множитель очков для раунда',
     },
     questions: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: [],
-      comment: 'Список вопросов раунда в формате JSON'
+      comment: 'Список вопросов раунда в формате JSON',
     },
     settings: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: {},
-      comment: 'Настройки раунда в формате JSON'
+      comment: 'Настройки раунда в формате JSON',
     },
     statistics: {
       type: DataTypes.JSONB,
@@ -105,32 +105,32 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
         totalAnswers: 0,
         correctAnswers: 0,
         averageTime: 0,
-        participatingTeams: 0
+        participatingTeams: 0,
       },
-      comment: 'Статистика раунда в формате JSON'
+      comment: 'Статистика раунда в формате JSON',
     },
     startedAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время начала раунда'
+      comment: 'Дата и время начала раунда',
     },
     finishedAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время окончания раунда'
+      comment: 'Дата и время окончания раунда',
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время создания записи'
+      comment: 'Дата и время создания записи',
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время последнего обновления записи'
-    }
+      comment: 'Дата и время последнего обновления записи',
+    },
   });
 
   // Создание индексов
@@ -145,7 +145,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
   // Композитный индекс для уникальности номера раунда в рамках игры
   await queryInterface.addIndex('rounds', ['gameId', 'roundNumber'], {
     unique: true,
-    name: 'rounds_game_number_unique'
+    name: 'rounds_game_number_unique',
   });
 
   console.log('✅ Migration: rounds table created');

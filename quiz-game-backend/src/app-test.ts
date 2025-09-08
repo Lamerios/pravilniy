@@ -12,16 +12,18 @@ export function createTestApp(): Application {
   const app = express();
 
   // Безопасность
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
       },
-    },
-  }));
+    }),
+  );
 
   // Rate limiting
   const limiter = rateLimit({
@@ -34,12 +36,14 @@ export function createTestApp(): Application {
   app.use(limiter);
 
   // CORS
-  app.use(cors({
-    origin: config.cors.origin,
-    credentials: config.cors.credentials,
-    methods: config.cors.methods,
-    allowedHeaders: config.cors.allowedHeaders,
-  }));
+  app.use(
+    cors({
+      origin: config.cors.origin,
+      credentials: config.cors.credentials,
+      methods: config.cors.methods,
+      allowedHeaders: config.cors.allowedHeaders,
+    }),
+  );
 
   // Парсинг тела запроса
   app.use(express.json({ limit: '10mb' }));
@@ -77,6 +81,3 @@ export function createTestApp(): Application {
 
   return app;
 }
-
-
-

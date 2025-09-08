@@ -84,21 +84,30 @@ export interface JWTConfig {
 
 // Ошибки аутентификации
 export class AuthError extends Error {
-  constructor(message: string, public statusCode: number = 401) {
+  constructor(
+    message: string,
+    public statusCode: number = 401,
+  ) {
     super(message);
     this.name = 'AuthError';
   }
 }
 
 export class ValidationError extends Error {
-  constructor(message: string, public field?: string) {
+  constructor(
+    message: string,
+    public field?: string,
+  ) {
     super(message);
     this.name = 'ValidationError';
   }
 }
 
 export class TokenError extends Error {
-  constructor(message: string, public statusCode: number = 403) {
+  constructor(
+    message: string,
+    public statusCode: number = 403,
+  ) {
     super(message);
     this.name = 'TokenError';
   }

@@ -363,7 +363,7 @@ export function validateUrl(url: string): boolean {
  * Валидация номера телефона (российский формат)
  */
 export function validatePhone(phone: string): boolean {
-  const phoneRegex = /^(\+7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
+  const phoneRegex = /^(\+7|8)?[\s-]?\(?[489][0-9]{2}\)?[\s-]?[0-9]{3}[\s-]?[0-9]{2}[\s-]?[0-9]{2}$/;
   return phoneRegex.test(phone.replace(/\s/g, ''));
 }
 

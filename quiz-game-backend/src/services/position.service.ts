@@ -31,7 +31,7 @@ export class PositionService {
    */
   async recalculateGamePositions(
     gameId: number,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<PositionCalculationResult> {
     try {
       logger.info(`Starting position recalculation for game ${gameId}`);
@@ -51,11 +51,13 @@ export class PositionService {
       // Обновляем позиции в базе данных
       await this.updatePositionsInDatabase(gameId, newPositions, transaction);
 
-      logger.info(`Position recalculation completed for game ${gameId}: ${newPositions.length} teams, ${changes.filter(c => c.change !== 'same').length} changes`);
+      logger.info(
+        `Position recalculation completed for game ${gameId}: ${newPositions.length} teams, ${changes.filter(c => c.change !== 'same').length} changes`,
+      );
 
       return {
         positions: newPositions,
-        changes
+        changes,
       };
     } catch (error) {
       logger.error(`Failed to recalculate positions for game ${gameId}: ${error}`);
@@ -68,13 +70,13 @@ export class PositionService {
    */
   private async getCurrentPositions(
     gameId: number,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<Map<number, number>> {
     const scores = await Score.findAll({
       where: { gameId },
       attributes: ['teamId', 'position'],
       group: ['teamId', 'position'],
-      transaction: transaction || null
+      transaction: transaction || null,
     });
 
     const positions = new Map<number, number>();
@@ -92,14 +94,16 @@ export class PositionService {
    */
   private async getTeamsWithTotalScores(
     gameId: number,
-    transaction?: Transaction
-  ): Promise<Array<{
-    teamId: number;
-    teamName: string;
-    tableNumber?: number | undefined;
-    totalPoints: number;
-    lastUpdated: Date;
-  }>> {
+    transaction?: Transaction,
+  ): Promise<
+    Array<{
+      teamId: number;
+      teamName: string;
+      tableNumber?: number | undefined;
+      totalPoints: number;
+      lastUpdated: Date;
+    }>
+  > {
     // Получаем команды через GameTeam связь
     const { GameTeam } = await import('../models/game-team.model');
 
@@ -110,37 +114,39 @@ export class PositionService {
           as: 'GameTeams',
           where: { gameId },
           attributes: [],
-          required: true
+          required: true,
         },
         {
           model: Score,
           as: 'scores',
           where: { gameId },
           attributes: [],
-          required: false
-        }
+          required: false,
+        },
       ],
       attributes: [
         'id',
         'name',
         'tableNumber',
         [
-          Score.sequelize!.fn('COALESCE',
+          Score.sequelize!.fn(
+            'COALESCE',
             Score.sequelize!.fn('SUM', Score.sequelize!.col('scores.totalPoints')),
-            0
+            0,
           ),
-          'totalPoints'
+          'totalPoints',
         ],
         [
-          Score.sequelize!.fn('COALESCE',
+          Score.sequelize!.fn(
+            'COALESCE',
             Score.sequelize!.fn('MAX', Score.sequelize!.col('scores.updatedAt')),
-            Score.sequelize!.col('Team.createdAt')
+            Score.sequelize!.col('Team.createdAt'),
           ),
-          'lastUpdated'
-        ]
+          'lastUpdated',
+        ],
       ],
       group: ['Team.id', 'Team.name', 'Team.tableNumber', 'Team.createdAt'],
-      transaction: transaction || null
+      transaction: transaction || null,
     });
 
     return teams.map(team => ({
@@ -148,20 +154,22 @@ export class PositionService {
       teamName: team.name,
       tableNumber: team.tableNumber,
       totalPoints: parseFloat((team as any).dataValues.totalPoints) || 0,
-      lastUpdated: new Date((team as any).dataValues.lastUpdated)
+      lastUpdated: new Date((team as any).dataValues.lastUpdated),
     }));
   }
 
   /**
    * Рассчитать позиции на основе баллов
    */
-  private calculatePositions(teams: Array<{
-    teamId: number;
-    teamName: string;
-    tableNumber?: number | undefined;
-    totalPoints: number;
-    lastUpdated: Date;
-  }>): TeamPosition[] {
+  private calculatePositions(
+    teams: Array<{
+      teamId: number;
+      teamName: string;
+      tableNumber?: number | undefined;
+      totalPoints: number;
+      lastUpdated: Date;
+    }>,
+  ): TeamPosition[] {
     // Сортируем команды:
     // 1. По убыванию totalPoints
     // 2. При равенстве баллов - по возрастанию времени последнего обновления (раньше = выше)
@@ -182,7 +190,7 @@ export class PositionService {
       totalPoints: team.totalPoints,
       position: index + 1,
       positionChange: 'same' as const, // Будет обновлено в calculatePositionChanges
-      lastUpdated: team.lastUpdated
+      lastUpdated: team.lastUpdated,
     }));
   }
 
@@ -191,7 +199,7 @@ export class PositionService {
    */
   private calculatePositionChanges(
     currentPositions: Map<number, number>,
-    newPositions: TeamPosition[]
+    newPositions: TeamPosition[],
   ): Array<{
     teamId: number;
     teamName: string;
@@ -222,7 +230,7 @@ export class PositionService {
         teamName: team.teamName,
         oldPosition: oldPosition || undefined,
         newPosition: team.position,
-        change
+        change,
       };
     });
   }
@@ -233,7 +241,7 @@ export class PositionService {
   private async updatePositionsInDatabase(
     gameId: number,
     positions: TeamPosition[],
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<void> {
     // Обновляем позиции во всех записях Score для каждой команды
     for (const position of positions) {
@@ -242,10 +250,10 @@ export class PositionService {
         {
           where: {
             gameId,
-            teamId: position.teamId
+            teamId: position.teamId,
           },
-          transaction: transaction || null
-        }
+          transaction: transaction || null,
+        },
       );
     }
   }

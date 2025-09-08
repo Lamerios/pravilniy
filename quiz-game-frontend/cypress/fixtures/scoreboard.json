@@ -1,0 +1,51 @@
+{
+  "success": true,
+  "message": "Табло игры получено успешно",
+  "data": {
+    "gameId": 1,
+    "gameName": "Тестовая игра E2E",
+    "gameStatus": "ACTIVE",
+    "totalRounds": 5,
+    "totalTeams": 4,
+    "leaderboard": [
+      {
+        "position": 1,
+        "teamId": 3,
+        "teamName": "Команда Gamma",
+        "tableNumber": 3,
+        "totalPoints": 46,
+        "positionChange": "up",
+        "lastUpdated": "2024-01-15T12:00:00Z"
+      },
+      {
+        "position": 2,
+        "teamId": 1,
+        "teamName": "Команда Alpha",
+        "tableNumber": 1,
+        "totalPoints": 43,
+        "positionChange": "same",
+        "lastUpdated": "2024-01-15T11:45:00Z"
+      },
+      {
+        "position": 3,
+        "teamId": 2,
+        "teamName": "Команда Beta",
+        "tableNumber": 2,
+        "totalPoints": 42,
+        "positionChange": "down",
+        "lastUpdated": "2024-01-15T11:30:00Z"
+      },
+      {
+        "position": 4,
+        "teamId": 4,
+        "teamName": "Команда Delta",
+        "tableNumber": 4,
+        "totalPoints": 15,
+        "positionChange": "same",
+        "lastUpdated": "2024-01-15T11:00:00Z"
+      }
+    ],
+    "lastUpdated": "2024-01-15T12:00:00Z"
+  }
+}
+

@@ -58,7 +58,6 @@ async function main() {
 
     console.log('\n🎉 Database seeding completed successfully!');
     console.log('📊 Your database is ready to use');
-
   } catch (error) {
     console.error('❌ Database seeding failed:', error);
     process.exit(1);

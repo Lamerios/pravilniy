@@ -1,33 +1,11 @@
-# Dependencies
 node_modules/
-package-lock.json
-
-# Build output
 dist/
 build/
-*.tsbuildinfo
-
-# Coverage reports
 coverage/
-
-# Logs
-logs/
-*.log
-
-# Generated files
-*.generated.ts
-*.generated.tsx
-
-# Config files
-.eslintrc.js
-vite.config.ts
-
-# Public assets
+.nyc_output/
+cypress/videos/
+cypress/screenshots/
 public/
-
-# Markdown files (preserve formatting)
-*.md
-
-# JSON files that should maintain specific formatting
-tsconfig.json
-.vscode/settings.json
+*.min.js
+*.min.css
+package-lock.json

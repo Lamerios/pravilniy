@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+
 import { useAuth } from '../hooks/useAuth';
 import { useTemplates } from '../hooks/useTemplates';
 import { gameService } from '../services/game.service';
 import { CreateGameDto, GameSettings } from '../types/game.types';
 import { GameTemplate } from '../types/template.types';
 import { validateCreateGameForm } from '../utils/validation';
+
 import { TeamSelector } from './TeamSelector';
 
 interface CreateGameModalProps {

@@ -1,15 +1,15 @@
 import { Organization } from '../models/organization.model';
 import { User, UserRole } from '../models/user.model';
 import {
-    AuthError,
-    ChangePasswordData,
-    LoginCredentials,
-    LoginResponse,
-    RefreshTokenResponse,
-    RegisterData,
-    ResetPasswordData,
-    SetNewPasswordData,
-    ValidationError
+  AuthError,
+  ChangePasswordData,
+  LoginCredentials,
+  LoginResponse,
+  RefreshTokenResponse,
+  RegisterData,
+  ResetPasswordData,
+  SetNewPasswordData,
+  ValidationError,
 } from '../types/auth.types';
 import { generateTokenPair, verifyToken } from '../utils/jwt.util';
 import { comparePassword, hashPassword, validatePassword } from '../utils/password.util';
@@ -19,7 +19,6 @@ import { comparePassword, hashPassword, validatePassword } from '../utils/passwo
  * Обрабатывает логин, регистрацию, управление токенами
  */
 export class AuthService {
-
   /**
    * Аутентификация пользователя
    */
@@ -38,11 +37,13 @@ export class AuthService {
     // Поиск пользователя
     const user = await User.findOne({
       where: { email: email.toLowerCase() },
-      include: [{
-        model: Organization,
-        as: 'organization',
-        attributes: ['id', 'name', 'isActive']
-      }]
+      include: [
+        {
+          model: Organization,
+          as: 'organization',
+          attributes: ['id', 'name', 'isActive'],
+        },
+      ],
     });
 
     if (!user) {
@@ -55,7 +56,7 @@ export class AuthService {
     }
 
     // Проверка активности организации
-    if (!user.organization?.isActive) {
+    if (!user.organization.isActive) {
       throw new AuthError('Организация деактивирована', 403);
     }
 
@@ -73,7 +74,7 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       role: user.role,
-      organizationId: user.organizationId
+      organizationId: user.organizationId,
     };
 
     const { accessToken, refreshToken } = generateTokenPair(tokenPayload);
@@ -87,8 +88,8 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
-        organizationId: user.organizationId
-      }
+        organizationId: user.organizationId,
+      },
     };
   }
 
@@ -96,14 +97,21 @@ export class AuthService {
    * Регистрация нового пользователя
    */
   async register(data: RegisterData): Promise<LoginResponse> {
-    const { email, password, firstName, lastName, organizationId, role = 'USER' as UserRole } = data;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      organizationId,
+      role = 'USER' as UserRole,
+    } = data;
 
     // Валидация входных данных
     this.validateRegistrationData(data);
 
     // Проверка существования пользователя
     const existingUser = await User.findOne({
-      where: { email: email.toLowerCase() }
+      where: { email: email.toLowerCase() },
     });
 
     if (existingUser) {
@@ -131,7 +139,7 @@ export class AuthService {
       lastName,
       role,
       organizationId,
-      isActive: true
+      isActive: true,
     });
 
     // Генерируем токены
@@ -139,7 +147,7 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       role: user.role,
-      organizationId: user.organizationId
+      organizationId: user.organizationId,
     };
 
     const { accessToken, refreshToken } = generateTokenPair(tokenPayload);
@@ -153,8 +161,8 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
-        organizationId: user.organizationId
-      }
+        organizationId: user.organizationId,
+      },
     };
   }
 
@@ -168,11 +176,13 @@ export class AuthService {
 
       // Поиск пользователя
       const user = await User.findByPk(payload.userId, {
-        include: [{
-          model: Organization,
-          as: 'organization',
-          attributes: ['id', 'name', 'isActive']
-        }]
+        include: [
+          {
+            model: Organization,
+            as: 'organization',
+            attributes: ['id', 'name', 'isActive'],
+          },
+        ],
       });
 
       if (!user) {
@@ -183,7 +193,7 @@ export class AuthService {
         throw new AuthError('Аккаунт деактивирован', 403);
       }
 
-      if (!user.organization?.isActive) {
+      if (!user.organization.isActive) {
         throw new AuthError('Организация деактивирована', 403);
       }
 
@@ -192,11 +202,10 @@ export class AuthService {
         userId: user.id,
         email: user.email,
         role: user.role,
-        organizationId: user.organizationId
+        organizationId: user.organizationId,
       };
 
       return generateTokenPair(tokenPayload);
-
     } catch (error) {
       if (error instanceof AuthError) {
         throw error;
@@ -235,7 +244,7 @@ export class AuthService {
     // Обновление пароля
     await user.update({
       password: hashedNewPassword,
-      passwordChangedAt: new Date()
+      passwordChangedAt: new Date(),
     });
   }
 
@@ -250,7 +259,7 @@ export class AuthService {
     }
 
     const user = await User.findOne({
-      where: { email: email.toLowerCase() }
+      where: { email: email.toLowerCase() },
     });
 
     if (!user) {

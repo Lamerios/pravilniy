@@ -2,17 +2,17 @@ import { Router } from 'express';
 import { GameController } from '../controllers/game.controller';
 import { ScoreController } from '../controllers/score.controller';
 import {
-    authenticateToken,
-    requireActiveUser,
-    requireAdminOrModerator
+  authenticateToken,
+  requireActiveUser,
+  requireAdminOrModerator,
 } from '../middleware/auth.middleware';
 import {
-    validateAddTeamsToGame,
-    validateCreateGame,
-    validateGameQuery,
-    validateGameStateChange,
-    validateRemoveTeamsFromGame,
-    validateUpdateGame
+  validateAddTeamsToGame,
+  validateCreateGame,
+  validateGameQuery,
+  validateGameStateChange,
+  validateRemoveTeamsFromGame,
+  validateUpdateGame,
 } from '../middleware/game.middleware';
 
 const router = Router();
@@ -24,42 +24,28 @@ const scoreController = new ScoreController();
  * @desc Получить список игр с пагинацией и фильтрацией
  * @access Public (для публичных игр)
  */
-router.get(
-  '/',
-  validateGameQuery,
-  gameController.getGames
-);
+router.get('/', validateGameQuery, gameController.getGames);
 
 /**
  * @route GET /api/games/search
  * @desc Поиск игр
  * @access Public
  */
-router.get(
-  '/search',
-  validateGameQuery,
-  gameController.searchGames
-);
+router.get('/search', validateGameQuery, gameController.searchGames);
 
 /**
  * @route GET /api/games/stats
  * @desc Получить статистику игр
  * @access Public
  */
-router.get(
-  '/stats',
-  gameController.getGameStats
-);
+router.get('/stats', gameController.getGameStats);
 
 /**
  * @route GET /api/games/:id
  * @desc Получить игру по ID
  * @access Public
  */
-router.get(
-  '/:id',
-  gameController.getGameById
-);
+router.get('/:id', gameController.getGameById);
 
 /**
  * @route POST /api/games
@@ -72,7 +58,7 @@ router.post(
   requireActiveUser,
   requireAdminOrModerator,
   validateCreateGame,
-  gameController.createGame
+  gameController.createGame,
 );
 
 /**
@@ -85,7 +71,7 @@ router.put(
   authenticateToken,
   requireActiveUser,
   validateUpdateGame,
-  gameController.updateGame
+  gameController.updateGame,
 );
 
 /**
@@ -93,12 +79,7 @@ router.put(
  * @desc Удалить игру
  * @access Private (только создатель или админ)
  */
-router.delete(
-  '/:id',
-  authenticateToken,
-  requireActiveUser,
-  gameController.deleteGame
-);
+router.delete('/:id', authenticateToken, requireActiveUser, gameController.deleteGame);
 
 /**
  * @route POST /api/games/:id/start
@@ -111,7 +92,7 @@ router.post(
   requireActiveUser,
   requireAdminOrModerator,
   validateGameStateChange,
-  gameController.startGame
+  gameController.startGame,
 );
 
 /**
@@ -125,7 +106,7 @@ router.post(
   requireActiveUser,
   requireAdminOrModerator,
   validateGameStateChange,
-  gameController.stopGame
+  gameController.stopGame,
 );
 
 /**
@@ -139,7 +120,7 @@ router.post(
   requireActiveUser,
   requireAdminOrModerator,
   validateGameStateChange,
-  gameController.pauseGame
+  gameController.pauseGame,
 );
 
 /**
@@ -153,7 +134,7 @@ router.post(
   requireActiveUser,
   requireAdminOrModerator,
   validateGameStateChange,
-  gameController.resumeGame
+  gameController.resumeGame,
 );
 
 /**
@@ -167,7 +148,7 @@ router.post(
   requireActiveUser,
   requireAdminOrModerator,
   validateAddTeamsToGame,
-  gameController.addTeamsToGame
+  gameController.addTeamsToGame,
 );
 
 /**
@@ -181,7 +162,7 @@ router.delete(
   requireActiveUser,
   requireAdminOrModerator,
   validateRemoveTeamsFromGame,
-  gameController.removeTeamsFromGame
+  gameController.removeTeamsFromGame,
 );
 
 /**
@@ -189,12 +170,7 @@ router.delete(
  * @desc Получить команды игры
  * @access Private
  */
-router.get(
-  '/:id/teams',
-  authenticateToken,
-  requireActiveUser,
-  gameController.getGameTeams
-);
+router.get('/:id/teams', authenticateToken, requireActiveUser, gameController.getGameTeams);
 
 /**
  * @route GET /api/games/:gameId/corrections
@@ -206,7 +182,7 @@ router.get(
   authenticateToken,
   requireActiveUser,
   requireAdminOrModerator,
-  scoreController.getGameCorrections
+  scoreController.getGameCorrections,
 );
 
 /**
@@ -214,10 +190,7 @@ router.get(
  * @desc Получить рейтинг команд игры с позициями
  * @access Public
  */
-router.get(
-  '/:id/leaderboard',
-  gameController.getGameLeaderboard
-);
+router.get('/:id/leaderboard', gameController.getGameLeaderboard);
 
 /**
  * @route POST /api/games/:id/recalculate-positions
@@ -229,7 +202,7 @@ router.post(
   authenticateToken,
   requireActiveUser,
   requireAdminOrModerator,
-  gameController.recalculateGamePositions
+  gameController.recalculateGamePositions,
 );
 
 /**

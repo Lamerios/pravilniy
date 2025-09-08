@@ -5,7 +5,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
   await queryInterface.changeColumn('scores', 'bet', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
-    comment: 'Ставка команды (множитель или бонус)'
+    comment: 'Ставка команды (множитель или бонус)',
   });
 
   // Изменяем тип поля totalPoints с INTEGER на DECIMAL
@@ -13,7 +13,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
     defaultValue: 0,
-    comment: 'Общее количество баллов с учетом ставки'
+    comment: 'Общее количество баллов с учетом ставки',
   });
 
   // Добавляем новые поля для системы ставок
@@ -21,19 +21,19 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
     type: DataTypes.ENUM('MULTIPLIER', 'BONUS', 'FIXED'),
     allowNull: true,
     defaultValue: 'MULTIPLIER',
-    comment: 'Тип ставки: MULTIPLIER (умножение), BONUS (добавление), FIXED (фиксированные баллы)'
+    comment: 'Тип ставки: MULTIPLIER (умножение), BONUS (добавление), FIXED (фиксированные баллы)',
   });
 
   await queryInterface.addColumn('scores', 'minBet', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
-    comment: 'Минимальная ставка для данного раунда'
+    comment: 'Минимальная ставка для данного раунда',
   });
 
   await queryInterface.addColumn('scores', 'maxBet', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
-    comment: 'Максимальная ставка для данного раунда'
+    comment: 'Максимальная ставка для данного раунда',
   });
 };
 
@@ -48,13 +48,12 @@ export const down = async (queryInterface: QueryInterface): Promise<void> => {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 0,
-    comment: 'Общее количество баллов с учетом ставки'
+    comment: 'Общее количество баллов с учетом ставки',
   });
 
   await queryInterface.changeColumn('scores', 'bet', {
     type: DataTypes.INTEGER,
     allowNull: true,
-    comment: 'Ставка команды (если есть)'
+    comment: 'Ставка команды (если есть)',
   });
 };
-

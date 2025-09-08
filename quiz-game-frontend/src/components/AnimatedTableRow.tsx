@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import { PublicScoreboardTeam } from '../types/scoreboard.types';
 
 interface AnimatedTableRowProps {

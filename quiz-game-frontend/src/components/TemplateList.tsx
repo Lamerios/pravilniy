@@ -20,12 +20,12 @@ export function TemplateList({
       <div className="template-list loading">
         {Array.from({ length: 5 }).map((_, index) => (
           <div key={index} className="template-card skeleton">
-            <div className="skeleton-header"></div>
+            <div className="skeleton-header" />
             <div className="skeleton-content">
-              <div className="skeleton-line"></div>
-              <div className="skeleton-line short"></div>
+              <div className="skeleton-line" />
+              <div className="skeleton-line short" />
             </div>
-            <div className="skeleton-actions"></div>
+            <div className="skeleton-actions" />
           </div>
         ))}
       </div>

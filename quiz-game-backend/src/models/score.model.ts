@@ -1,14 +1,14 @@
 import {
-    AutoIncrement,
-    BelongsTo,
-    Column,
-    CreatedAt,
-    DataType,
-    ForeignKey,
-    Model,
-    PrimaryKey,
-    Table,
-    UpdatedAt
+  AutoIncrement,
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { Game } from './game.model';
 import { Round } from './round.model';
@@ -22,21 +22,21 @@ import { User } from './user.model';
     {
       fields: ['gameId', 'teamId', 'roundId'],
       unique: true,
-      name: 'unique_game_team_round'
+      name: 'unique_game_team_round',
     },
     {
-      fields: ['gameId']
+      fields: ['gameId'],
     },
     {
-      fields: ['teamId']
+      fields: ['teamId'],
     },
     {
-      fields: ['roundId']
+      fields: ['roundId'],
     },
     {
-      fields: ['createdAt']
-    }
-  ]
+      fields: ['createdAt'],
+    },
+  ],
 })
 export class Score extends Model {
   @PrimaryKey
@@ -59,14 +59,14 @@ export class Score extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    comment: 'Количество баллов за раунд'
+    comment: 'Количество баллов за раунд',
   })
   points!: number;
 
   @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: true,
-    comment: 'Ставка команды (множитель или бонус)'
+    comment: 'Ставка команды (множитель или бонус)',
   })
   bet?: number;
 
@@ -74,21 +74,21 @@ export class Score extends Model {
     type: DataType.ENUM('MULTIPLIER', 'BONUS', 'FIXED'),
     allowNull: true,
     defaultValue: 'MULTIPLIER',
-    comment: 'Тип ставки: MULTIPLIER (умножение), BONUS (добавление), FIXED (фиксированные баллы)'
+    comment: 'Тип ставки: MULTIPLIER (умножение), BONUS (добавление), FIXED (фиксированные баллы)',
   })
   betType?: 'MULTIPLIER' | 'BONUS' | 'FIXED';
 
   @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: true,
-    comment: 'Минимальная ставка для данного раунда'
+    comment: 'Минимальная ставка для данного раунда',
   })
   minBet?: number;
 
   @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: true,
-    comment: 'Максимальная ставка для данного раунда'
+    comment: 'Максимальная ставка для данного раунда',
   })
   maxBet?: number;
 
@@ -96,21 +96,21 @@ export class Score extends Model {
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
     defaultValue: 0,
-    comment: 'Общее количество баллов с учетом ставки'
+    comment: 'Общее количество баллов с учетом ставки',
   })
   totalPoints!: number;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
-    comment: 'Позиция команды в рейтинге на момент записи баллов'
+    comment: 'Позиция команды в рейтинге на момент записи баллов',
   })
   position?: number;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
-    comment: 'Дополнительные заметки'
+    comment: 'Дополнительные заметки',
   })
   notes?: string;
 
@@ -118,7 +118,7 @@ export class Score extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
-    comment: 'Пользователь, который ввел баллы'
+    comment: 'Пользователь, который ввел баллы',
   })
   enteredBy?: number;
 

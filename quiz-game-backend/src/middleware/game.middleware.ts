@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { createQueryValidationMiddleware, createValidationMiddleware, gameValidationSchemas } from './validation.middleware';
+import {
+  createQueryValidationMiddleware,
+  createValidationMiddleware,
+  gameValidationSchemas,
+} from './validation.middleware';
 
 /**
  * Middleware для валидации данных создания игры
@@ -44,7 +48,7 @@ export const validateGameStateChange = (req: Request, res: Response, next: NextF
       success: false,
       error: 'ValidationError',
       message: 'Ошибка валидации данных',
-      details: errors
+      details: errors,
     });
     return;
   }
@@ -82,7 +86,7 @@ export const validateAddTeamsToGame = (req: Request, res: Response, next: NextFu
       success: false,
       error: 'ValidationError',
       message: 'Ошибка валидации данных',
-      details: errors
+      details: errors,
     });
     return;
   }
@@ -93,7 +97,11 @@ export const validateAddTeamsToGame = (req: Request, res: Response, next: NextFu
 /**
  * Middleware для валидации удаления команд из игры
  */
-export const validateRemoveTeamsFromGame = (req: Request, res: Response, next: NextFunction): void => {
+export const validateRemoveTeamsFromGame = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   const errors: string[] = [];
 
   const { teamIds } = req.body;
@@ -118,7 +126,7 @@ export const validateRemoveTeamsFromGame = (req: Request, res: Response, next: N
       success: false,
       error: 'ValidationError',
       message: 'Ошибка валидации данных',
-      details: errors
+      details: errors,
     });
     return;
   }

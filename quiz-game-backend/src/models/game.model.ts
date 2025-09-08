@@ -1,19 +1,19 @@
 import {
-    AllowNull,
-    BelongsTo,
-    BelongsToMany,
-    Column,
-    CreatedAt,
-    DataType,
-    Default,
-    ForeignKey,
-    HasMany,
-    Model,
-    PrimaryKey,
-    Table,
-    Unique,
-    UpdatedAt,
-    Validate
+  AllowNull,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+  UpdatedAt,
+  Validate,
 } from 'sequelize-typescript';
 import { GameTeam } from './game-team.model';
 import { GameTemplate } from './game-template.model';
@@ -33,7 +33,7 @@ export enum GameStatus {
   ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
   FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export interface ScoringSystem {
@@ -86,7 +86,7 @@ export class Game extends Model<Game> {
 
   @AllowNull(false)
   @Validate({
-    len: [1, 255]
+    len: [1, 255],
   })
   @Column(DataType.STRING(255))
   name!: string;
@@ -97,7 +97,7 @@ export class Game extends Model<Game> {
   @AllowNull(false)
   @Unique
   @Validate({
-    len: [4, 20]
+    len: [4, 20],
   })
   @Column(DataType.STRING(20))
   gameCode!: string;
@@ -111,7 +111,7 @@ export class Game extends Model<Game> {
   @Default(10)
   @Validate({
     min: 1,
-    max: 100
+    max: 100,
   })
   @Column(DataType.INTEGER)
   maxTeams!: number;
@@ -120,7 +120,7 @@ export class Game extends Model<Game> {
   @Default(5)
   @Validate({
     min: 1,
-    max: 20
+    max: 20,
   })
   @Column(DataType.INTEGER)
   maxPlayersPerTeam!: number;
@@ -156,7 +156,7 @@ export class Game extends Model<Game> {
     basePoints: 10,
     timeBonus: true,
     penaltyForWrong: false,
-    streakBonus: false
+    streakBonus: false,
   })
   @Column(DataType.JSONB)
   scoringSystem?: ScoringSystem;
@@ -219,8 +219,10 @@ export class Game extends Model<Game> {
   }
 
   canJoin(): boolean {
-    return this.status === GameStatus.WAITING ||
-           (this.status === GameStatus.ACTIVE && this.allowLateJoin);
+    return (
+      this.status === GameStatus.WAITING ||
+      (this.status === GameStatus.ACTIVE && this.allowLateJoin)
+    );
   }
 
   getDuration(): number | null {

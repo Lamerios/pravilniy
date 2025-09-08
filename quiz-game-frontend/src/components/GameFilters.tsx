@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import { GameFilters, GameStatus } from '../types/game.types';
 
 interface GameFiltersProps {

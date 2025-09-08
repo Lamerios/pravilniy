@@ -14,12 +14,11 @@ import { checkDatabaseStatus } from './utils';
 async function main() {
   try {
     console.log('🔍 Database Status Check');
-    console.log('=' .repeat(50));
+    console.log('='.repeat(50));
 
     await checkDatabaseStatus();
 
     console.log('\n✅ Database check completed');
-
   } catch (error) {
     console.error('\n❌ Database check failed:', error);
 

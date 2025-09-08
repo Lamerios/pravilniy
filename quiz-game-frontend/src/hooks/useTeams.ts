@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import { teamService } from '../services/team.service';
 import {
     PaginationInfo,
@@ -32,10 +33,10 @@ export const useTeams = (initialQuery: TeamQueryDto = {}): UseTeamsReturn => {
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [filters, setFilters] = useState<TeamFilters>({
-    search: initialQuery.search || undefined,
-    isActive: initialQuery.isActive || undefined,
-    sortBy: initialQuery.sortBy || 'createdAt',
-    sortOrder: initialQuery.sortOrder || 'DESC'
+    search: initialQuery.search ?? undefined,
+    isActive: initialQuery.isActive ?? undefined,
+    sortBy: initialQuery.sortBy ?? 'createdAt',
+    sortOrder: initialQuery.sortOrder ?? 'DESC'
   });
   const [stats, setStats] = useState<TeamStats | null>(null);
 
@@ -48,13 +49,13 @@ export const useTeams = (initialQuery: TeamQueryDto = {}): UseTeamsReturn => {
       setError(null);
 
       const queryParams: TeamQueryDto = {
-        page: query.page || 1,
-        limit: query.limit || 10,
-        search: query.search || filters.search || undefined,
-        sortBy: query.sortBy || filters.sortBy || undefined,
-        sortOrder: query.sortOrder || filters.sortOrder || undefined,
-        isActive: query.isActive !== undefined ? query.isActive : filters.isActive || undefined,
-        organizationId: query.organizationId || undefined
+        page: query.page ?? 1,
+        limit: query.limit ?? 10,
+        search: query.search ?? filters.search ?? undefined,
+        sortBy: query.sortBy ?? filters.sortBy ?? undefined,
+        sortOrder: query.sortOrder ?? filters.sortOrder ?? undefined,
+        isActive: query.isActive !== undefined ? query.isActive : filters.isActive ?? undefined,
+        organizationId: query.organizationId ?? undefined
       };
 
       const result: TeamListResult = await teamService.getTeams(queryParams);

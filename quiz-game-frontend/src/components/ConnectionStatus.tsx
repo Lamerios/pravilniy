@@ -52,9 +52,9 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
       <div className="status-indicator">
         <span className="status-text">{getStatusText()}</span>
         {connecting && <div className="loading-dots">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span />
+          <span />
+          <span />
         </div>}
       </div>
 
@@ -74,7 +74,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
             <div
               className="progress-fill"
               style={{ width: `${(reconnectAttempts / maxReconnectAttempts) * 100}%` }}
-            ></div>
+             />
           </div>
         </div>
       )}

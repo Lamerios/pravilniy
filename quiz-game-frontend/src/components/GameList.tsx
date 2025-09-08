@@ -1,4 +1,5 @@
 import { Game } from '../types/game.types';
+
 import { GameCard } from './GameCard';
 
 interface GameListProps {
@@ -31,18 +32,18 @@ export function GameList({
           {Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="game-card-skeleton">
               <div className="skeleton-header">
-                <div className="skeleton-title"></div>
-                <div className="skeleton-status"></div>
+                <div className="skeleton-title" />
+                <div className="skeleton-status" />
               </div>
-              <div className="skeleton-description"></div>
+              <div className="skeleton-description" />
               <div className="skeleton-info">
-                <div className="skeleton-row"></div>
-                <div className="skeleton-row"></div>
-                <div className="skeleton-row"></div>
+                <div className="skeleton-row" />
+                <div className="skeleton-row" />
+                <div className="skeleton-row" />
               </div>
               <div className="skeleton-footer">
-                <div className="skeleton-date"></div>
-                <div className="skeleton-controls"></div>
+                <div className="skeleton-date" />
+                <div className="skeleton-controls" />
               </div>
             </div>
           ))}

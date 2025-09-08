@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import { gameService } from '../services/game.service';
 import {
     Game,
@@ -42,7 +43,7 @@ export function useGames(): UseGamesReturn {
     setFiltersState(prev => ({
       ...prev,
       ...newFilters,
-      page: newFilters.page || 1 // Сбрасываем страницу при изменении фильтров
+      page: newFilters.page ?? 1 // Сбрасываем страницу при изменении фильтров
     }));
   }, []);
 

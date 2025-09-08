@@ -1,4 +1,5 @@
 import { GameLeaderboard, LeaderboardResponse, PositionRecalculationResponse, TeamPosition } from '../types/position.types';
+
 import { apiClient } from './api.client';
 
 // Типы для баллов (синхронизированы с backend)

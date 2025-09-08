@@ -6,7 +6,7 @@ import {
   CreateScoreDto,
   ScoreCorrectionDto,
   ScoreQueryDto,
-  UpdateScoreDto
+  UpdateScoreDto,
 } from '../types/score.types';
 
 export class ScoreController {
@@ -18,7 +18,7 @@ export class ScoreController {
     try {
       const scoreData: CreateScoreDto = {
         ...req.body,
-        enteredBy: req.user?.userId // Администратор, который вносит баллы
+        enteredBy: req.user?.userId, // Администратор, который вносит баллы
       };
 
       const score = await scoreService.createScore(scoreData);
@@ -26,12 +26,12 @@ export class ScoreController {
       res.status(201).json({
         success: true,
         data: score,
-        message: 'Баллы успешно добавлены'
+        message: 'Баллы успешно добавлены',
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка создания баллов'
+        message: error instanceof Error ? error.message : 'Ошибка создания баллов',
       });
     }
   }
@@ -50,7 +50,7 @@ export class ScoreController {
       if (!score) {
         res.status(404).json({
           success: false,
-          message: 'Запись о баллах не найдена'
+          message: 'Запись о баллах не найдена',
         });
         return;
       }
@@ -58,12 +58,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: score,
-        message: 'Баллы успешно обновлены'
+        message: 'Баллы успешно обновлены',
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка обновления баллов'
+        message: error instanceof Error ? error.message : 'Ошибка обновления баллов',
       });
     }
   }
@@ -81,7 +81,7 @@ export class ScoreController {
       if (!score) {
         res.status(404).json({
           success: false,
-          message: 'Запись о баллах не найдена'
+          message: 'Запись о баллах не найдена',
         });
         return;
       }
@@ -89,12 +89,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: score,
-        message: 'Баллы успешно получены'
+        message: 'Баллы успешно получены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения баллов'
+        message: error instanceof Error ? error.message : 'Ошибка получения баллов',
       });
     }
   }
@@ -112,7 +112,7 @@ export class ScoreController {
         sortOrder: req.query['sortOrder'] as 'ASC' | 'DESC',
         gameId: req.query['gameId'] ? parseInt(req.query['gameId'] as string) : undefined,
         teamId: req.query['teamId'] ? parseInt(req.query['teamId'] as string) : undefined,
-        roundId: req.query['roundId'] ? parseInt(req.query['roundId'] as string) : undefined
+        roundId: req.query['roundId'] ? parseInt(req.query['roundId'] as string) : undefined,
       };
 
       const result = await scoreService.getScores(query);
@@ -120,12 +120,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: result,
-        message: 'Баллы успешно получены'
+        message: 'Баллы успешно получены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения баллов'
+        message: error instanceof Error ? error.message : 'Ошибка получения баллов',
       });
     }
   }
@@ -143,12 +143,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: scores,
-        message: 'Баллы команды успешно получены'
+        message: 'Баллы команды успешно получены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения баллов команды'
+        message: error instanceof Error ? error.message : 'Ошибка получения баллов команды',
       });
     }
   }
@@ -166,16 +166,15 @@ export class ScoreController {
       res.json({
         success: true,
         data: stats,
-        message: 'Статистика баллов команды успешно получена'
+        message: 'Статистика баллов команды успешно получена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения статистики команды'
+        message: error instanceof Error ? error.message : 'Ошибка получения статистики команды',
       });
     }
   }
-
 
   /**
    * Массовый ввод баллов
@@ -191,12 +190,12 @@ export class ScoreController {
       res.status(201).json({
         success: true,
         data: result,
-        message: `Массовый ввод завершен. Создано: ${result.created}, ошибок: ${result.errors.length}`
+        message: `Массовый ввод завершен. Создано: ${result.created}, ошибок: ${result.errors.length}`,
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка массового ввода баллов'
+        message: error instanceof Error ? error.message : 'Ошибка массового ввода баллов',
       });
     }
   }
@@ -211,7 +210,7 @@ export class ScoreController {
       const correctionData: ScoreCorrectionDto = {
         ...req.body,
         scoreId: parseInt(id!),
-        correctedBy: req.user?.userId!
+        correctedBy: req.user?.userId!,
       };
 
       const score = await scoreService.correctScore(correctionData);
@@ -219,12 +218,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: score,
-        message: 'Баллы успешно исправлены'
+        message: 'Баллы успешно исправлены',
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка исправления баллов'
+        message: error instanceof Error ? error.message : 'Ошибка исправления баллов',
       });
     }
   }
@@ -242,12 +241,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: history,
-        message: 'История исправлений успешно получена'
+        message: 'История исправлений успешно получена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения истории исправлений'
+        message: error instanceof Error ? error.message : 'Ошибка получения истории исправлений',
       });
     }
   }
@@ -267,12 +266,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: corrections,
-        message: 'Исправления игры успешно получены'
+        message: 'Исправления игры успешно получены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения исправлений игры'
+        message: error instanceof Error ? error.message : 'Ошибка получения исправлений игры',
       });
     }
   }
@@ -290,19 +289,19 @@ export class ScoreController {
       if (!success) {
         res.status(404).json({
           success: false,
-          message: 'Запись о баллах не найдена'
+          message: 'Запись о баллах не найдена',
         });
         return;
       }
 
       res.json({
         success: true,
-        message: 'Баллы успешно удалены'
+        message: 'Баллы успешно удалены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка удаления баллов'
+        message: error instanceof Error ? error.message : 'Ошибка удаления баллов',
       });
     }
   }
@@ -320,7 +319,7 @@ export class ScoreController {
         page: req.query['page'] ? parseInt(req.query['page'] as string) : 1,
         limit: req.query['limit'] ? parseInt(req.query['limit'] as string) : 50,
         sortBy: (req.query['sortBy'] as string) || 'createdAt',
-        sortOrder: (req.query['sortOrder'] as 'ASC' | 'DESC') || 'DESC'
+        sortOrder: (req.query['sortOrder'] as 'ASC' | 'DESC') || 'DESC',
       };
 
       const result = await scoreService.getGameScoresHistory(parseInt(gameId!), query);
@@ -328,12 +327,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: result,
-        message: 'История баллов игры успешно получена'
+        message: 'История баллов игры успешно получена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения истории баллов'
+        message: error instanceof Error ? error.message : 'Ошибка получения истории баллов',
       });
     }
   }
@@ -351,12 +350,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: stats,
-        message: 'Статистика баллов игры успешно получена'
+        message: 'Статистика баллов игры успешно получена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения статистики баллов игры'
+        message: error instanceof Error ? error.message : 'Ошибка получения статистики баллов игры',
       });
     }
   }
@@ -374,12 +373,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: leaderboard,
-        message: 'Лидерборд игры успешно получен'
+        message: 'Лидерборд игры успешно получен',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения лидерборда'
+        message: error instanceof Error ? error.message : 'Ошибка получения лидерборда',
       });
     }
   }
@@ -392,20 +391,17 @@ export class ScoreController {
     try {
       const { gameId, roundId } = req.params;
 
-      const scores = await scoreService.getRoundScores(
-        parseInt(gameId!),
-        parseInt(roundId!)
-      );
+      const scores = await scoreService.getRoundScores(parseInt(gameId!), parseInt(roundId!));
 
       res.json({
         success: true,
         data: scores,
-        message: 'Баллы раунда успешно получены'
+        message: 'Баллы раунда успешно получены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения баллов раунда'
+        message: error instanceof Error ? error.message : 'Ошибка получения баллов раунда',
       });
     }
   }
@@ -423,12 +419,12 @@ export class ScoreController {
       res.json({
         success: true,
         data: summary,
-        message: 'Сводка по раундам успешно получена'
+        message: 'Сводка по раундам успешно получена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения сводки по раундам'
+        message: error instanceof Error ? error.message : 'Ошибка получения сводки по раундам',
       });
     }
   }

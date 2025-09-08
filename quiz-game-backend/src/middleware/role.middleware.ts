@@ -11,7 +11,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
     if (!user) {
       res.status(401).json({
         success: false,
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -19,7 +19,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
     if (!user.role) {
       res.status(403).json({
         success: false,
-        message: 'Роль пользователя не определена'
+        message: 'Роль пользователя не определена',
       });
       return;
     }
@@ -27,7 +27,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
     if (!allowedRoles.includes(user.role)) {
       res.status(403).json({
         success: false,
-        message: 'Недостаточно прав для выполнения операции'
+        message: 'Недостаточно прав для выполнения операции',
       });
       return;
     }

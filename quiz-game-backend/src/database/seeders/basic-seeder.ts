@@ -16,7 +16,7 @@ export async function seedBasicData(): Promise<void> {
       description: 'Демонстрационная организация для тестирования',
       email: 'demo@quiz-game.com',
       website: 'https://quiz-game.com',
-      isActive: true
+      isActive: true,
     });
 
     console.log('✅ Organization created:', organization.name);
@@ -29,7 +29,7 @@ export async function seedBasicData(): Promise<void> {
       lastName: 'User',
       role: UserRole.ADMIN,
       organizationId: organization.id,
-      isActive: true
+      isActive: true,
     });
 
     console.log('✅ Admin user created:', adminUser.email);
@@ -37,19 +37,22 @@ export async function seedBasicData(): Promise<void> {
     // Создаем шаблон игры
     const gameTemplate = await GameTemplate.create({
       name: 'Классическая викторина',
-      description: 'Стандартный шаблон для проведения викторин. Администратор создает раунды и вносит баллы команд вручную.',
+      description:
+        'Стандартный шаблон для проведения викторин. Администратор создает раунды и вносит баллы команд вручную.',
       roundsCount: 3,
       maxTeams: 20,
       organizationId: organization.id,
       createdBy: adminUser.id,
-      isActive: true
+      isActive: true,
     });
 
     console.log('✅ Game template created:', gameTemplate.name);
 
     console.log('ℹ️  Demo game, teams, rounds and scores will be created during actual usage');
     console.log('ℹ️  Seeder focuses on basic data: Organization, Admin user, and Game template');
-    console.log('ℹ️  Business process: Admin creates games, teams register, admin enters round scores');
+    console.log(
+      'ℹ️  Business process: Admin creates games, teams register, admin enters round scores',
+    );
 
     console.log('🎉 Database seeding completed successfully!');
   } catch (error) {

@@ -11,7 +11,12 @@ const router = Router();
  */
 
 // История баллов игры
-router.get('/:gameId/scores', authenticateToken, validateGameScoresQuery, scoreController.getGameScoresHistory);
+router.get(
+  '/:gameId/scores',
+  authenticateToken,
+  validateGameScoresQuery,
+  scoreController.getGameScoresHistory,
+);
 
 // Статистика баллов игры
 router.get('/:gameId/scores/stats', authenticateToken, scoreController.getGameScoreStats);
@@ -23,6 +28,11 @@ router.get('/:gameId/leaderboard', authenticateToken, scoreController.getGameLea
 router.get('/:gameId/rounds/summary', authenticateToken, scoreController.getGameRoundsSummary);
 
 // Баллы конкретного раунда
-router.get('/:gameId/rounds/:roundId/scores', authenticateToken, validateRoundScoresParams, scoreController.getRoundScores);
+router.get(
+  '/:gameId/rounds/:roundId/scores',
+  authenticateToken,
+  validateRoundScoresParams,
+  scoreController.getRoundScores,
+);
 
 export default router;

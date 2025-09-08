@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+
 import { scoreService } from '../services/score.service';
+
 import { CorrectionHistoryItem } from './ScoreCorrectionModal';
 
 interface Score {
@@ -100,7 +102,7 @@ export const ScoreHistoryModal: React.FC<ScoreHistoryModalProps> = ({
 
             {loading && (
               <div className="loading-state">
-                <div className="spinner"></div>
+                <div className="spinner" />
                 <span>Загрузка истории...</span>
               </div>
             )}
@@ -251,7 +253,7 @@ export const GameCorrectionsModal: React.FC<GameCorrectionsModalProps> = ({
           <div className="corrections-section">
             {loading && (
               <div className="loading-state">
-                <div className="spinner"></div>
+                <div className="spinner" />
                 <span>Загрузка исправлений...</span>
               </div>
             )}

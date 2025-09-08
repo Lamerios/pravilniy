@@ -3,13 +3,14 @@
  */
 
 import { Link } from 'react-router-dom';
+
 import { AdminOnly, ModeratorOrAbove, OwnerOnly, OwnerOrAdmin, RoleGuard } from '../components/RoleGuard';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useRole } from '../hooks/useRole';
 
 export function DashboardPage() {
   const { user, logout } = useAuthContext();
-  const { getRoleInfo, isAdmin, isOwner, isModerator } = useRole();
+  const { getRoleInfo } = useRole();
 
   const handleLogout = async () => {
     try {

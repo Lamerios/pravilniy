@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { CreateGameModal } from '../components/CreateGameModal';
 import { EditGameModal } from '../components/EditGameModal';
 import { GameFiltersComponent } from '../components/GameFilters';
@@ -25,7 +26,7 @@ export function GamesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  // Removed unused action loading state
 
   const handlePageChange = (page: number) => {
     setFilters({ page });

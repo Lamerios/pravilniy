@@ -15,7 +15,9 @@ export async function seedDemoGame(): Promise<void> {
     console.log('🎮 Starting demo game seeding...');
 
     // Находим существующие базовые данные
-    const organization = await Organization.findOne({ where: { name: 'Quiz Game Demo Organization' } });
+    const organization = await Organization.findOne({
+      where: { name: 'Quiz Game Demo Organization' },
+    });
     if (!organization) {
       throw new Error('Organization not found. Run basic seeder first.');
     }
@@ -26,7 +28,7 @@ export async function seedDemoGame(): Promise<void> {
     }
 
     const gameTemplate = await GameTemplate.findOne({
-      where: { name: 'Классическая викторина' }
+      where: { name: 'Классическая викторина' },
     });
     if (!gameTemplate) {
       throw new Error('Game template not found. Run basic seeder first.');
@@ -53,12 +55,12 @@ export async function seedDemoGame(): Promise<void> {
       settings: {
         allowLateJoin: false,
         autoStart: false,
-        showScores: true
+        showScores: true,
       },
       gameData: {
         rules: 'Стандартные правила викторины',
-        notes: 'Демонстрационная игра для показа возможностей системы'
-      }
+        notes: 'Демонстрационная игра для показа возможностей системы',
+      },
     } as any);
 
     console.log('✅ Demo game created:', demoGame.name);
@@ -74,11 +76,11 @@ export async function seedDemoGame(): Promise<void> {
         members: [
           { name: 'Иван Петров', role: 'капитан', joinedAt: new Date() },
           { name: 'Мария Сидорова', role: 'игрок', joinedAt: new Date() },
-          { name: 'Алексей Козлов', role: 'игрок', joinedAt: new Date() }
+          { name: 'Алексей Козлов', role: 'игрок', joinedAt: new Date() },
         ],
         contactInfo: {
           email: 'znatoki@example.com',
-          phone: '+7-900-111-22-33'
+          phone: '+7-900-111-22-33',
         },
         totalScore: 85,
         currentRound: 3,
@@ -90,12 +92,12 @@ export async function seedDemoGame(): Promise<void> {
           totalScore: 85,
           averageScore: 28,
           bestRound: 35,
-          worstRound: 25
+          worstRound: 25,
         },
         joinedAt: new Date(Date.now() - 7200000),
         lastActivity: new Date(Date.now() - 3600000),
         isActive: true,
-        isReady: true
+        isReady: true,
       },
       {
         organizationId: organization.id.toString(),
@@ -107,11 +109,11 @@ export async function seedDemoGame(): Promise<void> {
           { name: 'Анна Волкова', role: 'капитан', joinedAt: new Date() },
           { name: 'Дмитрий Новиков', role: 'игрок', joinedAt: new Date() },
           { name: 'Елена Морозова', role: 'игрок', joinedAt: new Date() },
-          { name: 'Павел Лебедев', role: 'игрок', joinedAt: new Date() }
+          { name: 'Павел Лебедев', role: 'игрок', joinedAt: new Date() },
         ],
         contactInfo: {
           email: 'erudity@example.com',
-          phone: '+7-900-123-45-67'
+          phone: '+7-900-123-45-67',
         },
         totalScore: 78,
         currentRound: 3,
@@ -123,12 +125,12 @@ export async function seedDemoGame(): Promise<void> {
           totalScore: 78,
           averageScore: 26,
           bestRound: 30,
-          worstRound: 22
+          worstRound: 22,
         },
         joinedAt: new Date(Date.now() - 7200000),
         lastActivity: new Date(Date.now() - 3600000),
         isActive: true,
-        isReady: true
+        isReady: true,
       },
       {
         organizationId: organization.id.toString(),
@@ -138,10 +140,10 @@ export async function seedDemoGame(): Promise<void> {
         captain: 'Сергей Белов',
         members: [
           { name: 'Сергей Белов', role: 'капитан', joinedAt: new Date() },
-          { name: 'Ольга Зайцева', role: 'игрок', joinedAt: new Date() }
+          { name: 'Ольга Зайцева', role: 'игрок', joinedAt: new Date() },
         ],
         contactInfo: {
-          email: 'mudrecy@example.com'
+          email: 'mudrecy@example.com',
         },
         totalScore: 72,
         currentRound: 3,
@@ -153,12 +155,12 @@ export async function seedDemoGame(): Promise<void> {
           totalScore: 72,
           averageScore: 24,
           bestRound: 28,
-          worstRound: 20
+          worstRound: 20,
         },
         joinedAt: new Date(Date.now() - 7200000),
         lastActivity: new Date(Date.now() - 3600000),
         isActive: true,
-        isReady: true
+        isReady: true,
       },
       {
         organizationId: organization.id.toString(),
@@ -169,11 +171,11 @@ export async function seedDemoGame(): Promise<void> {
         members: [
           { name: 'Татьяна Смирнова', role: 'капитан', joinedAt: new Date() },
           { name: 'Андрей Попов', role: 'игрок', joinedAt: new Date() },
-          { name: 'Юлия Васильева', role: 'игрок', joinedAt: new Date() }
+          { name: 'Юлия Васильева', role: 'игрок', joinedAt: new Date() },
         ],
         contactInfo: {
           email: 'novichki@example.com',
-          phone: '+7-900-555-66-77'
+          phone: '+7-900-555-66-77',
         },
         totalScore: 65,
         currentRound: 3,
@@ -185,13 +187,13 @@ export async function seedDemoGame(): Promise<void> {
           totalScore: 65,
           averageScore: 22,
           bestRound: 25,
-          worstRound: 18
+          worstRound: 18,
         },
         joinedAt: new Date(Date.now() - 7200000),
         lastActivity: new Date(Date.now() - 3600000),
         isActive: true,
-        isReady: true
-      }
+        isReady: true,
+      },
     ] as any);
 
     console.log('✅ Teams created:', teams.length);
@@ -212,16 +214,16 @@ export async function seedDemoGame(): Promise<void> {
         multiplier: 1.0,
         settings: {
           allowHints: false,
-          showAnswers: true
+          showAnswers: true,
         },
         statistics: {
           totalAnswers: 40,
           correctAnswers: 32,
           averageTime: 18,
-          participatingTeams: 4
+          participatingTeams: 4,
         },
         startedAt: new Date(Date.now() - 7200000),
-        finishedAt: new Date(Date.now() - 6600000)
+        finishedAt: new Date(Date.now() - 6600000),
       },
       {
         gameId: demoGame.id,
@@ -237,16 +239,16 @@ export async function seedDemoGame(): Promise<void> {
         multiplier: 1.5,
         settings: {
           allowHints: false,
-          showAnswers: true
+          showAnswers: true,
         },
         statistics: {
           totalAnswers: 60,
           correctAnswers: 42,
           averageTime: 25,
-          participatingTeams: 4
+          participatingTeams: 4,
         },
         startedAt: new Date(Date.now() - 6600000),
-        finishedAt: new Date(Date.now() - 5400000)
+        finishedAt: new Date(Date.now() - 5400000),
       },
       {
         gameId: demoGame.id,
@@ -262,17 +264,17 @@ export async function seedDemoGame(): Promise<void> {
         multiplier: 2.0,
         settings: {
           allowHints: false,
-          showAnswers: true
+          showAnswers: true,
         },
         statistics: {
           totalAnswers: 40,
           correctAnswers: 25,
           averageTime: 42,
-          participatingTeams: 4
+          participatingTeams: 4,
         },
         startedAt: new Date(Date.now() - 5400000),
-        finishedAt: new Date(Date.now() - 3600000)
-      }
+        finishedAt: new Date(Date.now() - 3600000),
+      },
     ] as any);
 
     console.log('✅ Rounds created:', rounds.length);
@@ -287,7 +289,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 25,
         totalPoints: 25,
         notes: 'Отличные знания в разминочном раунде',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -296,7 +298,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 35,
         totalPoints: 35,
         notes: 'Лучший результат в основном раунде',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -305,7 +307,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 25,
         totalPoints: 25,
         notes: 'Стабильный результат в финале',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
 
       // Команда "Эрудиты" - 2 место (78 баллов)
@@ -316,7 +318,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 22,
         totalPoints: 22,
         notes: 'Хороший старт',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -325,7 +327,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 30,
         totalPoints: 30,
         notes: 'Сильный результат в основном раунде',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -334,7 +336,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 26,
         totalPoints: 26,
         notes: 'Хороший финиш',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
 
       // Команда "Мудрецы" - 3 место (72 балла)
@@ -345,7 +347,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 20,
         totalPoints: 20,
         notes: 'Неспешный старт',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -354,7 +356,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 28,
         totalPoints: 28,
         notes: 'Опыт дает о себе знать',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -363,7 +365,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 24,
         totalPoints: 24,
         notes: 'Достойное завершение',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
 
       // Команда "Новички" - 4 место (65 баллов)
@@ -374,7 +376,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 18,
         totalPoints: 18,
         notes: 'Первый опыт',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -383,7 +385,7 @@ export async function seedDemoGame(): Promise<void> {
         points: 22,
         totalPoints: 22,
         notes: 'Прогресс налицо',
-        enteredBy: adminUser.id
+        enteredBy: adminUser.id,
       },
       {
         gameId: demoGame.id,
@@ -392,8 +394,8 @@ export async function seedDemoGame(): Promise<void> {
         points: 25,
         totalPoints: 25,
         notes: 'Сильное завершение!',
-        enteredBy: adminUser.id
-      }
+        enteredBy: adminUser.id,
+      },
     ] as any);
 
     console.log('✅ Scores created:', scores.length);

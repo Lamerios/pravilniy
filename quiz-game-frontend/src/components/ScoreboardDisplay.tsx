@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import { ScoreResponse } from '../services/score.service';
 import { GameLeaderboard } from '../types/position.types';
+
 import { LeaderboardTable } from './LeaderboardTable';
 import { ScoreHistoryPanel } from './ScoreHistoryPanel';
 import { TeamScoreCard } from './TeamScoreCard';

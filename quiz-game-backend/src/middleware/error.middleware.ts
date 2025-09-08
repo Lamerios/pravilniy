@@ -43,7 +43,7 @@ export const errorHandler = (
   error: ApiError,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'Внутренняя ошибка сервера';
@@ -57,7 +57,7 @@ export const errorHandler = (
     body: req.body,
     params: req.params,
     query: req.query,
-    user: (req as any).user?.userId || 'Anonymous'
+    user: (req as any).user?.userId || 'Anonymous',
   });
 
   // Обработка различных типов ошибок
@@ -69,7 +69,7 @@ export const errorHandler = (
     details = error.errors.map(err => ({
       field: err.path,
       message: err.message,
-      value: err.value
+      value: err.value,
     }));
   } else if (error.name === 'SequelizeUniqueConstraintError') {
     // Ошибка уникальности
@@ -117,7 +117,7 @@ export const errorHandler = (
   const errorResponse: ErrorResponse = {
     success: false,
     error: errorName,
-    message: message
+    message,
   };
 
   // Добавляем детали в development режиме
@@ -139,7 +139,7 @@ export const notFoundHandler = (req: Request, res: Response): void => {
   const errorResponse: ErrorResponse = {
     success: false,
     error: 'NotFoundError',
-    message: `Роут ${req.method} ${req.path} не найден`
+    message: `Роут ${req.method} ${req.path} не найден`,
   };
 
   res.status(404).json(errorResponse);
@@ -175,7 +175,9 @@ export const uncaughtExceptionHandler = (error: Error): void => {
 /**
  * Асинхронный wrapper для обработки ошибок в async функциях
  */
-export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+export const asyncHandler = (
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
@@ -192,12 +194,14 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   // Перехватываем ответ
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     const duration = Date.now() - startTime;
     const statusColor = res.statusCode >= 400 ? '\x1b[31m' : '\x1b[32m'; // Красный для ошибок, зеленый для успеха
     const resetColor = '\x1b[0m';
 
-    console.log(`${statusColor}[RESPONSE] ${req.method} ${req.path} - ${res.statusCode} - ${duration}ms${resetColor}`);
+    console.log(
+      `${statusColor}[RESPONSE] ${req.method} ${req.path} - ${res.statusCode} - ${duration}ms${resetColor}`,
+    );
     return originalSend.call(this, data);
   };
 

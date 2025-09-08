@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+
 import { authService } from '../services/auth.service';
 import {
     AuthState,
@@ -201,8 +202,8 @@ export function useAuth() {
           updateState({
             user: currentUser,
             tokens: {
-              accessToken: getAccessToken() || '',
-              refreshToken: getRefreshToken() || '',
+              accessToken: getAccessToken() ?? '',
+              refreshToken: getRefreshToken() ?? '',
             },
             isAuthenticated: true,
             isLoading: false,

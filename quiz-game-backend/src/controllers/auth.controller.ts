@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
 import {
-    AuthenticatedRequest,
-    AuthError,
-    ChangePasswordData,
-    LoginCredentials,
-    RegisterData,
-    ResetPasswordData,
-    SetNewPasswordData,
-    ValidationError
+  AuthError,
+  AuthenticatedRequest,
+  ChangePasswordData,
+  LoginCredentials,
+  RegisterData,
+  ResetPasswordData,
+  SetNewPasswordData,
+  ValidationError,
 } from '../types/auth.types';
 
 /**
@@ -35,7 +35,7 @@ export class AuthController {
       res.status(200).json({
         success: true,
         message: 'Успешная аутентификация',
-        data: result
+        data: result,
       });
     } catch (error) {
       this.handleError(error, res);
@@ -55,7 +55,7 @@ export class AuthController {
       res.status(201).json({
         success: true,
         message: 'Пользователь успешно зарегистрирован',
-        data: result
+        data: result,
       });
     } catch (error) {
       this.handleError(error, res);
@@ -74,7 +74,7 @@ export class AuthController {
         res.status(400).json({
           success: false,
           error: 'Refresh token required',
-          message: 'Требуется refresh токен'
+          message: 'Требуется refresh токен',
         });
         return;
       }
@@ -84,7 +84,7 @@ export class AuthController {
       res.status(200).json({
         success: true,
         message: 'Токен успешно обновлен',
-        data: result
+        data: result,
       });
     } catch (error) {
       this.handleError(error, res);
@@ -103,7 +103,7 @@ export class AuthController {
         res.status(401).json({
           success: false,
           error: 'Authentication required',
-          message: 'Требуется аутентификация'
+          message: 'Требуется аутентификация',
         });
         return;
       }
@@ -112,7 +112,7 @@ export class AuthController {
 
       res.status(200).json({
         success: true,
-        message: 'Пароль успешно изменен'
+        message: 'Пароль успешно изменен',
       });
     } catch (error) {
       this.handleError(error, res);
@@ -132,7 +132,8 @@ export class AuthController {
       // Всегда возвращаем успех для безопасности
       res.status(200).json({
         success: true,
-        message: 'Если пользователь с таким email существует, инструкции по сбросу пароля отправлены на почту'
+        message:
+          'Если пользователь с таким email существует, инструкции по сбросу пароля отправлены на почту',
       });
     } catch (error) {
       this.handleError(error, res);
@@ -151,7 +152,7 @@ export class AuthController {
 
       res.status(200).json({
         success: true,
-        message: 'Пароль успешно сброшен'
+        message: 'Пароль успешно сброшен',
       });
     } catch (error) {
       this.handleError(error, res);
@@ -168,7 +169,7 @@ export class AuthController {
         res.status(401).json({
           success: false,
           error: 'Authentication required',
-          message: 'Требуется аутентификация'
+          message: 'Требуется аутентификация',
         });
         return;
       }
@@ -177,8 +178,8 @@ export class AuthController {
         success: true,
         message: 'Информация о пользователе получена',
         data: {
-          user: req.user
-        }
+          user: req.user,
+        },
       });
     } catch (error) {
       this.handleError(error, res);
@@ -196,7 +197,7 @@ export class AuthController {
 
       res.status(200).json({
         success: true,
-        message: 'Успешный выход из системы'
+        message: 'Успешный выход из системы',
       });
     } catch (error) {
       this.handleError(error, res);
@@ -213,7 +214,7 @@ export class AuthController {
         res.status(401).json({
           success: false,
           error: 'Invalid token',
-          message: 'Недействительный токен'
+          message: 'Недействительный токен',
         });
         return;
       }
@@ -222,8 +223,8 @@ export class AuthController {
         success: true,
         message: 'Токен действителен',
         data: {
-          user: req.user
-        }
+          user: req.user,
+        },
       });
     } catch (error) {
       this.handleError(error, res);
@@ -240,7 +241,7 @@ export class AuthController {
       res.status(error.statusCode).json({
         success: false,
         error: error.name,
-        message: error.message
+        message: error.message,
       });
       return;
     }
@@ -250,7 +251,7 @@ export class AuthController {
         success: false,
         error: error.name,
         message: error.message,
-        field: error.field
+        field: error.field,
       });
       return;
     }
@@ -262,7 +263,7 @@ export class AuthController {
         success: false,
         error: 'ValidationError',
         message: 'Ошибка валидации данных',
-        details: messages
+        details: messages,
       });
       return;
     }
@@ -272,7 +273,7 @@ export class AuthController {
       res.status(409).json({
         success: false,
         error: 'UniqueConstraintError',
-        message: 'Пользователь с такими данными уже существует'
+        message: 'Пользователь с такими данными уже существует',
       });
       return;
     }
@@ -281,7 +282,7 @@ export class AuthController {
     res.status(500).json({
       success: false,
       error: 'InternalServerError',
-      message: 'Внутренняя ошибка сервера'
+      message: 'Внутренняя ошибка сервера',
     });
   }
 }

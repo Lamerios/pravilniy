@@ -1,18 +1,18 @@
 import {
-    AllowNull,
-    BelongsTo,
-    BelongsToMany,
-    Column,
-    CreatedAt,
-    DataType,
-    Default,
-    ForeignKey,
-    HasMany,
-    Model,
-    PrimaryKey,
-    Table,
-    UpdatedAt,
-    Validate
+  AllowNull,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  Model,
+  PrimaryKey,
+  Table,
+  UpdatedAt,
+  Validate,
 } from 'sequelize-typescript';
 import { GameTeam } from './game-team.model';
 import { Game } from './game.model';
@@ -72,7 +72,7 @@ export class Team extends Model<Team> {
 
   @AllowNull(false)
   @Validate({
-    len: [1, 100]
+    len: [1, 100],
   })
   @Column(DataType.STRING(100))
   name!: string;
@@ -81,7 +81,7 @@ export class Team extends Model<Team> {
   description?: string;
 
   @Validate({
-    len: [0, 100]
+    len: [0, 100],
   })
   @Column(DataType.STRING(100))
   captain?: string;
@@ -128,7 +128,7 @@ export class Team extends Model<Team> {
     totalScore: 0,
     averageScore: 0,
     bestRound: 0,
-    worstRound: 0
+    worstRound: 0,
   })
   @Column(DataType.JSONB)
   statistics?: TeamStatistics;
@@ -189,7 +189,7 @@ export class Team extends Model<Team> {
     }
     this.members.push({
       ...member,
-      joinedAt: new Date()
+      joinedAt: new Date(),
     });
   }
 
@@ -209,13 +209,15 @@ export class Team extends Model<Team> {
         totalScore: 0,
         averageScore: 0,
         bestRound: 0,
-        worstRound: 0
+        worstRound: 0,
       };
     }
 
     this.statistics.roundsPlayed++;
     this.statistics.totalScore += roundScore;
-    this.statistics.averageScore = Math.round(this.statistics.totalScore / this.statistics.roundsPlayed);
+    this.statistics.averageScore = Math.round(
+      this.statistics.totalScore / this.statistics.roundsPlayed,
+    );
 
     if (roundScore > this.statistics.bestRound) {
       this.statistics.bestRound = roundScore;

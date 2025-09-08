@@ -1,13 +1,13 @@
 import {
-    BelongsTo,
-    Column,
-    CreatedAt,
-    DataType,
-    ForeignKey,
-    Model,
-    PrimaryKey,
-    Table,
-    UpdatedAt
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { Game } from './game.model';
 import { Team } from './team.model';

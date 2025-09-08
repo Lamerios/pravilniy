@@ -13,10 +13,10 @@ import { setupAssociations } from '../models/associations';
 import { runAllMigrations } from './migrations';
 import { runBasicSeeders, runDemoSeeders, runFullSeeders } from './seeders';
 import {
-    checkDatabaseConnection,
-    checkDatabaseStatus,
-    checkTablesExist,
-    formatDuration
+  checkDatabaseConnection,
+  checkDatabaseStatus,
+  checkTablesExist,
+  formatDuration,
 } from './utils';
 
 async function main() {
@@ -24,7 +24,7 @@ async function main() {
 
   try {
     console.log('🚀 Database Setup Script Started');
-    console.log('=' .repeat(50));
+    console.log('='.repeat(50));
 
     // Получаем тип настройки из аргументов
     const setupType = process.argv[2] || 'full';
@@ -76,7 +76,7 @@ async function main() {
     await checkDatabaseStatus();
 
     const duration = formatDuration(startTime);
-    console.log('\n' + '='.repeat(50));
+    console.log(`\n${'='.repeat(50)}`);
     console.log(`🎉 Database setup completed successfully in ${duration}!`);
     console.log('📊 Your database is ready to use');
 
@@ -85,10 +85,9 @@ async function main() {
     console.log('   - Start your application: npm run dev');
     console.log('   - Check database status: npm run db:check');
     console.log('   - Reset if needed: npm run db:reset');
-
   } catch (error) {
     const duration = formatDuration(startTime);
-    console.error('\n' + '='.repeat(50));
+    console.error(`\n${'='.repeat(50)}`);
     console.error(`❌ Database setup failed after ${duration}:`);
     console.error(error);
 

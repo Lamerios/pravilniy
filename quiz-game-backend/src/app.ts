@@ -6,17 +6,13 @@ import {
     bodySizeLimit,
     contentTypeValidator,
     corsMiddleware,
-    securityHeaders
+    securityHeaders,
 } from './middleware/cors.middleware';
-import {
-    errorHandler,
-    notFoundHandler,
-    requestLogger
-} from './middleware/error.middleware';
+import { errorHandler, notFoundHandler, requestLogger } from './middleware/error.middleware';
 import {
     apiRateLimit,
     authRateLimit,
-    rateLimitMiddleware
+    rateLimitMiddleware,
 } from './middleware/rate-limit.middleware';
 
 // Импорт роутов
@@ -31,16 +27,18 @@ export function createApp(): Application {
   app.set('trust proxy', 1);
 
   // Безопасность
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
       },
-    },
-  }));
+    }),
+  );
 
   // Дополнительные заголовки безопасности
   app.use(securityHeaders);
@@ -49,14 +47,18 @@ export function createApp(): Application {
   app.use(corsMiddleware);
 
   // Парсинг тела запроса
-  app.use(express.json({
-    limit: process.env['REQUEST_SIZE_LIMIT'] || '10mb',
-    strict: true
-  }));
-  app.use(express.urlencoded({
-    extended: true,
-    limit: process.env['REQUEST_SIZE_LIMIT'] || '10mb'
-  }));
+  app.use(
+    express.json({
+      limit: process.env['REQUEST_SIZE_LIMIT'] ?? '10mb',
+      strict: true,
+    }),
+  );
+  app.use(
+    express.urlencoded({
+      extended: true,
+      limit: process.env['REQUEST_SIZE_LIMIT'] ?? '10mb',
+    }),
+  );
 
   // Валидация Content-Type
   app.use(contentTypeValidator);

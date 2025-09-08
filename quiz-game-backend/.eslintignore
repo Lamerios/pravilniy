@@ -1,52 +1,46 @@
 # Dependencies
 node_modules/
-npm-debug.log*
 
-# Build output
+# Build outputs
 dist/
 build/
-*.tsbuildinfo
 
 # Coverage reports
 coverage/
-*.lcov
-
-# Environment variables
-.env
-.env.local
-.env.*.local
 
 # Logs
 logs/
 *.log
 
-# Database
-*.db
-*.sqlite
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# IDE
+# IDE files
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
 # Temporary files
-*.tmp
-*.temp
+tmp/
+temp/
 
-# Generated files
-*.generated.ts
-*.generated.js
+# Database files
+*.sqlite
+*.sqlite3
+*.db
 
-# Migration files (auto-generated)
-migrations/*.js
+# Test files that should be ignored by main linting
+**/*.d.ts
 
-# Test files that shouldn't be linted
-**/*.test.js
-**/*.spec.js
-
-# Config files that use CommonJS
-jest.config.js
-webpack.config.js
+# Configuration files that don't need linting
+*.config.js
+*.config.mjs

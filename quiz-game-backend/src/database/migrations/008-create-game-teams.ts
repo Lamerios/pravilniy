@@ -9,10 +9,10 @@ export = {
         primaryKey: true,
         references: {
           model: 'games',
-          key: 'id'
+          key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       teamId: {
         type: DataTypes.UUID,
@@ -20,42 +20,42 @@ export = {
         primaryKey: true,
         references: {
           model: 'teams',
-          key: 'id'
+          key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       joinedAt: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        comment: 'Порядок присоединения команды к игре'
+        comment: 'Порядок присоединения команды к игре',
       },
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true,
-        comment: 'Активна ли команда в игре'
+        comment: 'Активна ли команда в игре',
       },
       joinedAtDate: {
         type: DataTypes.DATE,
         allowNull: true,
-        comment: 'Дата присоединения'
+        comment: 'Дата присоединения',
       },
       leftAtDate: {
         type: DataTypes.DATE,
         allowNull: true,
-        comment: 'Дата выхода из игры'
+        comment: 'Дата выхода из игры',
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW
-      }
+        defaultValue: DataTypes.NOW,
+      },
     });
 
     // Добавляем индексы для оптимизации запросов
@@ -67,5 +67,5 @@ export = {
 
   down: async (queryInterface: QueryInterface): Promise<void> => {
     await queryInterface.dropTable('game_teams');
-  }
+  },
 };

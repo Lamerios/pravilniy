@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+
 import '../styles/position-animations.css';
 import { GameLeaderboard, TeamPosition } from '../types/position.types';
 

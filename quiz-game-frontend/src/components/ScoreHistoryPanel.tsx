@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+
 import { ScoreResponse } from '../services/score.service';
 
 interface Round {
@@ -21,7 +22,7 @@ interface ScoreHistoryPanelProps {
 }
 
 export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
-  gameId,
+  gameId: _gameId,
   gameName,
   scores,
   rounds = [],
@@ -108,9 +109,10 @@ export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
     <div className="history-filters">
       {showTeamFilter && (
         <div className="filter-group">
-          <label>Команда:</label>
+          <label htmlFor="team-filter">Команда:</label>
           <select
-            value={selectedTeamId || ''}
+            id="team-filter"
+            value={selectedTeamId ?? ''}
             onChange={(e) => setSelectedTeamId(e.target.value ? parseInt(e.target.value) : null)}
             className="filter-select"
           >
@@ -127,9 +129,10 @@ export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
 
       {showRoundFilter && rounds.length > 0 && (
         <div className="filter-group">
-          <label>Раунд:</label>
+          <label htmlFor="round-filter">Раунд:</label>
           <select
-            value={selectedRoundId || ''}
+            id="round-filter"
+            value={selectedRoundId ?? ''}
             onChange={(e) => setSelectedRoundId(e.target.value ? parseInt(e.target.value) : null)}
             className="filter-select"
           >
@@ -144,8 +147,9 @@ export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
       )}
 
       <div className="filter-group">
-        <label>Порядок:</label>
+        <label htmlFor="sort-order">Порядок:</label>
         <select
+          id="sort-order"
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
           className="filter-select"
@@ -180,14 +184,14 @@ export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
             </div>
           ) : (
             <div className="timeline">
-              {filteredScores.map((score, index) => (
+              {filteredScores.map((score, _index) => (
                 <div
                   key={score.id}
                   className="timeline-item"
                   onClick={() => onScoreClick?.(score)}
                 >
                   <div className="timeline-marker">
-                    <div className={`marker-dot ${getScoreColor(score.points)}`}></div>
+                    <div className={`marker-dot ${getScoreColor(score.points)}`} />
                     <div className="marker-time">{formatTime(score.createdAt)}</div>
                   </div>
 
@@ -195,7 +199,7 @@ export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
                     <div className="score-header">
                       <span className="team-name">{score.team?.name}</span>
                       <span className="round-name">
-                        {score.round?.name || `Раунд ${score.round?.roundNumber}`}
+                        {score.round?.name ?? `Раунд ${score.round?.roundNumber}`}
                       </span>
                     </div>
 
@@ -360,5 +364,3 @@ export const ScoreHistoryPanel: React.FC<ScoreHistoryPanelProps> = ({
     </div>
   );
 };
-
-

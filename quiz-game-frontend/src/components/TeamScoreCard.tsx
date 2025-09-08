@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { ScoreResponse } from '../services/score.service';
 
 interface TeamScoreCardProps {
@@ -18,7 +19,7 @@ interface TeamScoreCardProps {
 }
 
 export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
-  teamId,
+  _teamId,
   teamName,
   tableNumber,
   position,
@@ -46,8 +47,8 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
     if (!showTrend || scores.length < 2) return 'stable';
 
     const recentScores = scores.slice(-3);
-    const firstScore = recentScores[0]?.totalPoints || 0;
-    const lastScore = recentScores[recentScores.length - 1]?.totalPoints || 0;
+    const firstScore = recentScores[0]?.totalPoints ?? 0;
+    const lastScore = recentScores[recentScores.length - 1]?.totalPoints ?? 0;
 
     if (lastScore > firstScore) return 'up';
     if (lastScore < firstScore) return 'down';
@@ -76,10 +77,18 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
 
   if (variant === 'compact') {
     return (
-      <div
-        className={`team-score-card team-score-card--compact ${className}`}
-        onClick={onClick}
-      >
+    <div
+      className={`team-score-card team-score-card--compact ${className}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : undefined}
+    >
         <div className={`position-badge ${positionColorClass}`}>
           #{position}
         </div>
@@ -106,9 +115,17 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
   if (variant === 'detailed') {
     return (
       <div
-        className={`team-score-card team-score-card--detailed ${className}`}
-        onClick={onClick}
-      >
+      className={`team-score-card team-score-card--detailed ${className}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : undefined}
+    >
         <div className="card-header">
           <div className={`position-badge ${positionColorClass}`}>
             #{position}
@@ -147,10 +164,10 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
           <div className="card-history">
             <div className="history-label">Последние раунды:</div>
             <div className="score-history">
-              {scores.slice(-5).map((score, index) => (
+              {scores.slice(-5).map((score, _index) => (
                 <div key={score.id} className="history-item">
                   <span className="round-name">
-                    {score.round?.name || `Р${score.round?.roundNumber}`}
+                    {score.round?.name ?? `Р${score.round?.roundNumber}`}
                   </span>
                   <span className="round-points">{score.totalPoints}</span>
                   {score.bet && (
@@ -178,6 +195,14 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
     <div
       className={`team-score-card team-score-card--default ${className}`}
       onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : undefined}
     >
       <div className="card-header">
         <div className={`position-badge ${positionColorClass}`}>

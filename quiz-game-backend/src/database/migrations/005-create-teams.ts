@@ -12,85 +12,85 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
-      comment: 'Уникальный идентификатор команды'
+      comment: 'Уникальный идентификатор команды',
     },
     organizationId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'organizations',
-        key: 'id'
+        key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
-      comment: 'Ссылка на организацию'
+      comment: 'Ссылка на организацию',
     },
     gameId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'games',
-        key: 'id'
+        key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
-      comment: 'Ссылка на игровую сессию'
+      comment: 'Ссылка на игровую сессию',
     },
     name: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      comment: 'Название команды'
+      comment: 'Название команды',
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-      comment: 'Описание команды'
+      comment: 'Описание команды',
     },
     captain: {
       type: DataTypes.STRING(100),
       allowNull: true,
-      comment: 'Имя капитана команды'
+      comment: 'Имя капитана команды',
     },
     members: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: [],
-      comment: 'Список участников команды в формате JSON'
+      comment: 'Список участников команды в формате JSON',
     },
     contactInfo: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: {},
-      comment: 'Контактная информация команды в формате JSON'
+      comment: 'Контактная информация команды в формате JSON',
     },
     totalScore: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: 'Общий счет команды'
+      comment: 'Общий счет команды',
     },
     currentRound: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: 'Текущий раунд команды'
+      comment: 'Текущий раунд команды',
     },
     position: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      comment: 'Позиция команды в рейтинге'
+      comment: 'Позиция команды в рейтинге',
     },
     bonusPoints: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: 'Бонусные очки команды'
+      comment: 'Бонусные очки команды',
     },
     penaltyPoints: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: 'Штрафные очки команды'
+      comment: 'Штрафные очки команды',
     },
     statistics: {
       type: DataTypes.JSONB,
@@ -101,44 +101,44 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
         totalAnswers: 0,
         averageTime: 0,
         streak: 0,
-        maxStreak: 0
+        maxStreak: 0,
       },
-      comment: 'Статистика команды в формате JSON'
+      comment: 'Статистика команды в формате JSON',
     },
     joinedAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время присоединения к игре'
+      comment: 'Дата и время присоединения к игре',
     },
     lastActivity: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время последней активности'
+      comment: 'Дата и время последней активности',
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      comment: 'Флаг активности команды'
+      comment: 'Флаг активности команды',
     },
     isReady: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-      comment: 'Флаг готовности команды к игре'
+      comment: 'Флаг готовности команды к игре',
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время создания записи'
+      comment: 'Дата и время создания записи',
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время последнего обновления записи'
-    }
+      comment: 'Дата и время последнего обновления записи',
+    },
   });
 
   // Создание индексов
@@ -156,7 +156,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
   // Композитный индекс для уникальности названия команды в рамках игры
   await queryInterface.addIndex('teams', ['gameId', 'name'], {
     unique: true,
-    name: 'teams_game_name_unique'
+    name: 'teams_game_name_unique',
   });
 
   console.log('✅ Migration: teams table created');

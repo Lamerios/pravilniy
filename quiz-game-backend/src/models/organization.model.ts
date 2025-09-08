@@ -1,15 +1,15 @@
 import {
-    AllowNull,
-    AutoIncrement,
-    Column,
-    CreatedAt,
-    DataType,
-    HasMany,
-    Model,
-    PrimaryKey,
-    Table,
-    Unique,
-    UpdatedAt
+  AllowNull,
+  AutoIncrement,
+  Column,
+  CreatedAt,
+  DataType,
+  HasMany,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { GameTemplate } from './game-template.model';
 import { User } from './user.model';
@@ -17,7 +17,7 @@ import { User } from './user.model';
 @Table({
   tableName: 'organizations',
   timestamps: true,
-  underscored: true
+  underscored: true,
 })
 export class Organization extends Model {
   @PrimaryKey

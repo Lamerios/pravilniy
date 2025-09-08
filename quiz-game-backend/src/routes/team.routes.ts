@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { teamController } from '../controllers/team.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 import { roleMiddleware } from '../middleware/role.middleware';
-import { validateCreateTeam, validateTeamQuery, validateUpdateTeam } from '../middleware/team.middleware';
+import {
+  validateCreateTeam,
+  validateTeamQuery,
+  validateUpdateTeam,
+} from '../middleware/team.middleware';
 
 const router = Router();
 
@@ -56,9 +60,10 @@ router.post('/validate-table-numbers', teamController.validateTableNumbers);
  * @desc Получить команды по организации
  * @access Private (Admin, Manager)
  */
-router.get('/organization/:organizationId',
+router.get(
+  '/organization/:organizationId',
   roleMiddleware(['admin', 'manager']),
-  teamController.getTeamsByOrganization
+  teamController.getTeamsByOrganization,
 );
 
 /**
@@ -73,10 +78,11 @@ router.get('/:id', teamController.getTeamById);
  * @desc Создать новую команду
  * @access Private (Admin, Manager)
  */
-router.post('/',
+router.post(
+  '/',
   roleMiddleware(['admin', 'manager']),
   validateCreateTeam,
-  teamController.createTeam
+  teamController.createTeam,
 );
 
 /**
@@ -84,10 +90,11 @@ router.post('/',
  * @desc Обновить команду
  * @access Private (Admin, Manager)
  */
-router.put('/:id',
+router.put(
+  '/:id',
   roleMiddleware(['admin', 'manager']),
   validateUpdateTeam,
-  teamController.updateTeam
+  teamController.updateTeam,
 );
 
 /**
@@ -95,9 +102,6 @@ router.put('/:id',
  * @desc Удалить команду
  * @access Private (Admin)
  */
-router.delete('/:id',
-  roleMiddleware(['admin']),
-  teamController.deleteTeam
-);
+router.delete('/:id', roleMiddleware(['admin']), teamController.deleteTeam);
 
 export default router;

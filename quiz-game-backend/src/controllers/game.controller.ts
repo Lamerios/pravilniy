@@ -2,7 +2,12 @@ import { Request, Response } from 'express';
 import { GameService } from '../services/game.service';
 import { PositionService } from '../services/position.service';
 import { AuthenticatedRequest } from '../types/auth.types';
-import { CreateGameDto, GameQueryDto, GameStateChangeDto, UpdateGameDto } from '../types/game.types';
+import {
+  CreateGameDto,
+  GameQueryDto,
+  GameStateChangeDto,
+  UpdateGameDto,
+} from '../types/game.types';
 import { PublicScoreboardData } from '../types/scoreboard.types';
 import { asyncHandler } from '../utils/async-handler.util';
 import { logger } from '../utils/logger';
@@ -24,9 +29,9 @@ export class GameController {
       page: parseInt(req.query['page'] as string) || 1,
       limit: parseInt(req.query['limit'] as string) || 10,
       search: req.query['search'] as string,
-      sortBy: req.query['sortBy'] as string || 'createdAt',
-      sortOrder: req.query['sortOrder'] as 'ASC' | 'DESC' || 'DESC',
-      status: req.query['status'] as any
+      sortBy: (req.query['sortBy'] as string) || 'createdAt',
+      sortOrder: (req.query['sortOrder'] as 'ASC' | 'DESC') || 'DESC',
+      status: req.query['status'] as any,
     };
 
     // Добавляем опциональные поля только если они есть
@@ -47,8 +52,8 @@ export class GameController {
         currentPage: result.currentPage,
         totalPages: result.totalPages,
         totalItems: result.totalItems,
-        itemsPerPage: result.itemsPerPage
-      }
+        itemsPerPage: result.itemsPerPage,
+      },
     });
   });
 
@@ -62,7 +67,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -72,7 +77,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -83,7 +88,7 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
@@ -91,7 +96,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Игра получена успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -107,7 +112,7 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -116,7 +121,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'BadRequestError',
-        message: 'ID организации не указан'
+        message: 'ID организации не указан',
       });
       return;
     }
@@ -126,7 +131,7 @@ export class GameController {
     res.status(201).json({
       success: true,
       message: 'Игра создана успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -142,7 +147,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -152,7 +157,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -161,7 +166,7 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -172,7 +177,7 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
@@ -180,7 +185,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Игра обновлена успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -195,7 +200,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -205,7 +210,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -214,7 +219,7 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -225,14 +230,14 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
 
     res.json({
       success: true,
-      message: 'Игра удалена успешно'
+      message: 'Игра удалена успешно',
     });
   });
 
@@ -244,15 +249,15 @@ export class GameController {
       page: parseInt(req.query['page'] as string) || 1,
       limit: parseInt(req.query['limit'] as string) || 10,
       search: req.query['q'] as string,
-      sortBy: req.query['sortBy'] as string || 'createdAt',
-      sortOrder: req.query['sortOrder'] as 'ASC' | 'DESC' || 'DESC'
+      sortBy: (req.query['sortBy'] as string) || 'createdAt',
+      sortOrder: (req.query['sortOrder'] as 'ASC' | 'DESC') || 'DESC',
     };
 
     if (!query.search) {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'Параметр поиска обязателен'
+        message: 'Параметр поиска обязателен',
       });
       return;
     }
@@ -267,8 +272,8 @@ export class GameController {
         currentPage: result.currentPage,
         totalPages: result.totalPages,
         totalItems: result.totalItems,
-        itemsPerPage: result.itemsPerPage
-      }
+        itemsPerPage: result.itemsPerPage,
+      },
     });
   });
 
@@ -281,7 +286,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Статистика получена успешно',
-      data: stats
+      data: stats,
     });
   });
 
@@ -296,7 +301,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -306,7 +311,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -315,14 +320,14 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
 
     const stateChange: GameStateChangeDto = {
       action: 'start',
-      reason: req.body.reason
+      reason: req.body.reason,
     };
 
     const game = await this.gameService.changeGameState(gameId, stateChange, userId.toString());
@@ -331,7 +336,7 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
@@ -339,7 +344,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Игра запущена успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -354,7 +359,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -364,7 +369,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -373,14 +378,14 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
 
     const stateChange: GameStateChangeDto = {
       action: 'finish',
-      reason: req.body.reason
+      reason: req.body.reason,
     };
 
     const game = await this.gameService.changeGameState(gameId, stateChange, userId.toString());
@@ -389,7 +394,7 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
@@ -397,7 +402,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Игра остановлена успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -412,7 +417,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -422,7 +427,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -431,14 +436,14 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
 
     const stateChange: GameStateChangeDto = {
       action: 'pause',
-      reason: req.body.reason
+      reason: req.body.reason,
     };
 
     const game = await this.gameService.changeGameState(gameId, stateChange, userId.toString());
@@ -447,7 +452,7 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
@@ -455,7 +460,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Игра приостановлена успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -470,7 +475,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры обязателен'
+        message: 'ID игры обязателен',
       });
       return;
     }
@@ -480,7 +485,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID игры должен быть числом'
+        message: 'ID игры должен быть числом',
       });
       return;
     }
@@ -489,14 +494,14 @@ export class GameController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
 
     const stateChange: GameStateChangeDto = {
       action: 'resume',
-      reason: req.body.reason
+      reason: req.body.reason,
     };
 
     const game = await this.gameService.changeGameState(gameId, stateChange, userId.toString());
@@ -505,7 +510,7 @@ export class GameController {
       res.status(404).json({
         success: false,
         error: 'GameNotFoundError',
-        message: 'Игра не найдена'
+        message: 'Игра не найдена',
       });
       return;
     }
@@ -513,7 +518,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Игра возобновлена успешно',
-      data: game
+      data: game,
     });
   });
 
@@ -529,7 +534,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'BadRequestError',
-        message: 'ID организации не указан'
+        message: 'ID организации не указан',
       });
       return;
     }
@@ -538,7 +543,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'BadRequestError',
-        message: 'Список ID команд обязателен'
+        message: 'Список ID команд обязателен',
       });
       return;
     }
@@ -547,7 +552,7 @@ export class GameController {
 
     res.json({
       success: true,
-      message: 'Команды добавлены в игру успешно'
+      message: 'Команды добавлены в игру успешно',
     });
   });
 
@@ -562,7 +567,7 @@ export class GameController {
       res.status(400).json({
         success: false,
         error: 'BadRequestError',
-        message: 'Список ID команд обязателен'
+        message: 'Список ID команд обязателен',
       });
       return;
     }
@@ -571,7 +576,7 @@ export class GameController {
 
     res.json({
       success: true,
-      message: 'Команды удалены из игры успешно'
+      message: 'Команды удалены из игры успешно',
     });
   });
 
@@ -586,7 +591,7 @@ export class GameController {
     res.json({
       success: true,
       message: 'Команды игры получены успешно',
-      data: teams
+      data: teams,
     });
   });
 
@@ -600,7 +605,7 @@ export class GameController {
     if (isNaN(gameId)) {
       return res.status(400).json({
         success: false,
-        message: 'Некорректный ID игры'
+        message: 'Некорректный ID игры',
       });
     }
 
@@ -612,8 +617,8 @@ export class GameController {
       data: {
         gameId,
         leaderboard,
-        lastUpdated: new Date().toISOString()
-      }
+        lastUpdated: new Date().toISOString(),
+      },
     });
   });
 
@@ -627,7 +632,7 @@ export class GameController {
     if (isNaN(gameId)) {
       return res.status(400).json({
         success: false,
-        message: 'Некорректный ID игры'
+        message: 'Некорректный ID игры',
       });
     }
 
@@ -639,8 +644,8 @@ export class GameController {
       data: {
         gameId,
         positions: result.positions,
-        changes: result.changes
-      }
+        changes: result.changes,
+      },
     });
   });
 
@@ -654,7 +659,7 @@ export class GameController {
     if (isNaN(gameId)) {
       return res.status(400).json({
         success: false,
-        message: 'Некорректный ID игры'
+        message: 'Некорректный ID игры',
       });
     }
 
@@ -667,7 +672,7 @@ export class GameController {
       if (!game) {
         return res.status(404).json({
           success: false,
-          message: 'Игра не найдена'
+          message: 'Игра не найдена',
         });
       }
 
@@ -685,22 +690,21 @@ export class GameController {
           tableNumber: team.tableNumber,
           totalPoints: team.totalPoints,
           positionChange: team.positionChange,
-          lastUpdated: team.lastUpdated
+          lastUpdated: team.lastUpdated,
         })),
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
 
       return res.json({
         success: true,
         message: 'Табло игры получено успешно',
-        data: scoreboardData
+        data: scoreboardData,
       });
-
     } catch (error) {
       logger.error(`Failed to get game scoreboard: ${(error as Error).message}`);
       return res.status(500).json({
         success: false,
-        message: 'Ошибка получения табло игры'
+        message: 'Ошибка получения табло игры',
       });
     }
   });

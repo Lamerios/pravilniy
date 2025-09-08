@@ -130,7 +130,7 @@ export class TeamService {
   /**
    * Поиск команд
    */
-  async searchTeams(query: string, limit: number = 10): Promise<TeamSearchResult> {
+  async searchTeams(query: string, limit = 10): Promise<TeamSearchResult> {
     const params = new URLSearchParams();
     params.append('search', query);
     params.append('limit', limit.toString());

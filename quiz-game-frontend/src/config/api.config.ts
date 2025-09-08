@@ -1,5 +1,5 @@
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api';
+export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:3001/api';
 
 export const API_ENDPOINTS = {
   // Auth endpoints
@@ -54,5 +54,3 @@ export const SUPPORTED_DOCUMENT_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'text/plain'
 ];
-
-

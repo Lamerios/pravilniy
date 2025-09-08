@@ -1,4 +1,4 @@
-import { createServer, Server } from 'http';
+import { Server, createServer } from 'http';
 import { createTestApp } from './app-test';
 import { config } from './config/config';
 
@@ -22,13 +22,12 @@ export class QuizGameTestServer {
         console.log(`🌍 Environment: ${config.server.env}`);
         console.log(`📊 Health check: http://${config.server.host}:${this.port}/health`);
         console.log(`🔗 API info: http://${config.server.host}:${this.port}/api`);
-        console.log(`⚠️  Note: Database connection disabled for testing`);
+        console.log('⚠️  Note: Database connection disabled for testing');
       });
 
       // Graceful shutdown
       process.on('SIGTERM', () => this.shutdown());
       process.on('SIGINT', () => this.shutdown());
-
     } catch (error) {
       console.error('❌ Failed to start test server:', error);
       process.exit(1);
@@ -54,7 +53,7 @@ export class QuizGameTestServer {
 // Запуск тестового сервера если файл выполняется напрямую
 if (require.main === module) {
   const server = new QuizGameTestServer();
-  server.start().catch((error) => {
+  server.start().catch(error => {
     console.error('❌ Test server startup failed:', error);
     process.exit(1);
   });

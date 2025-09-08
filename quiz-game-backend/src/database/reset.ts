@@ -13,11 +13,11 @@ import { setupAssociations } from '../models/associations';
 import { runAllMigrations } from './migrations';
 import { runFullSeeders } from './seeders';
 import {
-    checkDatabaseConnection,
-    checkDatabaseStatus,
-    dropAllTables,
-    formatDuration,
-    waitForConfirmation
+  checkDatabaseConnection,
+  checkDatabaseStatus,
+  dropAllTables,
+  formatDuration,
+  waitForConfirmation,
 } from './utils';
 
 async function main() {
@@ -25,7 +25,7 @@ async function main() {
 
   try {
     console.log('🔄 Database Reset Script Started');
-    console.log('=' .repeat(50));
+    console.log('='.repeat(50));
 
     // Проверяем аргументы командной строки
     const forceReset = process.argv.includes('--force');
@@ -38,7 +38,7 @@ async function main() {
       console.log('');
 
       const confirmed = await waitForConfirmation(
-        'Are you sure you want to proceed with database reset?'
+        'Are you sure you want to proceed with database reset?',
       );
 
       if (!confirmed) {
@@ -73,13 +73,12 @@ async function main() {
     await checkDatabaseStatus();
 
     const duration = formatDuration(startTime);
-    console.log('\n' + '='.repeat(50));
+    console.log(`\n${'='.repeat(50)}`);
     console.log(`🎉 Database reset completed successfully in ${duration}!`);
     console.log('📊 Your database is now ready to use with fresh test data');
-
   } catch (error) {
     const duration = formatDuration(startTime);
-    console.error('\n' + '='.repeat(50));
+    console.error(`\n${'='.repeat(50)}`);
     console.error(`❌ Database reset failed after ${duration}:`);
     console.error(error);
 

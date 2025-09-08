@@ -180,10 +180,12 @@ export interface ScoreCorrectionHistory {
   reason: string;
   correctedBy: number;
   correctedAt: string;
-  correctedByUser?: {
-    id: number;
-    username: string;
-  } | undefined;
+  correctedByUser?:
+    | {
+        id: number;
+        username: string;
+      }
+    | undefined;
 }
 
 /**

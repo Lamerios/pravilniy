@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { BulkScoreInput } from '../components/BulkScoreInput';
 import { ScoreCorrectionModal } from '../components/ScoreCorrectionModal';
 import { GameCorrectionsModal, ScoreHistoryModal } from '../components/ScoreHistoryModal';
@@ -162,7 +163,7 @@ export const ScoreInputPage: React.FC = () => {
     setGameCorrectionsModalOpen(true);
   };
 
-  const handleCorrectionSuccess = (correctedScore: any) => {
+  const handleCorrectionSuccess = (_correctedScore: any) => {
     // Обновляем данные после успешного исправления
     refreshScores();
     Promise.all([
@@ -206,7 +207,7 @@ export const ScoreInputPage: React.FC = () => {
     return (
       <div className="score-input-page">
         <div className="loading">
-          <div className="spinner"></div>
+          <div className="spinner" />
           <p>Загрузка данных игры...</p>
         </div>
       </div>

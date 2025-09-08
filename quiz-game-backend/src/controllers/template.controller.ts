@@ -19,8 +19,8 @@ export class TemplateController {
       page: parseInt(req.query['page'] as string) || 1,
       limit: parseInt(req.query['limit'] as string) || 10,
       search: req.query['search'] as string,
-      sortBy: req.query['sortBy'] as string || 'createdAt',
-      sortOrder: req.query['sortOrder'] as 'ASC' | 'DESC' || 'DESC'
+      sortBy: (req.query['sortBy'] as string) || 'createdAt',
+      sortOrder: (req.query['sortOrder'] as 'ASC' | 'DESC') || 'DESC',
     };
 
     const result = await this.templateService.getTemplates(query);
@@ -33,8 +33,8 @@ export class TemplateController {
         currentPage: result.currentPage,
         totalPages: result.totalPages,
         totalItems: result.totalItems,
-        itemsPerPage: result.itemsPerPage
-      }
+        itemsPerPage: result.itemsPerPage,
+      },
     });
   });
 
@@ -48,7 +48,7 @@ export class TemplateController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID шаблона обязателен'
+        message: 'ID шаблона обязателен',
       });
       return;
     }
@@ -59,7 +59,7 @@ export class TemplateController {
       res.status(404).json({
         success: false,
         error: 'TemplateNotFoundError',
-        message: 'Шаблон не найден'
+        message: 'Шаблон не найден',
       });
       return;
     }
@@ -67,7 +67,7 @@ export class TemplateController {
     res.json({
       success: true,
       message: 'Шаблон получен успешно',
-      data: template
+      data: template,
     });
   });
 
@@ -82,7 +82,7 @@ export class TemplateController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -92,7 +92,7 @@ export class TemplateController {
     res.status(201).json({
       success: true,
       message: 'Шаблон создан успешно',
-      data: template
+      data: template,
     });
   });
 
@@ -108,7 +108,7 @@ export class TemplateController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID шаблона обязателен'
+        message: 'ID шаблона обязателен',
       });
       return;
     }
@@ -117,7 +117,7 @@ export class TemplateController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -128,7 +128,7 @@ export class TemplateController {
       res.status(404).json({
         success: false,
         error: 'TemplateNotFoundError',
-        message: 'Шаблон не найден'
+        message: 'Шаблон не найден',
       });
       return;
     }
@@ -136,7 +136,7 @@ export class TemplateController {
     res.json({
       success: true,
       message: 'Шаблон обновлен успешно',
-      data: template
+      data: template,
     });
   });
 
@@ -151,7 +151,7 @@ export class TemplateController {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'ID шаблона обязателен'
+        message: 'ID шаблона обязателен',
       });
       return;
     }
@@ -160,7 +160,7 @@ export class TemplateController {
       res.status(401).json({
         success: false,
         error: 'UnauthorizedError',
-        message: 'Пользователь не аутентифицирован'
+        message: 'Пользователь не аутентифицирован',
       });
       return;
     }
@@ -171,14 +171,14 @@ export class TemplateController {
       res.status(404).json({
         success: false,
         error: 'TemplateNotFoundError',
-        message: 'Шаблон не найден'
+        message: 'Шаблон не найден',
       });
       return;
     }
 
     res.json({
       success: true,
-      message: 'Шаблон удален успешно'
+      message: 'Шаблон удален успешно',
     });
   });
 
@@ -190,15 +190,15 @@ export class TemplateController {
       page: parseInt(req.query['page'] as string) || 1,
       limit: parseInt(req.query['limit'] as string) || 10,
       search: req.query['q'] as string,
-      sortBy: req.query['sortBy'] as string || 'createdAt',
-      sortOrder: req.query['sortOrder'] as 'ASC' | 'DESC' || 'DESC'
+      sortBy: (req.query['sortBy'] as string) || 'createdAt',
+      sortOrder: (req.query['sortOrder'] as 'ASC' | 'DESC') || 'DESC',
     };
 
     if (!query.search) {
       res.status(400).json({
         success: false,
         error: 'ValidationError',
-        message: 'Параметр поиска обязателен'
+        message: 'Параметр поиска обязателен',
       });
       return;
     }
@@ -213,8 +213,8 @@ export class TemplateController {
         currentPage: result.currentPage,
         totalPages: result.totalPages,
         totalItems: result.totalItems,
-        itemsPerPage: result.itemsPerPage
-      }
+        itemsPerPage: result.itemsPerPage,
+      },
     });
   });
 
@@ -227,7 +227,7 @@ export class TemplateController {
     res.json({
       success: true,
       message: 'Статистика получена успешно',
-      data: stats
+      data: stats,
     });
   });
 }

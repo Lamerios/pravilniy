@@ -12,56 +12,56 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
-      comment: 'Уникальный идентификатор шаблона игры'
+      comment: 'Уникальный идентификатор шаблона игры',
     },
     organizationId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'organizations',
-        key: 'id'
+        key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
-      comment: 'Ссылка на организацию-владельца шаблона'
+      comment: 'Ссылка на организацию-владельца шаблона',
     },
     createdBy: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'users',
-        key: 'id'
+        key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'RESTRICT',
-      comment: 'Ссылка на пользователя, создавшего шаблон'
+      comment: 'Ссылка на пользователя, создавшего шаблон',
     },
     name: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      comment: 'Название шаблона игры'
+      comment: 'Название шаблона игры',
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-      comment: 'Описание шаблона игры'
+      comment: 'Описание шаблона игры',
     },
     category: {
       type: DataTypes.STRING(100),
       allowNull: true,
-      comment: 'Категория шаблона игры'
+      comment: 'Категория шаблона игры',
     },
     difficulty: {
       type: DataTypes.ENUM('EASY', 'MEDIUM', 'HARD', 'EXPERT'),
       allowNull: false,
       defaultValue: 'MEDIUM',
-      comment: 'Уровень сложности игры'
+      comment: 'Уровень сложности игры',
     },
     type: {
       type: DataTypes.ENUM('QUIZ', 'SURVEY', 'TRIVIA', 'COMPETITION'),
       allowNull: false,
       defaultValue: 'QUIZ',
-      comment: 'Тип игры'
+      comment: 'Тип игры',
     },
     maxTeams: {
       type: DataTypes.INTEGER,
@@ -69,9 +69,9 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       defaultValue: 10,
       validate: {
         min: 1,
-        max: 100
+        max: 100,
       },
-      comment: 'Максимальное количество команд'
+      comment: 'Максимальное количество команд',
     },
     maxPlayersPerTeam: {
       type: DataTypes.INTEGER,
@@ -79,24 +79,24 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       defaultValue: 5,
       validate: {
         min: 1,
-        max: 20
+        max: 20,
       },
-      comment: 'Максимальное количество игроков в команде'
+      comment: 'Максимальное количество игроков в команде',
     },
     timeLimit: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      comment: 'Общее время игры в минутах'
+      comment: 'Общее время игры в минутах',
     },
     roundTimeLimit: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      comment: 'Время на раунд в минутах'
+      comment: 'Время на раунд в минутах',
     },
     questionTimeLimit: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      comment: 'Время на вопрос в секундах'
+      comment: 'Время на вопрос в секундах',
     },
     scoringSystem: {
       type: DataTypes.JSONB,
@@ -105,68 +105,68 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
         basePoints: 10,
         timeBonus: true,
         penaltyForWrong: false,
-        streakBonus: false
+        streakBonus: false,
       },
-      comment: 'Система подсчета очков в формате JSON'
+      comment: 'Система подсчета очков в формате JSON',
     },
     rules: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: {},
-      comment: 'Правила игры в формате JSON'
+      comment: 'Правила игры в формате JSON',
     },
     settings: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: {},
-      comment: 'Дополнительные настройки шаблона в формате JSON'
+      comment: 'Дополнительные настройки шаблона в формате JSON',
     },
     tags: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
       defaultValue: [],
-      comment: 'Теги для категоризации шаблона'
+      comment: 'Теги для категоризации шаблона',
     },
     thumbnail: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      comment: 'URL изображения-превью шаблона'
+      comment: 'URL изображения-превью шаблона',
     },
     isPublic: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-      comment: 'Флаг публичности шаблона'
+      comment: 'Флаг публичности шаблона',
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      comment: 'Флаг активности шаблона'
+      comment: 'Флаг активности шаблона',
     },
     version: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 1,
-      comment: 'Версия шаблона'
+      comment: 'Версия шаблона',
     },
     publishedAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время публикации шаблона'
+      comment: 'Дата и время публикации шаблона',
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время создания записи'
+      comment: 'Дата и время создания записи',
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время последнего обновления записи'
-    }
+      comment: 'Дата и время последнего обновления записи',
+    },
   });
 
   // Создание индексов
@@ -184,7 +184,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
   // GIN индекс для массива тегов (если поддерживается)
   try {
     await queryInterface.sequelize.query(
-      'CREATE INDEX game_templates_tags_idx ON game_templates USING GIN (tags)'
+      'CREATE INDEX game_templates_tags_idx ON game_templates USING GIN (tags)',
     );
   } catch (error) {
     console.warn('⚠️  GIN index for tags not created (may not be supported)');

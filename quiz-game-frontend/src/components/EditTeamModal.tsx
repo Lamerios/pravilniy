@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
 import { teamService } from '../services/team.service';
 import { ContactInfo, Team, TeamMember, UpdateTeamDto } from '../types/team.types';
 import { validateUpdateTeamForm } from '../utils/validation';
+
 import { TableNumberValidator } from './TableNumberValidator';
 import { TeamLogoUpload } from './TeamLogoUpload';
 
@@ -172,14 +174,14 @@ export function EditTeamModal({ isOpen, onClose, onSuccess, team }: EditTeamModa
             onClick={handleClose}
             disabled={loading}
           >
-            <i className="icon icon--close"></i>
+            <i className="icon icon--close" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal__body">
           {errors.general && (
             <div className="alert alert--error">
-              <i className="icon icon--warning"></i>
+              <i className="icon icon--warning" />
               <span>{errors.general}</span>
             </div>
           )}
@@ -287,7 +289,7 @@ export function EditTeamModal({ isOpen, onClose, onSuccess, team }: EditTeamModa
                 onClick={handleMemberAdd}
                 disabled={loading}
               >
-                <i className="icon icon--plus"></i>
+                <i className="icon icon--plus" />
                 Добавить участника
               </button>
             </div>
@@ -331,7 +333,7 @@ export function EditTeamModal({ isOpen, onClose, onSuccess, team }: EditTeamModa
                     onClick={() => handleMemberRemove(index)}
                     disabled={loading}
                   >
-                    <i className="icon icon--trash"></i>
+                    <i className="icon icon--trash" />
                   </button>
                 </div>
               </div>

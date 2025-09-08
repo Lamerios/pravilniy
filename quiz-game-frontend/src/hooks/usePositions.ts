@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import { scoreService } from '../services/score.service';
 import { PositionChange, TeamPosition } from '../types/position.types';
 

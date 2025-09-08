@@ -38,7 +38,7 @@ export async function getDatabaseInfo(): Promise<{
     database: sequelize.getDatabaseName(),
     host: sequelize.config.host || 'localhost',
     port: Number(sequelize.config.port) || 5432,
-    tables: tables as string[]
+    tables: tables as string[],
   };
 }
 
@@ -51,7 +51,7 @@ export async function checkTablesExist(): Promise<{
   missingTables: string[];
 }> {
   const queryInterface = sequelize.getQueryInterface();
-  const existingTables = await queryInterface.showAllTables() as string[];
+  const existingTables = (await queryInterface.showAllTables()) as string[];
 
   // Ожидаемые таблицы
   const expectedTables = [
@@ -61,17 +61,15 @@ export async function checkTablesExist(): Promise<{
     'games',
     'teams',
     'rounds',
-    'scores'
+    'scores',
   ];
 
-  const missingTables = expectedTables.filter(table =>
-    !existingTables.includes(table)
-  );
+  const missingTables = expectedTables.filter(table => !existingTables.includes(table));
 
   return {
     exists: missingTables.length === 0,
     tables: existingTables,
-    missingTables
+    missingTables,
   };
 }
 
@@ -80,7 +78,7 @@ export async function checkTablesExist(): Promise<{
  */
 export async function cleanAllTables(): Promise<void> {
   const queryInterface = sequelize.getQueryInterface();
-  const tables = await queryInterface.showAllTables() as string[];
+  const tables = (await queryInterface.showAllTables()) as string[];
 
   console.log('🧹 Cleaning all tables...');
 
@@ -118,7 +116,7 @@ export async function cleanAllTables(): Promise<void> {
  */
 export async function dropAllTables(): Promise<void> {
   const queryInterface = sequelize.getQueryInterface();
-  const tables = await queryInterface.showAllTables() as string[];
+  const tables = (await queryInterface.showAllTables()) as string[];
 
   if (tables.length === 0) {
     console.log('ℹ️  No tables to drop');
@@ -161,15 +159,14 @@ export async function dropAllTables(): Promise<void> {
  */
 export async function getTableCounts(): Promise<Record<string, number>> {
   const queryInterface = sequelize.getQueryInterface();
-  const tables = await queryInterface.showAllTables() as string[];
+  const tables = (await queryInterface.showAllTables()) as string[];
   const counts: Record<string, number> = {};
 
   for (const table of tables) {
     try {
-      const result = await sequelize.query(
-        `SELECT COUNT(*) as count FROM ${table}`,
-        { type: QueryTypes.SELECT }
-      );
+      const result = await sequelize.query(`SELECT COUNT(*) as count FROM ${table}`, {
+        type: QueryTypes.SELECT,
+      });
       counts[table] = (result[0] as any).count;
     } catch (error) {
       counts[table] = -1; // Ошибка при подсчете
@@ -229,7 +226,9 @@ export async function checkDatabaseStatus(): Promise<void> {
 export async function waitForConfirmation(message: string): Promise<boolean> {
   // В production или CI среде не запрашиваем подтверждение
   if (process.env['NODE_ENV'] === 'production' || process.env['CI'] === 'true') {
-    console.log(`⚠️  ${message} (auto-confirmed in ${process.env['NODE_ENV'] || 'CI'} environment)`);
+    console.log(
+      `⚠️  ${message} (auto-confirmed in ${process.env['NODE_ENV'] || 'CI'} environment)`,
+    );
     return true;
   }
 

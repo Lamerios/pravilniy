@@ -10,7 +10,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  UpdatedAt
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { Game } from './game.model';
 import { Organization } from './organization.model';
@@ -19,7 +19,7 @@ import { Round } from './round.model';
 @Table({
   tableName: 'game_templates',
   timestamps: true,
-  underscored: true
+  underscored: true,
 })
 export class GameTemplate extends Model {
   @PrimaryKey

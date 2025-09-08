@@ -3,12 +3,12 @@ import { scoreController } from '../controllers/score.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 import { roleMiddleware } from '../middleware/role.middleware';
 import {
-    checkScoreAccess,
-    validateBulkScore,
-    validateCorrectScore,
-    validateCreateScore,
-    validateScoreQuery,
-    validateUpdateScore
+  checkScoreAccess,
+  validateBulkScore,
+  validateCorrectScore,
+  validateCreateScore,
+  validateScoreQuery,
+  validateUpdateScore,
 } from '../middleware/score.middleware';
 
 const router = Router();
@@ -22,10 +22,11 @@ router.use(checkScoreAccess);
  * @desc Создать запись о баллах
  * @access Private (Admin, Manager, User)
  */
-router.post('/',
+router.post(
+  '/',
   roleMiddleware(['admin', 'manager', 'user']),
   validateCreateScore,
-  scoreController.createScore
+  scoreController.createScore,
 );
 
 /**
@@ -33,10 +34,11 @@ router.post('/',
  * @desc Массовый ввод баллов
  * @access Private (Admin, Manager)
  */
-router.post('/bulk',
+router.post(
+  '/bulk',
   roleMiddleware(['admin', 'manager']),
   validateBulkScore,
-  scoreController.bulkCreateScores
+  scoreController.bulkCreateScores,
 );
 
 /**
@@ -44,56 +46,46 @@ router.post('/bulk',
  * @desc Получить список баллов с пагинацией и фильтрацией
  * @access Private (Admin, Manager, User)
  */
-router.get('/',
-  validateScoreQuery,
-  scoreController.getScores
-);
+router.get('/', validateScoreQuery, scoreController.getScores);
 
 /**
  * @route GET /api/scores/game/:gameId/stats
  * @desc Получить статистику баллов игры
  * @access Private (Admin, Manager, User)
  */
-router.get('/game/:gameId/stats',
-  scoreController.getGameScoreStats
-);
+router.get('/game/:gameId/stats', scoreController.getGameScoreStats);
 
 /**
  * @route GET /api/scores/team/:gameId/:teamId
  * @desc Получить баллы команды в игре
  * @access Private (Admin, Manager, User)
  */
-router.get('/team/:gameId/:teamId',
-  scoreController.getTeamScores
-);
+router.get('/team/:gameId/:teamId', scoreController.getTeamScores);
 
 /**
  * @route GET /api/scores/team/:gameId/:teamId/stats
  * @desc Получить статистику баллов команды в игре
  * @access Private (Admin, Manager, User)
  */
-router.get('/team/:gameId/:teamId/stats',
-  scoreController.getTeamScoreStats
-);
+router.get('/team/:gameId/:teamId/stats', scoreController.getTeamScoreStats);
 
 /**
  * @route GET /api/scores/:id
  * @desc Получить запись о баллах по ID
  * @access Private (Admin, Manager, User)
  */
-router.get('/:id',
-  scoreController.getScoreById
-);
+router.get('/:id', scoreController.getScoreById);
 
 /**
  * @route PUT /api/scores/:id
  * @desc Обновить запись о баллах
  * @access Private (Admin, Manager)
  */
-router.put('/:id',
+router.put(
+  '/:id',
   roleMiddleware(['admin', 'manager']),
   validateUpdateScore,
-  scoreController.updateScore
+  scoreController.updateScore,
 );
 
 /**
@@ -101,10 +93,11 @@ router.put('/:id',
  * @desc Исправить баллы
  * @access Private (Admin, Manager)
  */
-router.post('/:id/correct',
+router.post(
+  '/:id/correct',
   roleMiddleware(['admin', 'manager']),
   validateCorrectScore,
-  scoreController.correctScore
+  scoreController.correctScore,
 );
 
 /**
@@ -112,9 +105,10 @@ router.post('/:id/correct',
  * @desc Получить историю исправлений баллов
  * @access Private (Admin, Manager)
  */
-router.get('/:id/corrections',
+router.get(
+  '/:id/corrections',
   roleMiddleware(['admin', 'manager']),
-  scoreController.getScoreCorrectionHistory
+  scoreController.getScoreCorrectionHistory,
 );
 
 /**
@@ -122,10 +116,6 @@ router.get('/:id/corrections',
  * @desc Удалить запись о баллах
  * @access Private (Admin)
  */
-router.delete('/:id',
-  roleMiddleware(['admin']),
-  scoreController.deleteScore
-);
+router.delete('/:id', roleMiddleware(['admin']), scoreController.deleteScore);
 
 export default router;
-

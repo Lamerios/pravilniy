@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { CreateTeamModal } from '../components/CreateTeamModal';
 import { EditTeamModal } from '../components/EditTeamModal';
 import { TeamCard } from '../components/TeamCard';
@@ -104,7 +105,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
         </div>
         <div className="page__content">
           <div className="loading">
-            <div className="spinner"></div>
+            <div className="spinner" />
             <p>Загрузка данных...</p>
           </div>
         </div>
@@ -120,7 +121,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
         </div>
         <div className="page__content">
           <div className="alert alert--error">
-            <i className="icon icon--warning"></i>
+            <i className="icon icon--warning" />
             <span>{error}</span>
           </div>
           <button className="btn btn--primary" onClick={loadGameData}>
@@ -160,7 +161,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
               className="btn btn--secondary"
               onClick={() => navigate(`/games/${gameId}`)}
             >
-              <i className="icon icon--arrow-left"></i>
+              <i className="icon icon--arrow-left" />
               К игре
             </button>
             <button
@@ -168,14 +169,14 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
               onClick={() => setShowAddTeams(true)}
               disabled={getAvailableTeamsForSelection().length === 0}
             >
-              <i className="icon icon--plus"></i>
+              <i className="icon icon--plus" />
               Добавить команды
             </button>
             <button
               className="btn btn--primary"
               onClick={() => setShowCreateTeam(true)}
             >
-              <i className="icon icon--plus"></i>
+              <i className="icon icon--plus" />
               Создать команду
             </button>
           </div>
@@ -230,7 +231,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
           ) : (
             <div className="teams-empty">
               <div className="teams-empty__content">
-                <i className="icon icon--users teams-empty__icon"></i>
+                <i className="icon icon--users teams-empty__icon" />
                 <h3>Нет команд в игре</h3>
                 <p>Добавьте команды, чтобы начать игру</p>
                 <div className="teams-empty__actions">
@@ -239,14 +240,14 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
                     onClick={() => setShowAddTeams(true)}
                     disabled={getAvailableTeamsForSelection().length === 0}
                   >
-                    <i className="icon icon--plus"></i>
+                    <i className="icon icon--plus" />
                     Добавить существующие команды
                   </button>
                   <button
                     className="btn btn--secondary"
                     onClick={() => setShowCreateTeam(true)}
                   >
-                    <i className="icon icon--plus"></i>
+                    <i className="icon icon--plus" />
                     Создать новую команду
                   </button>
                 </div>
@@ -298,7 +299,7 @@ export function GameTeamsPage({}: GameTeamsPageProps) {
                 className="modal__close"
                 onClick={() => setShowAddTeams(false)}
               >
-                <i className="icon icon--close"></i>
+                <i className="icon icon--close" />
               </button>
             </div>
             <div className="modal__body">

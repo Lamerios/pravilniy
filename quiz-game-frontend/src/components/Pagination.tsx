@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { PaginationInfo } from '../types/game.types';
 
 interface PaginationProps {

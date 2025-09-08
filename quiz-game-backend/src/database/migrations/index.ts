@@ -17,32 +17,32 @@ export const migrations = [
   {
     name: '001-create-organizations',
     up: createOrganizations.up,
-    down: createOrganizations.down
+    down: createOrganizations.down,
   },
   {
     name: '002-create-users',
     up: createUsers.up,
-    down: createUsers.down
+    down: createUsers.down,
   },
   {
     name: '003-create-game-templates',
     up: createGameTemplates.up,
-    down: createGameTemplates.down
+    down: createGameTemplates.down,
   },
   {
     name: '004-create-games',
     up: createGames.up,
-    down: createGames.down
+    down: createGames.down,
   },
   {
     name: '005-create-teams',
     up: createTeams.up,
-    down: createTeams.down
+    down: createTeams.down,
   },
   {
     name: '006-create-rounds',
     up: createRounds.up,
-    down: createRounds.down
+    down: createRounds.down,
   },
   // {
   //   name: '007-create-answers', // Миграция удалена
@@ -52,8 +52,8 @@ export const migrations = [
   {
     name: '008-create-scores',
     up: createScores.up,
-    down: createScores.down
-  }
+    down: createScores.down,
+  },
 ];
 
 // Функция для запуска всех миграций

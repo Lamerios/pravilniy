@@ -11,11 +11,11 @@ import 'dotenv/config';
 import { sequelize } from '../config/database';
 import { runBasicSeeders } from './seeders';
 import {
-    checkDatabaseConnection,
-    cleanAllTables,
-    formatDuration,
-    getTableCounts,
-    waitForConfirmation
+  checkDatabaseConnection,
+  cleanAllTables,
+  formatDuration,
+  getTableCounts,
+  waitForConfirmation,
 } from './utils';
 
 async function main() {
@@ -23,7 +23,7 @@ async function main() {
 
   try {
     console.log('🧹 Database Clean Script Started');
-    console.log('=' .repeat(50));
+    console.log('='.repeat(50));
 
     // Проверяем аргументы командной строки
     const forceClean = process.argv.includes('--force');
@@ -36,9 +36,7 @@ async function main() {
       console.log('   - You can restore data with seeders');
       console.log('');
 
-      const confirmed = await waitForConfirmation(
-        'Are you sure you want to clean all data?'
-      );
+      const confirmed = await waitForConfirmation('Are you sure you want to clean all data?');
 
       if (!confirmed) {
         console.log('❌ Database clean cancelled by user');
@@ -56,8 +54,9 @@ async function main() {
 
     console.log('\n📊 Step 2: Checking current data...');
     const beforeCounts = await getTableCounts();
-    const totalRecordsBefore = Object.values(beforeCounts).reduce((sum, count) =>
-      sum + (count > 0 ? count : 0), 0
+    const totalRecordsBefore = Object.values(beforeCounts).reduce(
+      (sum, count) => sum + (count > 0 ? count : 0),
+      0,
     );
 
     console.log(`   Total records before cleaning: ${totalRecordsBefore}`);
@@ -72,8 +71,9 @@ async function main() {
 
     console.log('\n📊 Step 4: Verifying cleanup...');
     const afterCounts = await getTableCounts();
-    const totalRecordsAfter = Object.values(afterCounts).reduce((sum, count) =>
-      sum + (count > 0 ? count : 0), 0
+    const totalRecordsAfter = Object.values(afterCounts).reduce(
+      (sum, count) => sum + (count > 0 ? count : 0),
+      0,
     );
 
     console.log(`   Total records after cleaning: ${totalRecordsAfter}`);
@@ -85,7 +85,7 @@ async function main() {
     }
 
     const duration = formatDuration(startTime);
-    console.log('\n' + '='.repeat(50));
+    console.log(`\n${'='.repeat(50)}`);
     console.log(`🎉 Database cleaned successfully in ${duration}!`);
     console.log(`📊 Removed ${totalRecordsBefore} records from database`);
 
@@ -95,10 +95,9 @@ async function main() {
       console.log('   - Add demo data: npm run db:seed:demo');
       console.log('   - Full setup: npm run db:setup');
     }
-
   } catch (error) {
     const duration = formatDuration(startTime);
-    console.error('\n' + '='.repeat(50));
+    console.error(`\n${'='.repeat(50)}`);
     console.error(`❌ Database clean failed after ${duration}:`);
     console.error(error);
 

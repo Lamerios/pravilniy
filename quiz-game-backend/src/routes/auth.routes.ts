@@ -1,10 +1,6 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
-import {
-    authenticateToken,
-    authLogger,
-    requireActiveUser
-} from '../middleware/auth.middleware';
+import { authLogger, authenticateToken, requireActiveUser } from '../middleware/auth.middleware';
 
 /**
  * Роуты для аутентификации
@@ -79,7 +75,12 @@ router.get('/validate', authenticateToken, requireActiveUser, authController.val
  * @headers Authorization: Bearer <token>
  * @body    { currentPassword: string, newPassword: string }
  */
-router.post('/change-password', authenticateToken, requireActiveUser, authController.changePassword);
+router.post(
+  '/change-password',
+  authenticateToken,
+  requireActiveUser,
+  authController.changePassword,
+);
 
 /**
  * @route   POST /auth/logout

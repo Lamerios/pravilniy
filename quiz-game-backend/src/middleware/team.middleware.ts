@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { createQueryValidationMiddleware, createValidationMiddleware, teamValidationSchemas } from './validation.middleware';
+import {
+  createQueryValidationMiddleware,
+  createValidationMiddleware,
+  teamValidationSchemas,
+} from './validation.middleware';
 
 /**
  * Валидация создания команды
@@ -26,7 +30,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     res.status(400).json({
       success: false,
-      message: 'Название команды обязательно'
+      message: 'Название команды обязательно',
     });
     return;
   }
@@ -34,7 +38,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
   if (name.length > 100) {
     res.status(400).json({
       success: false,
-      message: 'Название команды не должно превышать 100 символов'
+      message: 'Название команды не должно превышать 100 символов',
     });
     return;
   }
@@ -43,7 +47,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
   if (description && (typeof description !== 'string' || description.length > 500)) {
     res.status(400).json({
       success: false,
-      message: 'Описание не должно превышать 500 символов'
+      message: 'Описание не должно превышать 500 символов',
     });
     return;
   }
@@ -52,7 +56,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
   if (captain && (typeof captain !== 'string' || captain.length > 100)) {
     res.status(400).json({
       success: false,
-      message: 'Имя капитана не должно превышать 100 символов'
+      message: 'Имя капитана не должно превышать 100 символов',
     });
     return;
   }
@@ -63,7 +67,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
       if (!member.name || typeof member.name !== 'string') {
         res.status(400).json({
           success: false,
-          message: 'Каждый участник должен иметь имя'
+          message: 'Каждый участник должен иметь имя',
         });
         return;
       }
@@ -71,7 +75,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
       if (member.email && typeof member.email !== 'string') {
         res.status(400).json({
           success: false,
-          message: 'Email участника должен быть строкой'
+          message: 'Email участника должен быть строкой',
         });
         return;
       }
@@ -85,7 +89,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
     if (email && typeof email !== 'string') {
       res.status(400).json({
         success: false,
-        message: 'Email должен быть строкой'
+        message: 'Email должен быть строкой',
       });
       return;
     }
@@ -93,7 +97,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
     if (phone && typeof phone !== 'string') {
       res.status(400).json({
         success: false,
-        message: 'Телефон должен быть строкой'
+        message: 'Телефон должен быть строкой',
       });
       return;
     }
@@ -101,7 +105,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
     if (address && typeof address !== 'string') {
       res.status(400).json({
         success: false,
-        message: 'Адрес должен быть строкой'
+        message: 'Адрес должен быть строкой',
       });
       return;
     }
@@ -112,7 +116,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
     if (typeof tableNumber !== 'number' || tableNumber < 1 || tableNumber > 999) {
       res.status(400).json({
         success: false,
-        message: 'Номер стола должен быть числом от 1 до 999'
+        message: 'Номер стола должен быть числом от 1 до 999',
       });
       return;
     }
@@ -122,7 +126,7 @@ export const validateTeamData = (req: Request, res: Response, next: NextFunction
   if (logoUrl && typeof logoUrl !== 'string') {
     res.status(400).json({
       success: false,
-      message: 'URL логотипа должен быть строкой'
+      message: 'URL логотипа должен быть строкой',
     });
     return;
   }
@@ -140,7 +144,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (page && (isNaN(Number(page)) || Number(page) < 1)) {
     res.status(400).json({
       success: false,
-      message: 'Номер страницы должен быть положительным числом'
+      message: 'Номер страницы должен быть положительным числом',
     });
     return;
   }
@@ -148,7 +152,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (limit && (isNaN(Number(limit)) || Number(limit) < 1 || Number(limit) > 100)) {
     res.status(400).json({
       success: false,
-      message: 'Лимит должен быть числом от 1 до 100'
+      message: 'Лимит должен быть числом от 1 до 100',
     });
     return;
   }
@@ -157,7 +161,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (search && typeof search !== 'string') {
     res.status(400).json({
       success: false,
-      message: 'Параметр поиска должен быть строкой'
+      message: 'Параметр поиска должен быть строкой',
     });
     return;
   }
@@ -166,7 +170,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (sortBy && typeof sortBy !== 'string') {
     res.status(400).json({
       success: false,
-      message: 'Поле сортировки должно быть строкой'
+      message: 'Поле сортировки должно быть строкой',
     });
     return;
   }
@@ -174,7 +178,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (sortOrder && !['ASC', 'DESC'].includes(sortOrder as string)) {
     res.status(400).json({
       success: false,
-      message: 'Порядок сортировки должен быть ASC или DESC'
+      message: 'Порядок сортировки должен быть ASC или DESC',
     });
     return;
   }
@@ -183,7 +187,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (isActive && !['true', 'false'].includes(isActive as string)) {
     res.status(400).json({
       success: false,
-      message: 'Фильтр активности должен быть true или false'
+      message: 'Фильтр активности должен быть true или false',
     });
     return;
   }
@@ -192,7 +196,7 @@ export const validateTeamQueryParams = (req: Request, res: Response, next: NextF
   if (organizationId && typeof organizationId !== 'string') {
     res.status(400).json({
       success: false,
-      message: 'ID организации должен быть строкой'
+      message: 'ID организации должен быть строкой',
     });
     return;
   }
@@ -209,7 +213,7 @@ export const validateTeamId = (req: Request, res: Response, next: NextFunction):
   if (!id || typeof id !== 'string') {
     res.status(400).json({
       success: false,
-      message: 'ID команды обязателен'
+      message: 'ID команды обязателен',
     });
     return;
   }
@@ -219,7 +223,7 @@ export const validateTeamId = (req: Request, res: Response, next: NextFunction):
   if (!uuidRegex.test(id)) {
     res.status(400).json({
       success: false,
-      message: 'Неверный формат ID команды'
+      message: 'Неверный формат ID команды',
     });
     return;
   }
@@ -236,7 +240,7 @@ export const validateTableNumber = (req: Request, res: Response, next: NextFunct
   if (!tableNumber || isNaN(Number(tableNumber))) {
     res.status(400).json({
       success: false,
-      message: 'Номер стола должен быть числом'
+      message: 'Номер стола должен быть числом',
     });
     return;
   }
@@ -245,7 +249,7 @@ export const validateTableNumber = (req: Request, res: Response, next: NextFunct
   if (num < 1 || num > 999) {
     res.status(400).json({
       success: false,
-      message: 'Номер стола должен быть от 1 до 999'
+      message: 'Номер стола должен быть от 1 до 999',
     });
     return;
   }

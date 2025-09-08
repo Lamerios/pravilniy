@@ -73,8 +73,16 @@ export function validatePassword(password: string): {
 
   // Проверка на простые пароли
   const commonPasswords = [
-    'password', '123456', '123456789', 'qwerty', 'abc123',
-    'password123', 'admin', 'letmein', 'welcome', 'monkey'
+    'password',
+    '123456',
+    '123456789',
+    'qwerty',
+    'abc123',
+    'password123',
+    'admin',
+    'letmein',
+    'welcome',
+    'monkey',
   ];
 
   if (commonPasswords.includes(password.toLowerCase())) {
@@ -83,7 +91,7 @@ export function validatePassword(password: string): {
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -111,7 +119,10 @@ export function generateRandomPassword(length: number = 12): string {
   }
 
   // Перемешиваем символы
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  return password
+    .split('')
+    .sort(() => Math.random() - 0.5)
+    .join('');
 }
 
 /**

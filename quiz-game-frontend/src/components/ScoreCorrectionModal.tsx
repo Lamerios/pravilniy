@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import { scoreService } from '../services/score.service';
 import { requiresConfirmation, VALIDATION_PRESETS } from '../utils/scoreValidation';
+
 import { CriticalScoreAlert } from './ScoreValidationAlert';
 
 interface Score {

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
 import { useAuth } from '../hooks/useAuth';
 import { teamService } from '../services/team.service';
 
@@ -104,7 +105,7 @@ export const TableNumberValidator: React.FC<TableNumberValidatorProps> = ({
     <div className={`table-number-validator ${className}`}>
       {validation.isChecking && (
         <div className="table-number-validator__checking">
-          <div className="spinner spinner--sm"></div>
+          <div className="spinner spinner--sm" />
           <span>Проверка...</span>
         </div>
       )}
@@ -113,7 +114,7 @@ export const TableNumberValidator: React.FC<TableNumberValidatorProps> = ({
         <div className={`table-number-validator__message ${
           validation.isValid ? 'table-number-validator__message--valid' : 'table-number-validator__message--invalid'
         }`}>
-          <i className={`icon icon--${validation.isValid ? 'check' : 'warning'}`}></i>
+          <i className={`icon icon--${validation.isValid ? 'check' : 'warning'}`} />
           <span>{validation.message}</span>
         </div>
       )}
@@ -127,7 +128,7 @@ export const TableNumberValidator: React.FC<TableNumberValidatorProps> = ({
 export const useTableNumberValidation = (
   tableNumber: number | null,
   excludeTeamId?: string,
-  debounceMs: number = 500
+  debounceMs = 500
 ) => {
   const { user } = useAuth();
   const [validation, setValidation] = useState<ValidationState>({

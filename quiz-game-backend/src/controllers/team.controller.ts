@@ -1,10 +1,6 @@
 import { Response } from 'express';
 import { teamService } from '../services/team.service';
-import {
-    CreateTeamDto,
-    TeamQueryDto,
-    UpdateTeamDto
-} from '../types/team.types';
+import { CreateTeamDto, TeamQueryDto, UpdateTeamDto } from '../types/team.types';
 
 // Используем существующий тип AuthenticatedRequest
 import { AuthenticatedRequest } from '../types/auth.types';
@@ -23,7 +19,9 @@ export class TeamController {
         sortBy: req.query['sortBy'] as string,
         sortOrder: req.query['sortOrder'] as 'ASC' | 'DESC',
         isActive: req.query['isActive'] ? req.query['isActive'] === 'true' : undefined,
-        organizationId: req.query['organizationId'] ? parseInt(req.query['organizationId'] as string) : undefined
+        organizationId: req.query['organizationId']
+          ? parseInt(req.query['organizationId'] as string)
+          : undefined,
       };
 
       const result = await teamService.getTeams(query);
@@ -31,12 +29,12 @@ export class TeamController {
       res.json({
         success: true,
         data: result,
-        message: 'Команды успешно получены'
+        message: 'Команды успешно получены',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения команд'
+        message: error instanceof Error ? error.message : 'Ошибка получения команд',
       });
     }
   }
@@ -54,7 +52,7 @@ export class TeamController {
       if (!team) {
         res.status(404).json({
           success: false,
-          message: 'Команда не найдена'
+          message: 'Команда не найдена',
         });
         return;
       }
@@ -62,12 +60,12 @@ export class TeamController {
       res.json({
         success: true,
         data: team,
-        message: 'Команда успешно получена'
+        message: 'Команда успешно получена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения команды'
+        message: error instanceof Error ? error.message : 'Ошибка получения команды',
       });
     }
   }
@@ -84,18 +82,21 @@ export class TeamController {
       if (!organizationId) {
         res.status(400).json({
           success: false,
-          message: 'ID организации не указан'
+          message: 'ID организации не указан',
         });
         return;
       }
 
       // Валидация уникальности номера стола
       if (teamData.tableNumber) {
-        const isUnique = await teamService.isTableNumberUnique(organizationId, teamData.tableNumber);
+        const isUnique = await teamService.isTableNumberUnique(
+          organizationId,
+          teamData.tableNumber,
+        );
         if (!isUnique) {
           res.status(400).json({
             success: false,
-            message: `Номер стола ${teamData.tableNumber} уже используется в вашей организации`
+            message: `Номер стола ${teamData.tableNumber} уже используется в вашей организации`,
           });
           return;
         }
@@ -106,12 +107,12 @@ export class TeamController {
       res.status(201).json({
         success: true,
         data: team,
-        message: 'Команда успешно создана'
+        message: 'Команда успешно создана',
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка создания команды'
+        message: error instanceof Error ? error.message : 'Ошибка создания команды',
       });
     }
   }
@@ -129,18 +130,22 @@ export class TeamController {
       if (!organizationId) {
         res.status(400).json({
           success: false,
-          message: 'ID организации не указан'
+          message: 'ID организации не указан',
         });
         return;
       }
 
       // Валидация уникальности номера стола при обновлении
       if (teamData.tableNumber) {
-        const isUnique = await teamService.isTableNumberUnique(organizationId, teamData.tableNumber, id);
+        const isUnique = await teamService.isTableNumberUnique(
+          organizationId,
+          teamData.tableNumber,
+          id,
+        );
         if (!isUnique) {
           res.status(400).json({
             success: false,
-            message: `Номер стола ${teamData.tableNumber} уже используется в вашей организации`
+            message: `Номер стола ${teamData.tableNumber} уже используется в вашей организации`,
           });
           return;
         }
@@ -151,7 +156,7 @@ export class TeamController {
       if (!team) {
         res.status(404).json({
           success: false,
-          message: 'Команда не найдена'
+          message: 'Команда не найдена',
         });
         return;
       }
@@ -159,12 +164,12 @@ export class TeamController {
       res.json({
         success: true,
         data: team,
-        message: 'Команда успешно обновлена'
+        message: 'Команда успешно обновлена',
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка обновления команды'
+        message: error instanceof Error ? error.message : 'Ошибка обновления команды',
       });
     }
   }
@@ -182,23 +187,22 @@ export class TeamController {
       if (!deleted) {
         res.status(404).json({
           success: false,
-          message: 'Команда не найдена'
+          message: 'Команда не найдена',
         });
         return;
       }
 
       res.json({
         success: true,
-        message: 'Команда успешно удалена'
+        message: 'Команда успешно удалена',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка удаления команды'
+        message: error instanceof Error ? error.message : 'Ошибка удаления команды',
       });
     }
   }
-
 
   /**
    * Получить следующий доступный номер стола
@@ -211,7 +215,7 @@ export class TeamController {
       if (!organizationId) {
         res.status(400).json({
           success: false,
-          message: 'ID организации не указан'
+          message: 'ID организации не указан',
         });
         return;
       }
@@ -221,12 +225,12 @@ export class TeamController {
       res.json({
         success: true,
         data: { nextTableNumber: nextNumber },
-        message: 'Следующий номер стола получен'
+        message: 'Следующий номер стола получен',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения номера стола'
+        message: error instanceof Error ? error.message : 'Ошибка получения номера стола',
       });
     }
   }
@@ -243,7 +247,7 @@ export class TeamController {
       if (!organizationId) {
         res.status(400).json({
           success: false,
-          message: 'ID организации не указан'
+          message: 'ID организации не указан',
         });
         return;
       }
@@ -251,7 +255,7 @@ export class TeamController {
       if (!Array.isArray(tableNumbers)) {
         res.status(400).json({
           success: false,
-          message: 'Номера столов должны быть переданы в виде массива'
+          message: 'Номера столов должны быть переданы в виде массива',
         });
         return;
       }
@@ -261,12 +265,12 @@ export class TeamController {
       res.json({
         success: true,
         data: result,
-        message: result.valid ? 'Все номера столов свободны' : 'Найдены конфликты номеров столов'
+        message: result.valid ? 'Все номера столов свободны' : 'Найдены конфликты номеров столов',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка валидации номеров столов'
+        message: error instanceof Error ? error.message : 'Ошибка валидации номеров столов',
       });
     }
   }
@@ -280,8 +284,10 @@ export class TeamController {
       const query: TeamQueryDto = {
         search: req.query['q'] as string,
         limit: req.query['limit'] ? parseInt(req.query['limit'] as string) : undefined,
-        organizationId: req.query['organizationId'] ? parseInt(req.query['organizationId'] as string) : undefined,
-        isActive: req.query['isActive'] ? req.query['isActive'] === 'true' : undefined
+        organizationId: req.query['organizationId']
+          ? parseInt(req.query['organizationId'] as string)
+          : undefined,
+        isActive: req.query['isActive'] ? req.query['isActive'] === 'true' : undefined,
       };
 
       const result = await teamService.searchTeams(query);
@@ -289,12 +295,12 @@ export class TeamController {
       res.json({
         success: true,
         data: result,
-        message: 'Поиск команд выполнен успешно'
+        message: 'Поиск команд выполнен успешно',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка поиска команд'
+        message: error instanceof Error ? error.message : 'Ошибка поиска команд',
       });
     }
   }
@@ -311,12 +317,12 @@ export class TeamController {
       res.json({
         success: true,
         data: stats,
-        message: 'Статистика команд получена успешно'
+        message: 'Статистика команд получена успешно',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения статистики команд'
+        message: error instanceof Error ? error.message : 'Ошибка получения статистики команд',
       });
     }
   }
@@ -335,12 +341,12 @@ export class TeamController {
       res.json({
         success: true,
         data: teams,
-        message: 'Команды организации получены успешно'
+        message: 'Команды организации получены успешно',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка получения команд организации'
+        message: error instanceof Error ? error.message : 'Ошибка получения команд организации',
       });
     }
   }
@@ -358,7 +364,7 @@ export class TeamController {
       if (!organizationId) {
         res.status(400).json({
           success: false,
-          message: 'ID организации не указан'
+          message: 'ID организации не указан',
         });
         return;
       }
@@ -366,18 +372,18 @@ export class TeamController {
       const isUnique = await teamService.isTableNumberUnique(
         organizationId,
         parseInt(tableNumber!),
-        excludeId
+        excludeId,
       );
 
       res.json({
         success: true,
         data: { isUnique },
-        message: isUnique ? 'Номер стола свободен' : 'Номер стола уже занят'
+        message: isUnique ? 'Номер стола свободен' : 'Номер стола уже занят',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Ошибка проверки номера стола'
+        message: error instanceof Error ? error.message : 'Ошибка проверки номера стола',
       });
     }
   }

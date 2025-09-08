@@ -23,10 +23,10 @@ router.get('/', (req: Request, res: Response) => {
       games: '/api/games',
       templates: '/api/templates',
       teams: '/api/teams',
-      scores: '/api/scores'
+      scores: '/api/scores',
     },
     documentation: '/api/docs',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -36,7 +36,7 @@ router.get('/status', (req: Request, res: Response) => {
     status: 'operational',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env['NODE_ENV'] || 'development'
+    environment: process.env['NODE_ENV'] || 'development',
   });
 });
 
@@ -44,14 +44,14 @@ router.get('/status', (req: Request, res: Response) => {
 router.get('/organizations', (req: Request, res: Response) => {
   res.json({
     message: 'Organizations endpoint - coming soon',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 router.get('/users', (req: Request, res: Response) => {
   res.json({
     message: 'Users endpoint - coming soon',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

@@ -1,24 +1,24 @@
 /* eslint-disable no-unused-vars */
 import {
-    AllowNull,
-    AutoIncrement,
-    BelongsTo,
-    Column,
-    CreatedAt,
-    DataType,
-    ForeignKey,
-    Model,
-    PrimaryKey,
-    Table,
-    Unique,
-    UpdatedAt
+  AllowNull,
+  AutoIncrement,
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { Organization } from './organization.model';
 
 export enum UserRole {
   ADMIN = 'admin',
   OWNER = 'owner',
-  MODERATOR = 'moderator'
+  MODERATOR = 'moderator',
 }
 
 // Используем все значения в коде
@@ -27,7 +27,7 @@ export const USER_ROLES = Object.values(UserRole);
 @Table({
   tableName: 'users',
   timestamps: true,
-  underscored: true
+  underscored: true,
 })
 export class User extends Model {
   static readonly ROLES = USER_ROLES;
@@ -58,10 +58,6 @@ export class User extends Model {
 
   @Column(DataType.ENUM(...USER_ROLES))
   role: UserRole = UserRole.ADMIN;
-
-
-
-
 
   @Column(DataType.BOOLEAN)
   isActive: boolean = true;

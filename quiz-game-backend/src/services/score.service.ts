@@ -9,17 +9,17 @@ import { Team } from '../models/team.model';
 import { User } from '../models/user.model';
 import { getSocketService } from '../server';
 import {
-    BulkScoreDto,
-    BulkScoreResult,
-    CreateScoreDto,
-    GameScoreStats,
-    ScoreCorrectionDto,
-    ScoreCorrectionHistory,
-    ScoreListResult,
-    ScoreQueryDto,
-    ScoreResponse,
-    TeamScoreStats,
-    UpdateScoreDto
+  BulkScoreDto,
+  BulkScoreResult,
+  CreateScoreDto,
+  GameScoreStats,
+  ScoreCorrectionDto,
+  ScoreCorrectionHistory,
+  ScoreListResult,
+  ScoreQueryDto,
+  ScoreResponse,
+  TeamScoreStats,
+  UpdateScoreDto,
 } from '../types/score.types';
 import { PositionService } from './position.service';
 
@@ -55,8 +55,8 @@ export class ScoreService {
       const gameTeam = await GameTeam.findAll({
         where: {
           gameId: scoreData.gameId,
-          teamId: scoreData.teamId
-        }
+          teamId: scoreData.teamId,
+        },
       });
 
       if (gameTeam.length === 0) {
@@ -79,8 +79,8 @@ export class ScoreService {
         where: {
           gameId: scoreData.gameId,
           teamId: scoreData.teamId,
-          roundId: scoreData.roundId
-        }
+          roundId: scoreData.roundId,
+        },
       });
 
       if (existingScore) {
@@ -94,7 +94,7 @@ export class ScoreService {
         console.warn(`Score validation warning: ${pointsValidation.warning}`, {
           points: scoreData.points,
           teamId: scoreData.teamId,
-          roundId: scoreData.roundId
+          roundId: scoreData.roundId,
         });
       }
 
@@ -105,23 +105,26 @@ export class ScoreService {
       const totalPoints = this.calculateTotalPoints(
         scoreData.points,
         scoreData.bet,
-        scoreData.betType || 'MULTIPLIER'
+        scoreData.betType || 'MULTIPLIER',
       );
 
       // Создаем запись о баллах
-      const score = await Score.create({
-        gameId: scoreData.gameId,
-        teamId: scoreData.teamId,
-        roundId: scoreData.roundId,
-        points: scoreData.points,
-        bet: scoreData.bet,
-        betType: scoreData.betType || 'MULTIPLIER',
-        minBet: scoreData.minBet,
-        maxBet: scoreData.maxBet,
-        totalPoints,
-        notes: scoreData.notes,
-        enteredBy: scoreData.enteredBy
-      }, { transaction });
+      const score = await Score.create(
+        {
+          gameId: scoreData.gameId,
+          teamId: scoreData.teamId,
+          roundId: scoreData.roundId,
+          points: scoreData.points,
+          bet: scoreData.bet,
+          betType: scoreData.betType || 'MULTIPLIER',
+          minBet: scoreData.minBet,
+          maxBet: scoreData.maxBet,
+          totalPoints,
+          notes: scoreData.notes,
+          enteredBy: scoreData.enteredBy,
+        },
+        { transaction },
+      );
 
       await transaction.commit();
 
@@ -150,12 +153,16 @@ export class ScoreService {
           teamName: team.name,
           roundId: scoreData.roundId,
           points: scoreData.points,
-          totalPoints: result.totalPoints
+          totalPoints: result.totalPoints,
         });
 
         // Отправляем обновление позиций, если пересчет прошел успешно
         if (positionResult) {
-          socketService.emitPositionsUpdate(scoreData.gameId, positionResult.positions, positionResult.changes);
+          socketService.emitPositionsUpdate(
+            scoreData.gameId,
+            positionResult.positions,
+            positionResult.changes,
+          );
         }
       } catch (socketError) {
         console.error('Failed to emit WebSocket events after score creation:', socketError);
@@ -184,17 +191,21 @@ export class ScoreService {
       // Пересчитываем общие баллы если изменились points, bet или betType
       const newPoints = scoreData.points !== undefined ? scoreData.points : score.points;
       const newBet = scoreData.bet !== undefined ? scoreData.bet : score.bet;
-      const newBetType = scoreData.betType !== undefined ? scoreData.betType : (score.betType || 'MULTIPLIER');
+      const newBetType =
+        scoreData.betType !== undefined ? scoreData.betType : score.betType || 'MULTIPLIER';
 
       // Валидируем новую ставку
       this.validateBet(newBet, newBetType, scoreData.minBet, scoreData.maxBet);
 
       const totalPoints = this.calculateTotalPoints(newPoints, newBet, newBetType);
 
-      await score.update({
-        ...scoreData,
-        totalPoints
-      }, { transaction });
+      await score.update(
+        {
+          ...scoreData,
+          totalPoints,
+        },
+        { transaction },
+      );
 
       await transaction.commit();
 
@@ -225,13 +236,17 @@ export class ScoreService {
             teamName: team.name,
             roundId: score.roundId,
             points: newPoints,
-            totalPoints: result.totalPoints
+            totalPoints: result.totalPoints,
           });
         }
 
         // Отправляем обновление позиций, если пересчет прошел успешно
         if (positionResult) {
-          socketService.emitPositionsUpdate(score.gameId, positionResult.positions, positionResult.changes);
+          socketService.emitPositionsUpdate(
+            score.gameId,
+            positionResult.positions,
+            positionResult.changes,
+          );
         }
       } catch (socketError) {
         console.error('Failed to emit WebSocket events after score update:', socketError);
@@ -254,19 +269,19 @@ export class ScoreService {
         {
           model: Team,
           as: 'team',
-          attributes: ['id', 'name', 'tableNumber']
+          attributes: ['id', 'name', 'tableNumber'],
         },
         {
           model: Round,
           as: 'round',
-          attributes: ['id', 'name', 'roundNumber']
+          attributes: ['id', 'name', 'roundNumber'],
         },
         {
           model: Game,
           as: 'game',
-          attributes: ['id', 'name']
-        }
-      ]
+          attributes: ['id', 'name'],
+        },
+      ],
     });
 
     return score ? this.mapScoreToResponse(score) : null;
@@ -283,7 +298,7 @@ export class ScoreService {
       page = 1,
       limit = 20,
       sortBy = 'createdAt',
-      sortOrder = 'DESC'
+      sortOrder = 'DESC',
     } = query;
 
     const where: WhereOptions = {};
@@ -300,22 +315,22 @@ export class ScoreService {
         {
           model: Team,
           as: 'team',
-          attributes: ['id', 'name', 'tableNumber']
+          attributes: ['id', 'name', 'tableNumber'],
         },
         {
           model: Round,
           as: 'round',
-          attributes: ['id', 'name', 'roundNumber']
+          attributes: ['id', 'name', 'roundNumber'],
         },
         {
           model: Game,
           as: 'game',
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
       order: [[sortBy, sortOrder]],
       limit,
-      offset
+      offset,
     });
 
     return {
@@ -324,8 +339,8 @@ export class ScoreService {
         total: count,
         page,
         limit,
-        totalPages: Math.ceil(count / limit)
-      }
+        totalPages: Math.ceil(count / limit),
+      },
     };
   }
 
@@ -336,26 +351,26 @@ export class ScoreService {
     const scores = await Score.findAll({
       where: {
         gameId,
-        teamId
+        teamId,
       },
       include: [
         {
           model: Team,
           as: 'team',
-          attributes: ['id', 'name', 'tableNumber']
+          attributes: ['id', 'name', 'tableNumber'],
         },
         {
           model: Round,
           as: 'round',
-          attributes: ['id', 'name', 'roundNumber']
+          attributes: ['id', 'name', 'roundNumber'],
         },
         {
           model: Game,
           as: 'game',
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
-      order: [['createdAt', 'ASC']]
+      order: [['createdAt', 'ASC']],
     });
 
     return scores.map(score => this.mapScoreToResponse(score));
@@ -380,9 +395,8 @@ export class ScoreService {
 
     // Получаем текущую позицию команды
     const allTeamStats = await this.getGameScoreStats(gameId);
-    const currentPosition = allTeamStats.leaderboard.findIndex(
-      entry => entry.teamId === teamId
-    ) + 1;
+    const currentPosition =
+      allTeamStats.leaderboard.findIndex(entry => entry.teamId === teamId) + 1;
 
     return {
       teamId: parseInt(team.id.toString()),
@@ -394,7 +408,7 @@ export class ScoreService {
       maxPoints,
       minPoints,
       currentPosition,
-      scores
+      scores,
     };
   }
 
@@ -408,16 +422,18 @@ export class ScoreService {
     }
 
     const teams = await Team.findAll({
-      include: [{
-        model: Game,
-        as: 'games',
-        where: { id: gameId },
-        through: { attributes: [] }
-      }]
+      include: [
+        {
+          model: Game,
+          as: 'games',
+          where: { id: gameId },
+          through: { attributes: [] },
+        },
+      ],
     });
 
     const rounds = await Round.findAll({
-      where: { gameId }
+      where: { gameId },
     });
 
     if (teams.length === 0) {
@@ -440,7 +456,7 @@ export class ScoreService {
       teamId: stats.teamId,
       teamName: stats.teamName,
       tableNumber: stats.tableNumber,
-      totalPoints: stats.totalPoints
+      totalPoints: stats.totalPoints,
     }));
 
     // Вычисляем средние баллы за раунд
@@ -454,7 +470,7 @@ export class ScoreService {
       totalTeams: teams.length,
       averagePointsPerRound: Math.round(averagePointsPerRound * 100) / 100,
       teamStats,
-      leaderboard
+      leaderboard,
     };
   }
 
@@ -477,7 +493,7 @@ export class ScoreService {
             points: scoreData.points,
             bet: scoreData.bet || undefined,
             notes: scoreData.notes || undefined,
-            enteredBy: bulkData.enteredBy
+            enteredBy: bulkData.enteredBy,
           };
 
           const score = await this.createScore(createData);
@@ -485,7 +501,7 @@ export class ScoreService {
         } catch (error) {
           errors.push({
             teamId: scoreData.teamId,
-            error: error instanceof Error ? error.message : 'Неизвестная ошибка'
+            error: error instanceof Error ? error.message : 'Неизвестная ошибка',
           });
         }
       }
@@ -502,7 +518,11 @@ export class ScoreService {
           const positionResult = await this.positionService.recalculateGamePositions(gameId);
 
           if (positionResult) {
-            socketService.emitPositionsUpdate(gameId, positionResult.positions, positionResult.changes);
+            socketService.emitPositionsUpdate(
+              gameId,
+              positionResult.positions,
+              positionResult.changes,
+            );
           }
         }
       } catch (socketError) {
@@ -515,7 +535,7 @@ export class ScoreService {
         created: results.length,
         updated: 0, // Для массового создания updated всегда 0
         errors,
-        scores: results
+        scores: results,
       };
     } catch (error) {
       await transaction.rollback();
@@ -536,20 +556,30 @@ export class ScoreService {
       }
 
       // Создаем запись о корректировке
-      await ScoreCorrection.create({
-        scoreId: correctionData.scoreId,
-        oldPoints: score.points,
-        newPoints: correctionData.newPoints,
-        reason: correctionData.reason,
-        correctedBy: correctionData.correctedBy
-      }, { transaction });
+      await ScoreCorrection.create(
+        {
+          scoreId: correctionData.scoreId,
+          oldPoints: score.points,
+          newPoints: correctionData.newPoints,
+          reason: correctionData.reason,
+          correctedBy: correctionData.correctedBy,
+        },
+        { transaction },
+      );
 
       // Обновляем баллы с учетом типа ставки
-      const totalPoints = this.calculateTotalPoints(correctionData.newPoints, score.bet, score.betType || 'MULTIPLIER');
-      await score.update({
-        points: correctionData.newPoints,
-        totalPoints
-      }, { transaction });
+      const totalPoints = this.calculateTotalPoints(
+        correctionData.newPoints,
+        score.bet,
+        score.betType || 'MULTIPLIER',
+      );
+      await score.update(
+        {
+          points: correctionData.newPoints,
+          totalPoints,
+        },
+        { transaction },
+      );
 
       await transaction.commit();
 
@@ -582,7 +612,7 @@ export class ScoreService {
             oldPoints: score.points || 0,
             newPoints: correctionData.newPoints,
             reason: correctionData.reason,
-            correctedBy: String(correctionData.correctedBy || 'Система')
+            correctedBy: String(correctionData.correctedBy || 'Система'),
           });
 
           // Отправляем обновление баллов
@@ -591,13 +621,17 @@ export class ScoreService {
             teamName: team.name,
             roundId: score.roundId,
             points: correctionData.newPoints,
-            totalPoints: result.totalPoints
+            totalPoints: result.totalPoints,
           });
         }
 
         // Отправляем обновление позиций, если пересчет прошел успешно
         if (positionResult) {
-          socketService.emitPositionsUpdate(score.gameId, positionResult.positions, positionResult.changes);
+          socketService.emitPositionsUpdate(
+            score.gameId,
+            positionResult.positions,
+            positionResult.changes,
+          );
         }
       } catch (socketError) {
         console.error('Failed to emit WebSocket events after score correction:', socketError);
@@ -621,10 +655,10 @@ export class ScoreService {
         {
           model: User,
           as: 'correctedByUser',
-          attributes: ['id', 'email']
-        }
+          attributes: ['id', 'email'],
+        },
       ],
-      order: [['correctedAt', 'DESC']]
+      order: [['correctedAt', 'DESC']],
     });
 
     return corrections.map(correction => ({
@@ -635,10 +669,12 @@ export class ScoreService {
       reason: correction.reason,
       correctedBy: correction.correctedBy,
       correctedAt: correction.correctedAt.toISOString(),
-      correctedByUser: correction.correctedByUser ? {
-        id: correction.correctedByUser.id,
-        username: correction.correctedByUser.email
-      } : undefined
+      correctedByUser: correction.correctedByUser
+        ? {
+            id: correction.correctedByUser.id,
+            username: correction.correctedByUser.email,
+          }
+        : undefined,
     }));
   }
 
@@ -652,7 +688,7 @@ export class ScoreService {
       page = 1,
       limit = 50,
       sortBy = 'createdAt',
-      sortOrder = 'DESC'
+      sortOrder = 'DESC',
     } = query;
 
     const where: WhereOptions = { gameId };
@@ -668,22 +704,22 @@ export class ScoreService {
         {
           model: Team,
           as: 'team',
-          attributes: ['id', 'name', 'tableNumber']
+          attributes: ['id', 'name', 'tableNumber'],
         },
         {
           model: Round,
           as: 'round',
-          attributes: ['id', 'name', 'roundNumber']
+          attributes: ['id', 'name', 'roundNumber'],
         },
         {
           model: Game,
           as: 'game',
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
       order: [[sortBy, sortOrder]],
       limit,
-      offset
+      offset,
     });
 
     return {
@@ -692,8 +728,8 @@ export class ScoreService {
         total: count,
         page,
         limit,
-        totalPages: Math.ceil(count / limit)
-      }
+        totalPages: Math.ceil(count / limit),
+      },
     };
   }
 
@@ -704,26 +740,29 @@ export class ScoreService {
     const scores = await Score.findAll({
       where: {
         gameId,
-        roundId
+        roundId,
       },
       include: [
         {
           model: Team,
           as: 'team',
-          attributes: ['id', 'name', 'tableNumber']
+          attributes: ['id', 'name', 'tableNumber'],
         },
         {
           model: Round,
           as: 'round',
-          attributes: ['id', 'name', 'roundNumber']
+          attributes: ['id', 'name', 'roundNumber'],
         },
         {
           model: Game,
           as: 'game',
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
-      order: [['totalPoints', 'DESC'], ['createdAt', 'ASC']]
+      order: [
+        ['totalPoints', 'DESC'],
+        ['createdAt', 'ASC'],
+      ],
     });
 
     return scores.map(score => this.mapScoreToResponse(score));
@@ -758,7 +797,7 @@ export class ScoreService {
     }
 
     const rounds = await Round.findAll({
-      where: { gameId }
+      where: { gameId },
     });
 
     // Получаем последнюю активность для каждой команды
@@ -767,9 +806,9 @@ export class ScoreService {
       const lastScore = await Score.findOne({
         where: {
           gameId,
-          teamId: teamStats.teamId
+          teamId: teamStats.teamId,
         },
-        order: [['updatedAt', 'DESC']]
+        order: [['updatedAt', 'DESC']],
       });
 
       leaderboardWithActivity.push({
@@ -780,7 +819,7 @@ export class ScoreService {
         totalPoints: teamStats.totalPoints,
         roundsPlayed: teamStats.roundsPlayed,
         averagePoints: teamStats.averagePoints,
-        lastActivity: lastScore ? lastScore.updatedAt.toISOString() : new Date().toISOString()
+        lastActivity: lastScore ? lastScore.updatedAt.toISOString() : new Date().toISOString(),
       });
     }
 
@@ -793,8 +832,8 @@ export class ScoreService {
         gameId: parseInt(game.id.toString()),
         gameName: game.name,
         totalRounds: rounds.length,
-        totalTeams: gameStats.totalTeams
-      }
+        totalTeams: gameStats.totalTeams,
+      },
     };
   }
 
@@ -815,7 +854,7 @@ export class ScoreService {
   }> {
     const rounds = await Round.findAll({
       where: { gameId },
-      order: [['roundNumber', 'ASC']]
+      order: [['roundNumber', 'ASC']],
     });
 
     const roundsSummary = [];
@@ -823,8 +862,8 @@ export class ScoreService {
       const roundScores = await Score.findAll({
         where: {
           gameId,
-          roundId: round.id
-        }
+          roundId: round.id,
+        },
       });
 
       if (roundScores.length > 0) {
@@ -839,7 +878,7 @@ export class ScoreService {
           averagePoints: Math.round((totalPoints / roundScores.length) * 100) / 100,
           maxPoints: Math.max(...pointsArray),
           minPoints: Math.min(...pointsArray),
-          teamsParticipated: roundScores.length
+          teamsParticipated: roundScores.length,
         });
       } else {
         roundsSummary.push({
@@ -850,7 +889,7 @@ export class ScoreService {
           averagePoints: 0,
           maxPoints: 0,
           minPoints: 0,
-          teamsParticipated: 0
+          teamsParticipated: 0,
         });
       }
     }
@@ -874,7 +913,11 @@ export class ScoreService {
   /**
    * Вычислить общие баллы с учетом ставки и типа
    */
-  private calculateTotalPoints(points: number, bet?: number, betType: 'MULTIPLIER' | 'BONUS' | 'FIXED' = 'MULTIPLIER'): number {
+  private calculateTotalPoints(
+    points: number,
+    bet?: number,
+    betType: 'MULTIPLIER' | 'BONUS' | 'FIXED' = 'MULTIPLIER',
+  ): number {
     if (!bet) {
       return points;
     }
@@ -913,7 +956,7 @@ export class ScoreService {
     if (points < -100) {
       return {
         isValid: true,
-        warning: 'Критически низкие баллы. Убедитесь в корректности ввода.'
+        warning: 'Критически низкие баллы. Убедитесь в корректности ввода.',
       };
     }
 
@@ -921,7 +964,7 @@ export class ScoreService {
     if (points > 1000) {
       return {
         isValid: true,
-        warning: 'Критически высокие баллы. Убедитесь в корректности ввода.'
+        warning: 'Критически высокие баллы. Убедитесь в корректности ввода.',
       };
     }
 
@@ -1015,14 +1058,14 @@ export class ScoreService {
       totalPoints: score.totalPoints,
       notes: score.notes || undefined,
       createdAt: score.createdAt.toISOString(),
-      updatedAt: score.updatedAt.toISOString()
+      updatedAt: score.updatedAt.toISOString(),
     };
 
     if (score.team) {
       response.team = {
         id: parseInt(score.team.id.toString()),
         name: score.team.name,
-        tableNumber: score.team.tableNumber
+        tableNumber: score.team.tableNumber,
       };
     }
 
@@ -1030,14 +1073,14 @@ export class ScoreService {
       response.round = {
         id: parseInt(score.round.id.toString()),
         name: score.round.name,
-        roundNumber: score.round.roundNumber
+        roundNumber: score.round.roundNumber,
       };
     }
 
     if (score.game) {
       response.game = {
         id: parseInt(score.game.id.toString()),
-        name: score.game.name
+        name: score.game.name,
       };
     }
 
@@ -1047,7 +1090,10 @@ export class ScoreService {
   /**
    * Получить все исправления баллов по игре
    */
-  async getGameCorrections(gameId: number, options: { page: number; limit: number }): Promise<{
+  async getGameCorrections(
+    gameId: number,
+    options: { page: number; limit: number },
+  ): Promise<{
     corrections: Array<{
       id: number;
       scoreId: number;
@@ -1080,24 +1126,24 @@ export class ScoreService {
             {
               model: Team,
               as: 'team',
-              attributes: ['name']
+              attributes: ['name'],
             },
             {
               model: Round,
               as: 'round',
-              attributes: ['name', 'roundNumber']
-            }
-          ]
+              attributes: ['name', 'roundNumber'],
+            },
+          ],
         },
         {
           model: User,
           as: 'corrector',
-          attributes: ['username', 'email']
-        }
+          attributes: ['username', 'email'],
+        },
       ],
       order: [['createdAt', 'DESC']],
       limit,
-      offset
+      offset,
     });
 
     const formattedCorrections = corrections.map(correction => ({
@@ -1109,7 +1155,7 @@ export class ScoreService {
       newPoints: correction.newPoints,
       reason: correction.reason,
       correctedBy: String(correction.correctedBy || 'Система'),
-      correctedAt: correction.createdAt
+      correctedAt: correction.createdAt,
     }));
 
     const totalPages = Math.ceil(count / limit);
@@ -1120,8 +1166,8 @@ export class ScoreService {
         currentPage: page,
         totalPages,
         totalItems: count,
-        itemsPerPage: limit
-      }
+        itemsPerPage: limit,
+      },
     };
   }
 }

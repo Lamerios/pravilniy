@@ -6,7 +6,10 @@ import { NextFunction, Request, Response } from 'express';
 
 // Конфигурация CORS
 const corsConfig = {
-  origin: process.env['CORS_ORIGIN']?.split(',') || ['http://localhost:3000', 'http://localhost:3001'],
+  origin: process.env['CORS_ORIGIN']?.split(',') || [
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ],
   credentials: process.env['CORS_CREDENTIALS'] === 'true' || true,
   maxAge: parseInt(process.env['CORS_MAX_AGE'] || '86400'),
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -17,14 +20,9 @@ const corsConfig = {
     'Accept',
     'Authorization',
     'Cache-Control',
-    'Pragma'
+    'Pragma',
   ],
-  exposedHeaders: [
-    'X-Total-Count',
-    'X-Page-Count',
-    'X-Current-Page',
-    'X-Per-Page'
-  ]
+  exposedHeaders: ['X-Total-Count', 'X-Page-Count', 'X-Current-Page', 'X-Per-Page'],
 };
 
 /**
@@ -59,7 +57,7 @@ export const corsMiddleware = (req: Request, res: Response, next: NextFunction):
     res.status(403).json({
       success: false,
       error: 'CORS_ERROR',
-      message: 'Origin not allowed'
+      message: 'Origin not allowed',
     });
     return;
   }
@@ -112,7 +110,7 @@ export const contentTypeValidator = (req: Request, res: Response, next: NextFunc
       res.status(400).json({
         success: false,
         error: 'ContentTypeError',
-        message: 'Content-Type header is required'
+        message: 'Content-Type header is required',
       });
       return;
     }
@@ -122,7 +120,7 @@ export const contentTypeValidator = (req: Request, res: Response, next: NextFunc
       res.status(400).json({
         success: false,
         error: 'ContentTypeError',
-        message: 'Content-Type must be application/json'
+        message: 'Content-Type must be application/json',
       });
       return;
     }
@@ -142,7 +140,7 @@ export const bodySizeLimit = (req: Request, res: Response, next: NextFunction): 
     res.status(413).json({
       success: false,
       error: 'PayloadTooLargeError',
-      message: 'Request body too large'
+      message: 'Request body too large',
     });
     return;
   }

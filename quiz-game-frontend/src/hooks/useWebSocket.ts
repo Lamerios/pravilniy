@@ -27,7 +27,7 @@ interface UseWebSocketReturn {
 
 export const useWebSocket = (options: UseWebSocketOptions): UseWebSocketReturn => {
   const {
-    url = process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001',
+    url = process.env.REACT_APP_SOCKET_URL ?? 'http://localhost:3001',
     gameId,
     autoConnect = true,
     reconnectAttempts: maxReconnectAttempts = 5,
@@ -50,14 +50,15 @@ export const useWebSocket = (options: UseWebSocketOptions): UseWebSocketReturn =
   const isManualDisconnect = useRef(false);
 
   const connect = useCallback(() => {
-    if (socketRef.current?.connected || connecting) {
+    if (socketRef.current?.connected ?? false || connecting) {
       return;
     }
 
     setConnecting(true);
     isManualDisconnect.current = false;
 
-    const newSocket = io(url, {
+    const socketUrl = gameId ? `${url}?gameId=${gameId}` : url;
+    const newSocket = io(socketUrl, {
       transports: ['websocket', 'polling'],
       timeout: 20000,
       forceNew: true,

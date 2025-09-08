@@ -11,7 +11,7 @@ const jwtConfig: JWTConfig = {
   accessTokenExpiresIn: process.env['JWT_ACCESS_EXPIRES_IN'] || '15m',
   refreshTokenExpiresIn: process.env['JWT_REFRESH_EXPIRES_IN'] || '7d',
   issuer: process.env['JWT_ISSUER'] || 'quiz-game-api',
-  audience: process.env['JWT_AUDIENCE'] || 'quiz-game-client'
+  audience: process.env['JWT_AUDIENCE'] || 'quiz-game-client',
 };
 
 /**
@@ -22,7 +22,7 @@ export function generateAccessToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): s
     return jwt.sign(payload, jwtConfig.secret, {
       expiresIn: jwtConfig.accessTokenExpiresIn,
       issuer: jwtConfig.issuer,
-      audience: jwtConfig.audience
+      audience: jwtConfig.audience,
     } as jwt.SignOptions);
   } catch (error) {
     throw new Error(`Access token generation failed: ${error}`);
@@ -37,7 +37,7 @@ export function generateRefreshToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): 
     return jwt.sign(payload, jwtConfig.secret, {
       expiresIn: jwtConfig.refreshTokenExpiresIn,
       issuer: jwtConfig.issuer,
-      audience: jwtConfig.audience
+      audience: jwtConfig.audience,
     } as jwt.SignOptions);
   } catch (error) {
     throw new Error(`Refresh token generation failed: ${error}`);
@@ -51,7 +51,7 @@ export function verifyToken(token: string): JWTPayload {
   try {
     const decoded = jwt.verify(token, jwtConfig.secret, {
       issuer: jwtConfig.issuer,
-      audience: jwtConfig.audience
+      audience: jwtConfig.audience,
     }) as JWTPayload;
 
     return decoded;
@@ -99,7 +99,7 @@ export function extractTokenFromHeader(authHeader: string | undefined): string |
 export function isTokenExpired(token: string): boolean {
   try {
     const decoded = decodeToken(token);
-    if (!decoded || !decoded.exp) {
+    if (!decoded?.exp) {
       return true;
     }
 
@@ -116,7 +116,7 @@ export function isTokenExpired(token: string): boolean {
 export function getTokenExpiration(token: string): Date | null {
   try {
     const decoded = decodeToken(token);
-    if (!decoded || !decoded.exp) {
+    if (!decoded?.exp) {
       return null;
     }
 
@@ -132,7 +132,7 @@ export function getTokenExpiration(token: string): Date | null {
 export function getTimeUntilExpiration(token: string): number | null {
   try {
     const decoded = decodeToken(token);
-    if (!decoded || !decoded.exp) {
+    if (!decoded?.exp) {
       return null;
     }
 
@@ -154,7 +154,7 @@ export function generateTokenPair(payload: Omit<JWTPayload, 'iat' | 'exp'>): {
 } {
   return {
     accessToken: generateAccessToken(payload),
-    refreshToken: generateRefreshToken(payload)
+    refreshToken: generateRefreshToken(payload),
   };
 }
 
@@ -185,7 +185,7 @@ export function validateJWTConfig(): {
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 

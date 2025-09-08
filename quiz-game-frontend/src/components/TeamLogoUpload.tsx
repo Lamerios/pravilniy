@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
+
 import { uploadService } from '../services/upload.service';
+
 import { FileUpload } from './FileUpload';
 
 interface TeamLogoUploadProps {
@@ -16,14 +18,14 @@ interface TeamLogoUploadProps {
 export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
   currentLogoUrl,
   onLogoChange,
-  teamId,
+  _teamId,
   disabled = false,
   className = ''
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFileSelect = useCallback((file: File) => {
+  const handleFileSelect = useCallback((_file: File) => {
     setError(null);
     // Файл выбран, но еще не загружен
     // Загрузка произойдет автоматически в handleFileUpload
@@ -77,7 +79,7 @@ export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
             onClick={handleRemove}
             disabled={disabled || isUploading}
           >
-            <i className="icon icon--trash"></i>
+            <i className="icon icon--trash" />
             Удалить
           </button>
         )}
@@ -89,7 +91,7 @@ export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
           onFileUpload={handleFileUpload}
           accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
           maxSize={2 * 1024 * 1024} // 2MB
-          currentUrl={currentLogoUrl || undefined}
+          currentUrl={currentLogoUrl ?? undefined}
           disabled={disabled || isUploading}
           placeholder="Выберите логотип команды"
           showPreview={true}
@@ -98,7 +100,7 @@ export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
 
         {error && (
           <div className="team-logo-upload__error">
-            <i className="icon icon--warning"></i>
+            <i className="icon icon--warning" />
             <span>{error}</span>
           </div>
         )}

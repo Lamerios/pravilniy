@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import { BetType, BulkScoreDto, scoreService } from '../services/score.service';
 
 interface BulkScoreTeam {

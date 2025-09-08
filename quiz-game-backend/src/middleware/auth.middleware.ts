@@ -13,7 +13,7 @@ import { extractTokenFromHeader, verifyToken } from '../utils/jwt.util';
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     // Извлекаем токен из заголовка
@@ -22,7 +22,7 @@ export const authenticateToken = async (
     if (!token) {
       res.status(401).json({
         error: 'Access token required',
-        message: 'Требуется токен доступа'
+        message: 'Требуется токен доступа',
       });
       return;
     }
@@ -39,13 +39,13 @@ export const authenticateToken = async (
       if (error.message === 'Token has expired') {
         res.status(401).json({
           error: 'Token expired',
-          message: 'Токен истек'
+          message: 'Токен истек',
         });
         return;
       } else if (error.message === 'Invalid token') {
         res.status(403).json({
           error: 'Invalid token',
-          message: 'Недействительный токен'
+          message: 'Недействительный токен',
         });
         return;
       }
@@ -53,7 +53,7 @@ export const authenticateToken = async (
 
     res.status(403).json({
       error: 'Token verification failed',
-      message: 'Ошибка проверки токена'
+      message: 'Ошибка проверки токена',
     });
   }
 };
@@ -66,7 +66,7 @@ export const requireRole = (requiredRole: UserRole) => {
     if (!req.user) {
       res.status(401).json({
         error: 'Authentication required',
-        message: 'Требуется аутентификация'
+        message: 'Требуется аутентификация',
       });
       return;
     }
@@ -74,7 +74,7 @@ export const requireRole = (requiredRole: UserRole) => {
     if (req.user.role !== requiredRole) {
       res.status(403).json({
         error: 'Insufficient permissions',
-        message: `Требуется роль: ${requiredRole}`
+        message: `Требуется роль: ${requiredRole}`,
       });
       return;
     }
@@ -91,7 +91,7 @@ export const requireAnyRole = (requiredRoles: UserRole[]) => {
     if (!req.user) {
       res.status(401).json({
         error: 'Authentication required',
-        message: 'Требуется аутентификация'
+        message: 'Требуется аутентификация',
       });
       return;
     }
@@ -99,7 +99,7 @@ export const requireAnyRole = (requiredRoles: UserRole[]) => {
     if (!requiredRoles.includes(req.user.role)) {
       res.status(403).json({
         error: 'Insufficient permissions',
-        message: `Требуется одна из ролей: ${requiredRoles.join(', ')}`
+        message: `Требуется одна из ролей: ${requiredRoles.join(', ')}`,
       });
       return;
     }
@@ -121,11 +121,15 @@ export const requireAdminOrModerator = requireAnyRole([UserRole.ADMIN, UserRole.
 /**
  * Проверяет, что пользователь имеет доступ к организации
  */
-export const requireOrganizationAccess = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireOrganizationAccess = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     res.status(401).json({
       error: 'Authentication required',
-      message: 'Требуется аутентификация'
+      message: 'Требуется аутентификация',
     });
     return;
   }
@@ -142,7 +146,7 @@ export const requireOrganizationAccess = (req: AuthenticatedRequest, res: Respon
   if (!organizationId) {
     res.status(400).json({
       error: 'Organization ID required',
-      message: 'Требуется ID организации'
+      message: 'Требуется ID организации',
     });
     return;
   }
@@ -151,7 +155,7 @@ export const requireOrganizationAccess = (req: AuthenticatedRequest, res: Respon
   if (req.user.organizationId !== parseInt(organizationId)) {
     res.status(403).json({
       error: 'Access denied to organization',
-      message: 'Нет доступа к данной организации'
+      message: 'Нет доступа к данной организации',
     });
     return;
   }
@@ -167,7 +171,7 @@ export const requireResourceAccess = (resourceUserIdField: string = 'userId') =>
     if (!req.user) {
       res.status(401).json({
         error: 'Authentication required',
-        message: 'Требуется аутентификация'
+        message: 'Требуется аутентификация',
       });
       return;
     }
@@ -184,7 +188,7 @@ export const requireResourceAccess = (resourceUserIdField: string = 'userId') =>
     if (!resourceUserId) {
       res.status(400).json({
         error: 'Resource user ID required',
-        message: 'Требуется ID пользователя ресурса'
+        message: 'Требуется ID пользователя ресурса',
       });
       return;
     }
@@ -193,7 +197,7 @@ export const requireResourceAccess = (resourceUserIdField: string = 'userId') =>
     if (req.user.userId !== parseInt(resourceUserId)) {
       res.status(403).json({
         error: 'Access denied to resource',
-        message: 'Нет доступа к данному ресурсу'
+        message: 'Нет доступа к данному ресурсу',
       });
       return;
     }
@@ -208,7 +212,7 @@ export const requireResourceAccess = (resourceUserIdField: string = 'userId') =>
 export const optionalAuth = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const token = extractTokenFromHeader(req.headers.authorization);
@@ -228,11 +232,15 @@ export const optionalAuth = async (
 /**
  * Проверяет, что пользователь активен
  */
-export const requireActiveUser = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireActiveUser = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     res.status(401).json({
       error: 'Authentication required',
-      message: 'Требуется аутентификация'
+      message: 'Требуется аутентификация',
     });
     return;
   }
@@ -245,11 +253,15 @@ export const requireActiveUser = (req: AuthenticatedRequest, res: Response, next
 /**
  * Middleware для проверки роли OWNER
  */
-export const requireOwner = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireOwner = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     res.status(401).json({
       error: 'Authentication required',
-      message: 'Требуется аутентификация'
+      message: 'Требуется аутентификация',
     });
     return;
   }
@@ -257,7 +269,7 @@ export const requireOwner = (req: AuthenticatedRequest, res: Response, next: Nex
   if (req.user.role !== UserRole.OWNER) {
     res.status(403).json({
       error: 'Owner access required',
-      message: 'Требуется роль владельца'
+      message: 'Требуется роль владельца',
     });
     return;
   }
@@ -268,11 +280,15 @@ export const requireOwner = (req: AuthenticatedRequest, res: Response, next: Nex
 /**
  * Middleware для проверки роли MODERATOR или выше
  */
-export const requireModeratorOrAbove = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireModeratorOrAbove = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     res.status(401).json({
       error: 'Authentication required',
-      message: 'Требуется аутентификация'
+      message: 'Требуется аутентификация',
     });
     return;
   }
@@ -281,7 +297,7 @@ export const requireModeratorOrAbove = (req: AuthenticatedRequest, res: Response
   if (!allowedRoles.includes(req.user.role)) {
     res.status(403).json({
       error: 'Moderator access required',
-      message: 'Требуется роль модератора или выше'
+      message: 'Требуется роль модератора или выше',
     });
     return;
   }
@@ -292,11 +308,15 @@ export const requireModeratorOrAbove = (req: AuthenticatedRequest, res: Response
 /**
  * Middleware для проверки роли OWNER или ADMIN
  */
-export const requireOwnerOrAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireOwnerOrAdmin = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     res.status(401).json({
       error: 'Authentication required',
-      message: 'Требуется аутентификация'
+      message: 'Требуется аутентификация',
     });
     return;
   }
@@ -305,7 +325,7 @@ export const requireOwnerOrAdmin = (req: AuthenticatedRequest, res: Response, ne
   if (!allowedRoles.includes(req.user.role)) {
     res.status(403).json({
       error: 'Owner or Admin access required',
-      message: 'Требуется роль владельца или администратора'
+      message: 'Требуется роль владельца или администратора',
     });
     return;
   }
@@ -324,7 +344,7 @@ export const authLogger = (req: AuthenticatedRequest, res: Response, next: NextF
 
   // Перехватываем ответ
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     const duration = Date.now() - startTime;
     console.log(`[AUTH] ${req.method} ${req.path} - ${res.statusCode} - ${duration}ms`);
     return originalSend.call(this, data);

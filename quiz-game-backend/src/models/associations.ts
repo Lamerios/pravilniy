@@ -12,48 +12,47 @@ import { Score } from './score.model';
  * Определяет связи между таблицами базы данных
  */
 export function setupAssociations(): void {
-
   // ===== ORGANIZATION ASSOCIATIONS =====
   Organization.hasMany(User, {
     foreignKey: 'organizationId',
     as: 'users',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   Organization.hasMany(GameTemplate, {
     foreignKey: 'organizationId',
     as: 'gameTemplates',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   Organization.hasMany(Game, {
     foreignKey: 'organizationId',
     as: 'games',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   Organization.hasMany(Team, {
     foreignKey: 'organizationId',
     as: 'teams',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   // ===== USER ASSOCIATIONS =====
   User.belongsTo(Organization, {
     foreignKey: 'organizationId',
-    as: 'organization'
+    as: 'organization',
   });
 
   User.hasMany(GameTemplate, {
     foreignKey: 'createdBy',
     as: 'createdGameTemplates',
-    onDelete: 'RESTRICT'
+    onDelete: 'RESTRICT',
   });
 
   User.hasMany(Game, {
     foreignKey: 'createdBy',
     as: 'createdGames',
-    onDelete: 'RESTRICT'
+    onDelete: 'RESTRICT',
   });
 
   // Связь с Answer удалена
@@ -61,52 +60,52 @@ export function setupAssociations(): void {
   User.hasMany(Score, {
     foreignKey: 'awardedBy',
     as: 'awardedScores',
-    onDelete: 'SET NULL'
+    onDelete: 'SET NULL',
   });
 
   // ===== GAME TEMPLATE ASSOCIATIONS =====
   GameTemplate.belongsTo(Organization, {
     foreignKey: 'organizationId',
-    as: 'organization'
+    as: 'organization',
   });
 
   GameTemplate.belongsTo(User, {
     foreignKey: 'createdBy',
-    as: 'creator'
+    as: 'creator',
   });
 
   GameTemplate.hasMany(Game, {
     foreignKey: 'templateId',
     as: 'games',
-    onDelete: 'RESTRICT'
+    onDelete: 'RESTRICT',
   });
 
   // ===== GAME ASSOCIATIONS =====
   Game.belongsTo(Organization, {
     foreignKey: 'organizationId',
-    as: 'organization'
+    as: 'organization',
   });
 
   Game.belongsTo(GameTemplate, {
     foreignKey: 'templateId',
-    as: 'template'
+    as: 'template',
   });
 
   Game.belongsTo(User, {
     foreignKey: 'createdBy',
-    as: 'creator'
+    as: 'creator',
   });
 
   Game.hasMany(Team, {
     foreignKey: 'gameId',
     as: 'teams',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   Game.hasMany(Round, {
     foreignKey: 'gameId',
     as: 'rounds',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   // Связь Game -> Answer удалена
@@ -114,18 +113,18 @@ export function setupAssociations(): void {
   Game.hasMany(Score, {
     foreignKey: 'gameId',
     as: 'scores',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   // ===== TEAM ASSOCIATIONS =====
   Team.belongsTo(Organization, {
     foreignKey: 'organizationId',
-    as: 'organization'
+    as: 'organization',
   });
 
   Team.belongsTo(Game, {
     foreignKey: 'gameId',
-    as: 'game'
+    as: 'game',
   });
 
   // Связь Team -> Answer удалена
@@ -133,13 +132,13 @@ export function setupAssociations(): void {
   Team.hasMany(Score, {
     foreignKey: 'teamId',
     as: 'scores',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   // ===== ROUND ASSOCIATIONS =====
   Round.belongsTo(Game, {
     foreignKey: 'gameId',
-    as: 'game'
+    as: 'game',
   });
 
   // Связь Round -> Answer удалена
@@ -147,7 +146,7 @@ export function setupAssociations(): void {
   Round.hasMany(Score, {
     foreignKey: 'roundId',
     as: 'scores',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   });
 
   // ===== ANSWER ASSOCIATIONS УДАЛЕНЫ =====
@@ -156,24 +155,24 @@ export function setupAssociations(): void {
   // ===== SCORE ASSOCIATIONS =====
   Score.belongsTo(Game, {
     foreignKey: 'gameId',
-    as: 'game'
+    as: 'game',
   });
 
   Score.belongsTo(Team, {
     foreignKey: 'teamId',
-    as: 'team'
+    as: 'team',
   });
 
   Score.belongsTo(Round, {
     foreignKey: 'roundId',
-    as: 'round'
+    as: 'round',
   });
 
   // Связь Score -> Answer удалена
 
   Score.belongsTo(User, {
     foreignKey: 'awardedBy',
-    as: 'awarder'
+    as: 'awarder',
   });
 
   console.log('✅ All model associations have been set up');

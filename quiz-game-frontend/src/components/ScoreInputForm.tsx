@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import { BetType, CreateScoreDto, scoreService } from '../services/score.service';
 import { requiresConfirmation, validateScoreData, VALIDATION_PRESETS } from '../utils/scoreValidation';
+
 import { BettingControls } from './BettingControls';
 import { CriticalScoreAlert, ScoreValidationAlert, useValidationAlerts } from './ScoreValidationAlert';
 
@@ -35,19 +37,19 @@ export const ScoreInputForm: React.FC<ScoreInputFormProps> = ({
   disabled = false,
   initialData
 }) => {
-  const [points, setPoints] = useState<number>(initialData?.points || 0);
+  const [points, setPoints] = useState<number>(initialData?.points ?? 0);
   const [bet, setBet] = useState<number | undefined>(initialData?.bet);
-  const [betType, setBetType] = useState<BetType>(initialData?.betType || 'MULTIPLIER');
+  const [betType, setBetType] = useState<BetType>(initialData?.betType ?? 'MULTIPLIER');
   const [minBet, setMinBet] = useState<number | undefined>(initialData?.minBet);
   const [maxBet, setMaxBet] = useState<number | undefined>(initialData?.maxBet);
-  const [notes, setNotes] = useState<string>(initialData?.notes || '');
+  const [notes, setNotes] = useState<string>(initialData?.notes ?? '');
 
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showCriticalAlert, setShowCriticalAlert] = useState(false);
-  const [pendingSubmission, setPendingSubmission] = useState(false);
+  // Removed unused state variables
 
-  const { alerts, clearAlerts, validatePoints, validateBet } = useValidationAlerts();
+  const { alerts, clearAlerts } = useValidationAlerts();
 
   // Минимальная валидация только для критических ошибок
   useEffect(() => {
@@ -70,12 +72,12 @@ export const ScoreInputForm: React.FC<ScoreInputFormProps> = ({
     }
 
     const validation = validateScoreData({
-      points: points || 0,
-      bet: bet || undefined,
-      betType: betType || undefined,
-      minBet: minBet || undefined,
-      maxBet: maxBet || undefined,
-      notes: notes || undefined
+      points: points ?? 0,
+      bet: bet ?? undefined,
+      betType: betType ?? undefined,
+      minBet: minBet ?? undefined,
+      maxBet: maxBet ?? undefined,
+      notes: notes ?? undefined
     }, VALIDATION_PRESETS.normal);
 
     if (!validation.isValid) {
@@ -121,7 +123,7 @@ export const ScoreInputForm: React.FC<ScoreInputFormProps> = ({
         betType: betType !== undefined ? betType : undefined,
         minBet: minBet !== undefined ? minBet : undefined,
         maxBet: maxBet !== undefined ? maxBet : undefined,
-        notes: notes.trim() || undefined
+        notes: notes.trim() ?? undefined
       };
 
       await onSubmit(scoreData);
@@ -251,13 +253,13 @@ export const ScoreInputForm: React.FC<ScoreInputFormProps> = ({
 
         <div className="form-section">
           <BettingControls
-            bet={bet || undefined}
+            bet={bet ?? undefined}
             betType={betType}
-            minBet={minBet || undefined}
-            maxBet={maxBet || undefined}
+            minBet={minBet ?? undefined}
+            maxBet={maxBet ?? undefined}
             points={points}
             onBetChange={setBet}
-            onBetTypeChange={(betType) => setBetType(betType || 'MULTIPLIER')}
+            onBetTypeChange={(betType) => setBetType(betType ?? 'MULTIPLIER')}
             onMinBetChange={setMinBet}
             onMaxBetChange={setMaxBet}
             disabled={disabled || submitting}

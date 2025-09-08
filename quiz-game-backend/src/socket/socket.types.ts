@@ -13,7 +13,7 @@ export interface ClientToServerEvents {
   'leave-game': (gameId: number) => void;
 
   // Ping для проверки соединения
-  'ping': () => void;
+  ping: () => void;
 }
 
 // События от сервера к клиенту
@@ -72,14 +72,10 @@ export interface ServerToClientEvents {
   }) => void;
 
   // Pong ответ на ping
-  'pong': () => void;
+  pong: () => void;
 
   // Ошибка
-  'error': (error: {
-    message: string;
-    code?: string;
-    timestamp: string;
-  }) => void;
+  error: (error: { message: string; code?: string; timestamp: string }) => void;
 }
 
 // Данные для подключения

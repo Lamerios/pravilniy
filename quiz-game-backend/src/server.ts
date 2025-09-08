@@ -2,7 +2,7 @@
  * Quiz Game Server с Socket.IO
  */
 
-import { createServer, Server as HTTPServer } from 'http';
+import { Server as HTTPServer, createServer } from 'http';
 import { createApp } from './app';
 import { SocketService } from './socket/socket.server';
 import { logger } from './utils/logger';
@@ -13,7 +13,7 @@ export class QuizGameServer {
   private port: number;
 
   constructor() {
-    this.port = parseInt(process.env['PORT'] || '5000', 10);
+    this.port = parseInt(process.env['PORT'] ?? '5000', 10);
   }
 
   /**
@@ -32,7 +32,9 @@ export class QuizGameServer {
 
       // Запускаем сервер
       this.httpServer.listen(this.port, () => {
-        logger.info(`🚀 Quiz Game Backend started successfully! Port: ${this.port}, Environment: ${process.env['NODE_ENV'] || 'development'}, SocketIO: true`);
+        logger.info(
+          `🚀 Quiz Game Backend started successfully! Port: ${this.port}, Environment: ${process.env['NODE_ENV'] ?? 'development'}, SocketIO: true`,
+        );
       });
 
       // Обработка ошибок сервера
@@ -41,20 +43,21 @@ export class QuizGameServer {
           throw error;
         }
 
-        const bind = typeof this.port === 'string' ? 'Pipe ' + this.port : 'Port ' + this.port;
+        const bind = typeof this.port === 'string' ? `Pipe ${this.port}` : `Port ${this.port}`;
 
         switch (error.code) {
           case 'EACCES':
             logger.error(`${bind} requires elevated privileges`);
             process.exit(1);
+            break;
           case 'EADDRINUSE':
             logger.error(`${bind} is already in use`);
             process.exit(1);
+            break;
           default:
             throw error;
         }
       });
-
     } catch (error) {
       logger.error(`Failed to start server: ${(error as Error).message}`);
       throw error;
@@ -65,7 +68,7 @@ export class QuizGameServer {
    * Остановка сервера
    */
   public async stop(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.httpServer) {
         this.httpServer.close(() => {
           logger.info('HTTP server stopped');

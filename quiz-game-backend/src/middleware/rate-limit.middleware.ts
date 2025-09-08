@@ -19,7 +19,7 @@ const rateLimitConfig = {
   windowMs: parseInt(process.env['RATE_LIMIT_WINDOW_MS'] || '900000'), // 15 минут
   maxRequests: parseInt(process.env['RATE_LIMIT_MAX_REQUESTS'] || '100'),
   skipSuccessfulRequests: process.env['RATE_LIMIT_SKIP_SUCCESSFUL_REQUESTS'] === 'true',
-  skipFailedRequests: process.env['RATE_LIMIT_SKIP_FAILED_REQUESTS'] === 'false'
+  skipFailedRequests: process.env['RATE_LIMIT_SKIP_FAILED_REQUESTS'] === 'false',
 };
 
 /**
@@ -70,7 +70,7 @@ export const rateLimitMiddleware = (req: Request, res: Response, next: NextFunct
     rateLimitInfo = {
       count: 0,
       resetTime: now + rateLimitConfig.windowMs,
-      blocked: false
+      blocked: false,
     };
     rateLimitStore.set(key, rateLimitInfo);
   }
@@ -83,7 +83,7 @@ export const rateLimitMiddleware = (req: Request, res: Response, next: NextFunct
       success: false,
       error: 'TooManyRequestsError',
       message: 'Too many requests, please try again later',
-      retryAfter: retryAfter
+      retryAfter,
     });
     return;
   }
@@ -101,10 +101,10 @@ export const rateLimitMiddleware = (req: Request, res: Response, next: NextFunct
       success: false,
       error: 'TooManyRequestsError',
       message: 'Rate limit exceeded',
-      retryAfter: retryAfter,
+      retryAfter,
       limit: rateLimitConfig.maxRequests,
       remaining: 0,
-      resetTime: new Date(rateLimitInfo.resetTime).toISOString()
+      resetTime: new Date(rateLimitInfo.resetTime).toISOString(),
     });
     return;
   }
@@ -119,7 +119,7 @@ export const rateLimitMiddleware = (req: Request, res: Response, next: NextFunct
 
   // Перехватываем ответ для обновления счетчика
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     // Обновляем счетчик в зависимости от результата
     if (rateLimitConfig.skipSuccessfulRequests && res.statusCode < 400) {
       rateLimitInfo!.count = Math.max(0, rateLimitInfo!.count - 1);
@@ -146,7 +146,7 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
   const authConfig = {
     windowMs: 15 * 60 * 1000, // 15 минут
     maxRequests: 5, // 5 попыток входа
-    blockDuration: 30 * 60 * 1000 // Блокировка на 30 минут
+    blockDuration: 30 * 60 * 1000, // Блокировка на 30 минут
   };
 
   let rateLimitInfo = rateLimitStore.get(key);
@@ -155,7 +155,7 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
     rateLimitInfo = {
       count: 0,
       resetTime: now + authConfig.windowMs,
-      blocked: false
+      blocked: false,
     };
     rateLimitStore.set(key, rateLimitInfo);
   }
@@ -167,7 +167,7 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
       success: false,
       error: 'TooManyAuthAttemptsError',
       message: 'Too many authentication attempts, please try again later',
-      retryAfter: retryAfter
+      retryAfter,
     });
     return;
   }
@@ -184,7 +184,7 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
       success: false,
       error: 'TooManyAuthAttemptsError',
       message: 'Authentication rate limit exceeded, account temporarily locked',
-      retryAfter: retryAfter
+      retryAfter,
     });
     return;
   }
@@ -202,7 +202,7 @@ export const apiRateLimit = (req: Request, res: Response, next: NextFunction): v
   // Лимиты для API
   const apiConfig = {
     windowMs: 60 * 1000, // 1 минута
-    maxRequests: 60 // 60 запросов в минуту
+    maxRequests: 60, // 60 запросов в минуту
   };
 
   let rateLimitInfo = rateLimitStore.get(key);
@@ -211,7 +211,7 @@ export const apiRateLimit = (req: Request, res: Response, next: NextFunction): v
     rateLimitInfo = {
       count: 0,
       resetTime: now + apiConfig.windowMs,
-      blocked: false
+      blocked: false,
     };
     rateLimitStore.set(key, rateLimitInfo);
   }
@@ -223,7 +223,7 @@ export const apiRateLimit = (req: Request, res: Response, next: NextFunction): v
       success: false,
       error: 'ApiRateLimitExceededError',
       message: 'API rate limit exceeded',
-      retryAfter: retryAfter
+      retryAfter,
     });
     return;
   }
@@ -239,7 +239,7 @@ export const apiRateLimit = (req: Request, res: Response, next: NextFunction): v
       success: false,
       error: 'ApiRateLimitExceededError',
       message: 'API rate limit exceeded',
-      retryAfter: retryAfter
+      retryAfter,
     });
     return;
   }
@@ -260,7 +260,7 @@ export const rateLimitLogger = (req: Request, res: Response, next: NextFunction)
 
   // Перехватываем ответ для логирования
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     if (res.statusCode === 429) {
       console.warn(`[RATE_LIMIT] Blocked request from ${key}: ${req.method} ${req.path}`);
     }

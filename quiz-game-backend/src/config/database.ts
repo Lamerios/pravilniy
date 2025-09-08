@@ -50,14 +50,14 @@ const dbConfig: DatabaseConfig = {
     min: config.db.pool.min,
     max: config.db.pool.max,
     acquire: 30000,
-    idle: 10000
+    idle: 10000,
   },
   dialectOptions: {
     // Дополнительные опции для pg драйвера
     ssl: false,
     connectTimeout: 60000,
   },
-  models: [Organization, User, GameTemplate, Game, GameTeam, Team, Round, Score]
+  models: [Organization, User, GameTemplate, Game, GameTeam, Team, Round, Score],
 };
 
 // Отладочная информация
@@ -66,7 +66,7 @@ console.log('🔍 Database config:', {
   port: dbConfig.port,
   database: dbConfig.database,
   username: dbConfig.username,
-  password: dbConfig.password ? '***' : 'undefined'
+  password: dbConfig.password ? '***' : 'undefined',
 });
 
 // Создание экземпляра Sequelize

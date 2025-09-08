@@ -24,7 +24,7 @@ export async function initializeDatabase(): Promise<void> {
       Team,
       Round,
       // Answer, // Модель удалена
-      Score
+      Score,
     ]);
 
     // Настраиваем ассоциации

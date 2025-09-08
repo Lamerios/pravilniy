@@ -104,7 +104,7 @@ export function createValidationMiddleware(schema: ValidationSchema) {
       res.status(400).json({
         success: false,
         message: 'Ошибки валидации',
-        errors
+        errors,
       });
       return;
     }
@@ -124,7 +124,7 @@ export function createQueryValidationMiddleware(schema: ValidationSchema) {
       res.status(400).json({
         success: false,
         message: 'Ошибки валидации query параметров',
-        errors
+        errors,
       });
       return;
     }
@@ -140,11 +140,11 @@ const gameSchemas = {
       required: true,
       type: 'string' as const,
       minLength: 3,
-      maxLength: 100
+      maxLength: 100,
     },
     description: {
       type: 'string' as const,
-      maxLength: 500
+      maxLength: 500,
     },
     templateId: {
       required: true,
@@ -154,7 +154,7 @@ const gameSchemas = {
           return 'ID шаблона обязателен';
         }
         return null;
-      }
+      },
     },
     scheduledAt: {
       type: 'string' as const,
@@ -169,7 +169,7 @@ const gameSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     settings: {
       type: 'object' as const,
@@ -179,8 +179,8 @@ const gameSchemas = {
           return settingsErrors.length > 0 ? settingsErrors.join('; ') : null;
         }
         return null;
-      }
-    }
+      },
+    },
   },
 
   updateGame: {
@@ -193,11 +193,11 @@ const gameSchemas = {
           return 'Название игры не может быть пустым';
         }
         return null;
-      }
+      },
     },
     description: {
       type: 'string' as const,
-      maxLength: 500
+      maxLength: 500,
     },
     templateId: {
       type: 'string' as const,
@@ -206,7 +206,7 @@ const gameSchemas = {
           return 'ID шаблона не может быть пустым';
         }
         return null;
-      }
+      },
     },
     scheduledAt: {
       type: 'string' as const,
@@ -221,7 +221,7 @@ const gameSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     settings: {
       type: 'object' as const,
@@ -231,8 +231,8 @@ const gameSchemas = {
           return settingsErrors.length > 0 ? settingsErrors.join('; ') : null;
         }
         return null;
-      }
-    }
+      },
+    },
   },
 
   gameQuery: {
@@ -246,7 +246,7 @@ const gameSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     limit: {
       type: 'string' as const,
@@ -258,11 +258,11 @@ const gameSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     search: {
       type: 'string' as const,
-      maxLength: 100
+      maxLength: 100,
     },
     sortBy: {
       type: 'string' as const,
@@ -271,7 +271,7 @@ const gameSchemas = {
           return 'Неверное поле для сортировки';
         }
         return null;
-      }
+      },
     },
     sortOrder: {
       type: 'string' as const,
@@ -280,30 +280,34 @@ const gameSchemas = {
           return 'Порядок сортировки должен быть ASC или DESC';
         }
         return null;
-      }
+      },
     },
     status: {
       type: 'string' as const,
       custom: (value: string) => {
-        if (value && !['draft', 'scheduled', 'active', 'paused', 'completed', 'cancelled'].includes(value)) {
+        if (
+          value &&
+          !['draft', 'scheduled', 'active', 'paused', 'completed', 'cancelled'].includes(value)
+        ) {
           return 'Неверный статус игры';
         }
         return null;
-      }
+      },
     },
     templateId: {
       type: 'string' as const,
       custom: (value: string) => {
         if (value) {
-          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+          const uuidRegex =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
           if (!uuidRegex.test(value)) {
             return 'Неверный формат ID шаблона';
           }
         }
         return null;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 // Схемы валидации для шаблонов
@@ -313,11 +317,11 @@ const templateSchemas = {
       required: true,
       type: 'string' as const,
       minLength: 3,
-      maxLength: 100
+      maxLength: 100,
     },
     description: {
       type: 'string' as const,
-      maxLength: 500
+      maxLength: 500,
     },
     settings: {
       required: true,
@@ -328,7 +332,7 @@ const templateSchemas = {
           return settingsErrors.length > 0 ? settingsErrors.join('; ') : null;
         }
         return null;
-      }
+      },
     },
     tags: {
       type: 'array' as const,
@@ -344,8 +348,8 @@ const templateSchemas = {
           }
         }
         return null;
-      }
-    }
+      },
+    },
   },
 
   updateTemplate: {
@@ -358,11 +362,11 @@ const templateSchemas = {
           return 'Название шаблона не может быть пустым';
         }
         return null;
-      }
+      },
     },
     description: {
       type: 'string' as const,
-      maxLength: 500
+      maxLength: 500,
     },
     settings: {
       type: 'object' as const,
@@ -372,7 +376,7 @@ const templateSchemas = {
           return settingsErrors.length > 0 ? settingsErrors.join('; ') : null;
         }
         return null;
-      }
+      },
     },
     tags: {
       type: 'array' as const,
@@ -388,8 +392,8 @@ const templateSchemas = {
           }
         }
         return null;
-      }
-    }
+      },
+    },
   },
 
   templateQuery: {
@@ -403,7 +407,7 @@ const templateSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     limit: {
       type: 'string' as const,
@@ -415,11 +419,11 @@ const templateSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     search: {
       type: 'string' as const,
-      maxLength: 100
+      maxLength: 100,
     },
     sortBy: {
       type: 'string' as const,
@@ -428,7 +432,7 @@ const templateSchemas = {
           return 'Неверное поле для сортировки';
         }
         return null;
-      }
+      },
     },
     sortOrder: {
       type: 'string' as const,
@@ -437,7 +441,7 @@ const templateSchemas = {
           return 'Порядок сортировки должен быть ASC или DESC';
         }
         return null;
-      }
+      },
     },
     difficulty: {
       type: 'string' as const,
@@ -446,9 +450,9 @@ const templateSchemas = {
           return 'Уровень сложности должен быть easy, medium или hard';
         }
         return null;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 // Схемы валидации для команд
@@ -464,15 +468,15 @@ const teamSchemas = {
           return 'Название команды обязательно';
         }
         return null;
-      }
+      },
     },
     description: {
       type: 'string' as const,
-      maxLength: 500
+      maxLength: 500,
     },
     captain: {
       type: 'string' as const,
-      maxLength: 100
+      maxLength: 100,
     },
     members: {
       type: 'array' as const,
@@ -491,7 +495,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     contactInfo: {
       type: 'object' as const,
@@ -508,7 +512,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     tableNumber: {
       type: 'number' as const,
@@ -519,7 +523,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     logoUrl: {
       type: 'string' as const,
@@ -532,11 +536,11 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     isActive: {
-      type: 'boolean' as const
-    }
+      type: 'boolean' as const,
+    },
   },
 
   updateTeam: {
@@ -549,15 +553,15 @@ const teamSchemas = {
           return 'Название команды не может быть пустым';
         }
         return null;
-      }
+      },
     },
     description: {
       type: 'string' as const,
-      maxLength: 500
+      maxLength: 500,
     },
     captain: {
       type: 'string' as const,
-      maxLength: 100
+      maxLength: 100,
     },
     members: {
       type: 'array' as const,
@@ -576,7 +580,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     contactInfo: {
       type: 'object' as const,
@@ -593,7 +597,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     tableNumber: {
       type: 'number' as const,
@@ -604,7 +608,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     logoUrl: {
       type: 'string' as const,
@@ -617,11 +621,11 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     isActive: {
-      type: 'boolean' as const
-    }
+      type: 'boolean' as const,
+    },
   },
 
   teamQuery: {
@@ -635,7 +639,7 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     limit: {
       type: 'string' as const,
@@ -647,20 +651,23 @@ const teamSchemas = {
           }
         }
         return null;
-      }
+      },
     },
     search: {
       type: 'string' as const,
-      maxLength: 100
+      maxLength: 100,
     },
     sortBy: {
       type: 'string' as const,
       custom: (value: string) => {
-        if (value && !['name', 'captain', 'createdAt', 'updatedAt', 'tableNumber'].includes(value)) {
+        if (
+          value &&
+          !['name', 'captain', 'createdAt', 'updatedAt', 'tableNumber'].includes(value)
+        ) {
           return 'Неверное поле для сортировки';
         }
         return null;
-      }
+      },
     },
     sortOrder: {
       type: 'string' as const,
@@ -669,7 +676,7 @@ const teamSchemas = {
           return 'Порядок сортировки должен быть ASC или DESC';
         }
         return null;
-      }
+      },
     },
     isActive: {
       type: 'string' as const,
@@ -678,21 +685,22 @@ const teamSchemas = {
           return 'Фильтр активности должен быть true или false';
         }
         return null;
-      }
+      },
     },
     organizationId: {
       type: 'string' as const,
       custom: (value: string) => {
         if (value) {
-          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+          const uuidRegex =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
           if (!uuidRegex.test(value)) {
             return 'Неверный формат ID организации';
           }
         }
         return null;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 /**
@@ -713,13 +721,21 @@ function validateGameSettings(settings: any): string[] {
   }
 
   if (settings.questionsPerRound !== undefined) {
-    if (!Number.isInteger(settings.questionsPerRound) || settings.questionsPerRound < 1 || settings.questionsPerRound > 50) {
+    if (
+      !Number.isInteger(settings.questionsPerRound) ||
+      settings.questionsPerRound < 1 ||
+      settings.questionsPerRound > 50
+    ) {
       errors.push('Количество вопросов в раунде должно быть целым числом от 1 до 50');
     }
   }
 
   if (settings.timePerQuestion !== undefined) {
-    if (!Number.isInteger(settings.timePerQuestion) || settings.timePerQuestion < 10 || settings.timePerQuestion > 300) {
+    if (
+      !Number.isInteger(settings.timePerQuestion) ||
+      settings.timePerQuestion < 10 ||
+      settings.timePerQuestion > 300
+    ) {
       errors.push('Время на вопрос должно быть целым числом от 10 до 300 секунд');
     }
   }
@@ -759,13 +775,21 @@ function validateTemplateSettings(settings: any): string[] {
   }
 
   if (settings.questionsPerRound !== undefined) {
-    if (!Number.isInteger(settings.questionsPerRound) || settings.questionsPerRound < 1 || settings.questionsPerRound > 50) {
+    if (
+      !Number.isInteger(settings.questionsPerRound) ||
+      settings.questionsPerRound < 1 ||
+      settings.questionsPerRound > 50
+    ) {
       errors.push('Количество вопросов в раунде должно быть целым числом от 1 до 50');
     }
   }
 
   if (settings.timePerQuestion !== undefined) {
-    if (!Number.isInteger(settings.timePerQuestion) || settings.timePerQuestion < 10 || settings.timePerQuestion > 300) {
+    if (
+      !Number.isInteger(settings.timePerQuestion) ||
+      settings.timePerQuestion < 10 ||
+      settings.timePerQuestion > 300
+    ) {
       errors.push('Время на вопрос должно быть целым числом от 10 до 300 секунд');
     }
   }
@@ -791,17 +815,17 @@ function validateTemplateSettings(settings: any): string[] {
 export const gameValidationSchemas = {
   createGame: gameSchemas.createGame,
   updateGame: gameSchemas.updateGame,
-  gameQuery: gameSchemas.gameQuery
+  gameQuery: gameSchemas.gameQuery,
 };
 
 export const templateValidationSchemas = {
   createTemplate: templateSchemas.createTemplate,
   updateTemplate: templateSchemas.updateTemplate,
-  templateQuery: templateSchemas.templateQuery
+  templateQuery: templateSchemas.templateQuery,
 };
 
 export const teamValidationSchemas = {
   createTeam: teamSchemas.createTeam,
   updateTeam: teamSchemas.updateTeam,
-  teamQuery: teamSchemas.teamQuery
+  teamQuery: teamSchemas.teamQuery,
 };

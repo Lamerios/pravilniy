@@ -1,16 +1,16 @@
 import {
-    AllowNull,
-    BelongsTo,
-    Column,
-    CreatedAt,
-    DataType,
-    Default,
-    ForeignKey,
-    Model,
-    PrimaryKey,
-    Table,
-    UpdatedAt,
-    Validate
+  AllowNull,
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+  UpdatedAt,
+  Validate,
 } from 'sequelize-typescript';
 import { Game } from './game.model';
 import { GameTemplate } from './game-template.model';
@@ -26,7 +26,7 @@ export enum RoundType {
   BLITZ = 'BLITZ',
   BONUS = 'BONUS',
   FINAL = 'FINAL',
-  TIEBREAKER = 'TIEBREAKER'
+  TIEBREAKER = 'TIEBREAKER',
 }
 
 export enum RoundStatus {
@@ -34,7 +34,7 @@ export enum RoundStatus {
   ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
   FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 // Интерфейс Question удален - вопросы не хранятся в системе
@@ -81,7 +81,7 @@ export class Round extends Model<Round> {
 
   @AllowNull(false)
   @Validate({
-    len: [1, 255]
+    len: [1, 255],
   })
   @Column(DataType.STRING(255))
   name!: string;
@@ -124,7 +124,7 @@ export class Round extends Model<Round> {
   @Default(1.0)
   @Validate({
     min: 0.1,
-    max: 10.0
+    max: 10.0,
   })
   @Column(DataType.DECIMAL(3, 2))
   multiplier!: number;
@@ -139,7 +139,7 @@ export class Round extends Model<Round> {
     totalAnswers: 0,
     correctAnswers: 0,
     averageTime: 0,
-    participatingTeams: 0
+    participatingTeams: 0,
   })
   @Column(DataType.JSONB)
   statistics?: RoundStatistics;

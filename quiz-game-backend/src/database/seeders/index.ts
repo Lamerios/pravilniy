@@ -39,7 +39,6 @@ export async function runAllSeeders(options: SeederOptions = {}): Promise<void> 
 
     console.log('\n🎉 All seeders completed successfully!');
     console.log('📊 Database is ready for use');
-
   } catch (error) {
     console.error('❌ Seeding failed:', error);
     throw error;

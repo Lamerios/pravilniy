@@ -2,12 +2,12 @@ import { Op } from 'sequelize';
 import { GameTemplate } from '../models/game-template.model';
 import { User } from '../models/user.model';
 import {
-    CreateTemplateDto,
-    TemplateListResult,
-    TemplateQueryDto,
-    TemplateStats,
-    TemplateValidationResult,
-    UpdateTemplateDto
+  CreateTemplateDto,
+  TemplateListResult,
+  TemplateQueryDto,
+  TemplateStats,
+  TemplateValidationResult,
+  UpdateTemplateDto,
 } from '../types/template.types';
 import { logger } from '../utils/logger.util';
 
@@ -25,7 +25,7 @@ export class TemplateService {
         sortOrder = 'DESC',
         isPublic,
         tags,
-        difficulty
+        difficulty,
       } = query;
 
       const offset = (page - 1) * limit;
@@ -35,7 +35,7 @@ export class TemplateService {
       if (search) {
         where[Op.or] = [
           { name: { [Op.iLike]: `%${search}%` } },
-          { description: { [Op.iLike]: `%${search}%` } }
+          { description: { [Op.iLike]: `%${search}%` } },
         ];
       }
 
@@ -60,13 +60,13 @@ export class TemplateService {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email']
-          }
+            attributes: ['id', 'username', 'email'],
+          },
         ],
         order: [[sortBy, sortOrder]],
         limit,
         offset,
-        distinct: true
+        distinct: true,
       });
 
       const totalPages = Math.ceil(count / limit);
@@ -76,7 +76,7 @@ export class TemplateService {
         currentPage: page,
         totalPages,
         totalItems: count,
-        itemsPerPage: limit
+        itemsPerPage: limit,
       };
     } catch (error) {
       logger.error('Error getting templates:', error);
@@ -94,9 +94,9 @@ export class TemplateService {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email']
-          }
-        ]
+            attributes: ['id', 'username', 'email'],
+          },
+        ],
       });
 
       return template;
@@ -124,7 +124,7 @@ export class TemplateService {
         questionsPerRound: createData.settings.questionsPerRound,
         timePerQuestion: createData.settings.timePerQuestion,
         settings: createData.settings,
-        organizationId: 1 // TODO: Получать из контекста пользователя
+        organizationId: 1, // TODO: Получать из контекста пользователя
       });
 
       logger.info(`Template created: ${template.id} by user: ${userId}`);
@@ -139,7 +139,11 @@ export class TemplateService {
   /**
    * Обновить шаблон
    */
-  async updateTemplate(id: string, updateData: UpdateTemplateDto, userId: string): Promise<GameTemplate | null> {
+  async updateTemplate(
+    id: string,
+    updateData: UpdateTemplateDto,
+    userId: string,
+  ): Promise<GameTemplate | null> {
     try {
       const template = await GameTemplate.findByPk(id);
 
@@ -203,13 +207,7 @@ export class TemplateService {
    */
   async searchTemplates(query: TemplateQueryDto): Promise<TemplateListResult> {
     try {
-      const {
-        page = 1,
-        limit = 10,
-        search,
-        sortBy = 'createdAt',
-        sortOrder = 'DESC'
-      } = query;
+      const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
 
       const offset = (page - 1) * limit;
       const where: any = {};
@@ -218,7 +216,7 @@ export class TemplateService {
         where[Op.or] = [
           { name: { [Op.iLike]: `%${search}%` } },
           { description: { [Op.iLike]: `%${search}%` } },
-          { tags: { [Op.contains]: [search] } }
+          { tags: { [Op.contains]: [search] } },
         ];
       }
 
@@ -228,13 +226,13 @@ export class TemplateService {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email']
-          }
+            attributes: ['id', 'username', 'email'],
+          },
         ],
         order: [[sortBy, sortOrder]],
         limit,
         offset,
-        distinct: true
+        distinct: true,
       });
 
       const totalPages = Math.ceil(count / limit);
@@ -244,7 +242,7 @@ export class TemplateService {
         currentPage: page,
         totalPages,
         totalItems: count,
-        itemsPerPage: limit
+        itemsPerPage: limit,
       };
     } catch (error) {
       logger.error('Error searching templates:', error);
@@ -273,7 +271,7 @@ export class TemplateService {
       const recentTemplates = await GameTemplate.findAll({
         order: [['createdAt', 'DESC']],
         limit: 5,
-        attributes: ['id', 'name', 'createdAt']
+        attributes: ['id', 'name', 'createdAt'],
       });
 
       return {
@@ -284,8 +282,8 @@ export class TemplateService {
         recentTemplates: recentTemplates.map(t => ({
           id: t.id.toString(),
           name: t.name,
-          createdAt: t.createdAt
-        }))
+          createdAt: t.createdAt,
+        })),
       };
     } catch (error) {
       logger.error('Error getting template stats:', error);
@@ -322,7 +320,7 @@ export class TemplateService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -336,15 +334,24 @@ export class TemplateService {
       errors.push('Количество раундов должно быть от 1 до 20');
     }
 
-    if (settings.questionsPerRound && (settings.questionsPerRound < 1 || settings.questionsPerRound > 50)) {
+    if (
+      settings.questionsPerRound &&
+      (settings.questionsPerRound < 1 || settings.questionsPerRound > 50)
+    ) {
       errors.push('Количество вопросов в раунде должно быть от 1 до 50');
     }
 
-    if (settings.timePerQuestion && (settings.timePerQuestion < 10 || settings.timePerQuestion > 300)) {
+    if (
+      settings.timePerQuestion &&
+      (settings.timePerQuestion < 10 || settings.timePerQuestion > 300)
+    ) {
       errors.push('Время на вопрос должно быть от 10 до 300 секунд');
     }
 
-    if (settings.scoringSystem && !['standard', 'bonus', 'penalty'].includes(settings.scoringSystem)) {
+    if (
+      settings.scoringSystem &&
+      !['standard', 'bonus', 'penalty'].includes(settings.scoringSystem)
+    ) {
       errors.push('Неверная система подсчета очков');
     }
 
@@ -362,7 +369,7 @@ export class TemplateService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }

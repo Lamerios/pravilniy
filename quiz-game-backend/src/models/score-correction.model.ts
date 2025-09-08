@@ -1,13 +1,13 @@
 import {
-    AutoIncrement,
-    BelongsTo,
-    Column,
-    CreatedAt,
-    DataType,
-    ForeignKey,
-    Model,
-    PrimaryKey,
-    Table
+  AutoIncrement,
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
 } from 'sequelize-typescript';
 import { Score } from './score.model';
 import { User } from './user.model';
@@ -16,7 +16,7 @@ import { User } from './user.model';
   tableName: 'score_corrections',
   timestamps: true,
   createdAt: true,
-  updatedAt: false
+  updatedAt: false,
 })
 export class ScoreCorrection extends Model {
   @PrimaryKey
@@ -31,21 +31,21 @@ export class ScoreCorrection extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    comment: 'Старые баллы'
+    comment: 'Старые баллы',
   })
   oldPoints!: number;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    comment: 'Новые баллы'
+    comment: 'Новые баллы',
   })
   newPoints!: number;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
-    comment: 'Причина исправления'
+    comment: 'Причина исправления',
   })
   reason!: string;
 
@@ -53,7 +53,7 @@ export class ScoreCorrection extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    comment: 'Пользователь, который исправил баллы'
+    comment: 'Пользователь, который исправил баллы',
   })
   correctedBy!: number;
 

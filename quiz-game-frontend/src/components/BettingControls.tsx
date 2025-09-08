@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { BetType } from '../services/score.service';
 
 interface BettingControlsProps {

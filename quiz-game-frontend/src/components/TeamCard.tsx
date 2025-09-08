@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Team } from '../types/team.types';
 
 interface TeamCardProps {
@@ -83,7 +84,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                 className="btn btn--ghost btn--sm"
                 onClick={() => onEdit(team)}
               >
-                <i className="icon icon--edit"></i>
+                <i className="icon icon--edit" />
               </button>
             )}
             {onRemove && (
@@ -92,7 +93,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                 className="btn btn--ghost btn--sm"
                 onClick={() => onRemove(team)}
               >
-                <i className="icon icon--trash"></i>
+                <i className="icon icon--trash" />
               </button>
             )}
           </div>
@@ -196,7 +197,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
               className="btn btn--ghost btn--sm"
               onClick={() => onEdit(team)}
             >
-              <i className="icon icon--edit"></i>
+              <i className="icon icon--edit" />
               Редактировать
             </button>
           )}
@@ -206,7 +207,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
               className="btn btn--ghost btn--sm"
               onClick={() => onRemove(team)}
             >
-              <i className="icon icon--trash"></i>
+              <i className="icon icon--trash" />
               Удалить
             </button>
           )}

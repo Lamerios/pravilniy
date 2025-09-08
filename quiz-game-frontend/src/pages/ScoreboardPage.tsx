@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { ScoreboardDisplay } from '../components/ScoreboardDisplay';
 import { useScores } from '../hooks/useScores';
 
@@ -124,7 +125,7 @@ export const ScoreboardPage: React.FC = () => {
     return (
       <div className="scoreboard-page">
         <div className="loading-container">
-          <div className="spinner"></div>
+          <div className="spinner" />
           <p>Загрузка табло...</p>
         </div>
       </div>

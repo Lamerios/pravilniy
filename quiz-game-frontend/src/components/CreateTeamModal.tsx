@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+
 import { useAuth } from '../hooks/useAuth';
 import { teamService } from '../services/team.service';
 import { ContactInfo, CreateTeamDto, TeamMember } from '../types/team.types';
 import { validateCreateTeamForm } from '../utils/validation';
+
 import { TableNumberValidator } from './TableNumberValidator';
 import { TeamLogoUpload } from './TeamLogoUpload';
 
@@ -167,14 +169,14 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
             onClick={handleClose}
             disabled={loading}
           >
-            <i className="icon icon--close"></i>
+            <i className="icon icon--close" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal__body">
           {errors.general && (
             <div className="alert alert--error">
-              <i className="icon icon--warning"></i>
+              <i className="icon icon--warning" />
               <span>{errors.general}</span>
             </div>
           )}
@@ -268,7 +270,7 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
                 onClick={handleMemberAdd}
                 disabled={loading}
               >
-                <i className="icon icon--plus"></i>
+                <i className="icon icon--plus" />
                 Добавить участника
               </button>
             </div>
@@ -312,7 +314,7 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
                     onClick={() => handleMemberRemove(index)}
                     disabled={loading}
                   >
-                    <i className="icon icon--trash"></i>
+                    <i className="icon icon--trash" />
                   </button>
                 </div>
               </div>

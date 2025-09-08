@@ -121,7 +121,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   }, [disabled, handleFileSelect]);
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+    const {files} = e.target;
     if (files && files.length > 0 && files[0]) {
       handleFileSelect(files[0]);
     }
@@ -146,7 +146,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
 
   return (
@@ -182,7 +182,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 }}
                 disabled={disabled}
               >
-                <i className="icon icon--close"></i>
+                <i className="icon icon--close" />
               </button>
             </div>
           </div>
@@ -190,9 +190,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           <div className="file-upload__placeholder">
             <div className="file-upload__icon">
               {isUploading ? (
-                <div className="spinner spinner--sm"></div>
+                <div className="spinner spinner--sm" />
               ) : (
-                <i className="icon icon--upload"></i>
+                <i className="icon icon--upload" />
               )}
             </div>
             <div className="file-upload__text">
@@ -209,7 +209,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       {error && (
         <div className="file-upload__error">
-          <i className="icon icon--warning"></i>
+          <i className="icon icon--warning" />
           <span>{error}</span>
         </div>
       )}
@@ -217,7 +217,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       {isUploading && (
         <div className="file-upload__progress">
           <div className="file-upload__progress-bar">
-            <div className="file-upload__progress-fill"></div>
+            <div className="file-upload__progress-fill" />
           </div>
           <span className="file-upload__progress-text">Загрузка файла...</span>
         </div>

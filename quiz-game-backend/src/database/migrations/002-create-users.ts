@@ -12,18 +12,18 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
-      comment: 'Уникальный идентификатор пользователя'
+      comment: 'Уникальный идентификатор пользователя',
     },
     organizationId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'organizations',
-        key: 'id'
+        key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
-      comment: 'Ссылка на организацию пользователя'
+      comment: 'Ссылка на организацию пользователя',
     },
     username: {
       type: DataTypes.STRING(50),
@@ -31,105 +31,105 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       unique: true,
       validate: {
         len: [3, 50],
-        isAlphanumeric: true
+        isAlphanumeric: true,
       },
-      comment: 'Уникальное имя пользователя'
+      comment: 'Уникальное имя пользователя',
     },
     email: {
       type: DataTypes.STRING(255),
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true
+        isEmail: true,
       },
-      comment: 'Email пользователя (уникальный)'
+      comment: 'Email пользователя (уникальный)',
     },
     passwordHash: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      comment: 'Хэш пароля пользователя'
+      comment: 'Хэш пароля пользователя',
     },
     firstName: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      comment: 'Имя пользователя'
+      comment: 'Имя пользователя',
     },
     lastName: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      comment: 'Фамилия пользователя'
+      comment: 'Фамилия пользователя',
     },
     middleName: {
       type: DataTypes.STRING(100),
       allowNull: true,
-      comment: 'Отчество пользователя'
+      comment: 'Отчество пользователя',
     },
     role: {
       type: DataTypes.ENUM('SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'USER'),
       allowNull: false,
       defaultValue: 'USER',
-      comment: 'Роль пользователя в системе'
+      comment: 'Роль пользователя в системе',
     },
     avatar: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      comment: 'URL аватара пользователя'
+      comment: 'URL аватара пользователя',
     },
     phone: {
       type: DataTypes.STRING(50),
       allowNull: true,
-      comment: 'Телефон пользователя'
+      comment: 'Телефон пользователя',
     },
     dateOfBirth: {
       type: DataTypes.DATEONLY,
       allowNull: true,
-      comment: 'Дата рождения пользователя'
+      comment: 'Дата рождения пользователя',
     },
     bio: {
       type: DataTypes.TEXT,
       allowNull: true,
-      comment: 'Биография пользователя'
+      comment: 'Биография пользователя',
     },
     preferences: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: {},
-      comment: 'Пользовательские настройки в формате JSON'
+      comment: 'Пользовательские настройки в формате JSON',
     },
     lastLoginAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время последнего входа в систему'
+      comment: 'Дата и время последнего входа в систему',
     },
     emailVerifiedAt: {
       type: DataTypes.DATE,
       allowNull: true,
-      comment: 'Дата и время подтверждения email'
+      comment: 'Дата и время подтверждения email',
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      comment: 'Флаг активности пользователя'
+      comment: 'Флаг активности пользователя',
     },
     isEmailVerified: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-      comment: 'Флаг подтверждения email'
+      comment: 'Флаг подтверждения email',
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время создания записи'
+      comment: 'Дата и время создания записи',
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      comment: 'Дата и время последнего обновления записи'
-    }
+      comment: 'Дата и время последнего обновления записи',
+    },
   });
 
   // Создание индексов

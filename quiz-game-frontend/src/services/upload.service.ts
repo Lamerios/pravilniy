@@ -83,7 +83,7 @@ export class UploadService {
   /**
    * Получить информацию о файле
    */
-  async getFileInfo(url: string): Promise<UploadResponse> {
+  async getFileInfo(_url: string): Promise<UploadResponse> {
     const response = await fetch(`${this.baseUrl}/info`, {
       method: 'GET',
       headers: {

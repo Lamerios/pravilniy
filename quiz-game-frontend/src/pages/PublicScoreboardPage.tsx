@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
 import AnimatedTableRow from '../components/AnimatedTableRow';
 import ConnectionStatus from '../components/ConnectionStatus';
 import FullscreenToggle from '../components/FullscreenToggle';
@@ -130,7 +131,7 @@ const PublicScoreboardPage: React.FC<PublicScoreboardPageProps> = () => {
     return (
       <div className="public-scoreboard-page">
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner" />
           <p>Загрузка табло...</p>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
 import { useTeams } from '../hooks/useTeams';
 import { Team, TeamFilters, TeamSelection } from '../types/team.types';
+
 import { TeamCard } from './TeamCard';
 import { TeamSearch } from './TeamSearch';
 
@@ -177,7 +179,7 @@ export const TeamSelector: React.FC<TeamSelectorProps> = ({
 
         {loading && teams.length === 0 ? (
           <div className="team-selector__loading">
-            <div className="spinner"></div>
+            <div className="spinner" />
             <p>Загрузка команд...</p>
           </div>
         ) : (
@@ -231,7 +233,7 @@ export const TeamSelector: React.FC<TeamSelectorProps> = ({
       {selectedTeamIds.length >= maxTeams && (
         <div className="team-selector__limit-warning">
           <div className="alert alert--warning">
-            <i className="icon icon--warning"></i>
+            <i className="icon icon--warning" />
             <span>Достигнут лимит команд ({maxTeams})</span>
           </div>
         </div>

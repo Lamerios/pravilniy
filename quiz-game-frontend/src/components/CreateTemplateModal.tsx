@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { templateService } from '../services/template.service';
 import { CreateTemplateDto, TemplateSettings } from '../types/template.types';
 import { validateCreateTemplateForm } from '../utils/validation';

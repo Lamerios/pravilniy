@@ -143,7 +143,7 @@ export function useRole() {
 
     // Данные пользователя
     userRole: user?.role,
-    user: user
+    user
   };
 }
 

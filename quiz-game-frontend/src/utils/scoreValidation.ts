@@ -270,7 +270,7 @@ export const validateBulkScoreData = (scores: Array<{
  */
 export const createFormValidation = (
   validationFn: (value: any) => ValidationResult,
-  debounceMs: number = 300
+  debounceMs = 300
 ) => {
   let timeoutId: NodeJS.Timeout;
 

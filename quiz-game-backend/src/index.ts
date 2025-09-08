@@ -13,15 +13,16 @@ async function initializeApp(): Promise<void> {
     // Создаем и запускаем сервер
     const server = new QuizGameServer();
     await server.start();
-
   } catch (error) {
-    logger.error(`Failed to initialize application: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    logger.error(
+      `Failed to initialize application: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
     process.exit(1);
   }
 }
 
 // Обработка необработанных ошибок
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', error => {
   logger.error(`Uncaught Exception: ${error.message}`);
   process.exit(1);
 });
@@ -32,7 +33,9 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // Запускаем приложение
-initializeApp().catch((error) => {
-  logger.error(`Application startup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+initializeApp().catch(error => {
+  logger.error(
+    `Application startup failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+  );
   process.exit(1);
 });

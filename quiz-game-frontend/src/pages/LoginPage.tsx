@@ -3,6 +3,7 @@
  */
 
 import { useNavigate } from 'react-router-dom';
+
 import LoginForm from '../components/LoginForm';
 
 export function LoginPage() {
@@ -40,8 +41,8 @@ export function LoginPage() {
         </div>
 
         <div className="login-page-background">
-          <div className="background-pattern"></div>
-          <div className="background-overlay"></div>
+          <div className="background-pattern" />
+          <div className="background-overlay" />
         </div>
       </div>
     </div>

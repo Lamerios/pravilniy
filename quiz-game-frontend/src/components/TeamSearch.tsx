@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
 import { teamService } from '../services/team.service';
 import { Team, TeamFilters } from '../types/team.types';
 
@@ -58,7 +59,7 @@ export const TeamSearch: React.FC<TeamSearchProps> = ({
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const {value} = e.target;
     setSearchQuery(value);
     onSearch(value);
   };
@@ -94,9 +95,9 @@ export const TeamSearch: React.FC<TeamSearchProps> = ({
           <div className="input-group-append">
             <span className="input-group-text">
               {isSearching ? (
-                <div className="spinner spinner--sm"></div>
+                <div className="spinner spinner--sm" />
               ) : (
-                <i className="icon icon--search"></i>
+                <i className="icon icon--search" />
               )}
             </span>
           </div>
@@ -111,7 +112,7 @@ export const TeamSearch: React.FC<TeamSearchProps> = ({
                 className="btn btn--sm btn--ghost"
                 onClick={() => setShowResults(false)}
               >
-                <i className="icon icon--close"></i>
+                <i className="icon icon--close" />
               </button>
             </div>
             <div className="team-search__results-list">
@@ -147,7 +148,7 @@ export const TeamSearch: React.FC<TeamSearchProps> = ({
                   </div>
                   {isTeamSelected(team.id) && (
                     <div className="team-search__result-status">
-                      <i className="icon icon--check"></i>
+                      <i className="icon icon--check" />
                       Выбрана
                     </div>
                   )}
@@ -166,7 +167,7 @@ export const TeamSearch: React.FC<TeamSearchProps> = ({
               className="form-control form-control--sm"
               value={filters.isActive === undefined ? '' : filters.isActive.toString()}
               onChange={(e) => {
-                const value = e.target.value;
+                const {value} = e.target;
                 handleFilterChange('isActive', value === '' ? undefined : value === 'true');
               }}
             >

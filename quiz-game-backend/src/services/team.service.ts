@@ -3,12 +3,12 @@ import { Game } from '../models/game.model';
 import { Organization } from '../models/organization.model';
 import { Team } from '../models/team.model';
 import {
-    CreateTeamDto,
-    TeamListResult,
-    TeamQueryDto,
-    TeamSearchResult,
-    TeamStats,
-    UpdateTeamDto
+  CreateTeamDto,
+  TeamListResult,
+  TeamQueryDto,
+  TeamSearchResult,
+  TeamStats,
+  UpdateTeamDto,
 } from '../types/team.types';
 
 export class TeamService {
@@ -23,7 +23,7 @@ export class TeamService {
       sortBy = 'createdAt',
       sortOrder = 'DESC',
       isActive,
-      organizationId
+      organizationId,
     } = query;
 
     const offset = (page - 1) * limit;
@@ -43,7 +43,7 @@ export class TeamService {
     if (search) {
       (where as any)[Op.or] = [
         { name: { [Op.iLike]: `%${search}%` } },
-        { captain: { [Op.iLike]: `%${search}%` } }
+        { captain: { [Op.iLike]: `%${search}%` } },
       ];
     }
 
@@ -52,18 +52,18 @@ export class TeamService {
       include: [
         {
           model: Organization,
-          attributes: ['id', 'name']
+          attributes: ['id', 'name'],
         },
         {
           model: Game,
           attributes: ['id', 'name', 'status'],
-          required: false
-        }
+          required: false,
+        },
       ],
       order: [[sortBy, sortOrder]],
       limit,
       offset,
-      distinct: true
+      distinct: true,
     });
 
     const totalPages = Math.ceil(count / limit);
@@ -73,7 +73,7 @@ export class TeamService {
       currentPage: page,
       totalPages,
       totalItems: count,
-      itemsPerPage: limit
+      itemsPerPage: limit,
     };
   }
 
@@ -85,14 +85,14 @@ export class TeamService {
       include: [
         {
           model: Organization,
-          attributes: ['id', 'name']
+          attributes: ['id', 'name'],
         },
         {
           model: Game,
           attributes: ['id', 'name', 'status'],
-          required: false
-        }
-      ]
+          required: false,
+        },
+      ],
     });
   }
 
@@ -105,12 +105,14 @@ export class TeamService {
       const existingTeam = await Team.findOne({
         where: {
           organizationId,
-          tableNumber: teamData.tableNumber
-        }
+          tableNumber: teamData.tableNumber,
+        },
       });
 
       if (existingTeam) {
-        throw new Error(`Команда с номером стола ${teamData.tableNumber} уже существует в этой организации`);
+        throw new Error(
+          `Команда с номером стола ${teamData.tableNumber} уже существует в этой организации`,
+        );
       }
     }
 
@@ -134,8 +136,8 @@ export class TeamService {
         totalScore: 0,
         averageScore: 0,
         bestRound: 0,
-        worstRound: 0
-      }
+        worstRound: 0,
+      },
     } as any);
 
     return this.getTeamById(team.id) as Promise<Team>;
@@ -156,12 +158,14 @@ export class TeamService {
         where: {
           organizationId: team.organizationId,
           tableNumber: teamData.tableNumber,
-          id: { [Op.ne]: id }
-        }
+          id: { [Op.ne]: id },
+        },
       });
 
       if (existingTeam) {
-        throw new Error(`Команда с номером стола ${teamData.tableNumber} уже существует в этой организации`);
+        throw new Error(
+          `Команда с номером стола ${teamData.tableNumber} уже существует в этой организации`,
+        );
       }
     }
 
@@ -186,12 +190,7 @@ export class TeamService {
    * Поиск команд
    */
   async searchTeams(query: TeamQueryDto): Promise<TeamSearchResult> {
-    const {
-      search = '',
-      limit = 20,
-      organizationId,
-      isActive
-    } = query;
+    const { search = '', limit = 20, organizationId, isActive } = query;
 
     const where: WhereOptions = {};
 
@@ -206,7 +205,7 @@ export class TeamService {
     if (search) {
       (where as any)[Op.or] = [
         { name: { [Op.iLike]: `%${search}%` } },
-        { captain: { [Op.iLike]: `%${search}%` } }
+        { captain: { [Op.iLike]: `%${search}%` } },
       ];
     }
 
@@ -215,17 +214,17 @@ export class TeamService {
       include: [
         {
           model: Organization,
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
       limit,
-      order: [['name', 'ASC']]
+      order: [['name', 'ASC']],
     });
 
     return {
       teams,
       total: teams.length,
-      query: search
+      query: search,
     };
   }
 
@@ -238,13 +237,7 @@ export class TeamService {
       where['organizationId'] = organizationId;
     }
 
-    const [
-      totalTeams,
-      activeTeams,
-      inactiveTeams,
-      recentTeams,
-      popularTeams
-    ] = await Promise.all([
+    const [totalTeams, activeTeams, inactiveTeams, recentTeams, popularTeams] = await Promise.all([
       Team.count({ where }),
       Team.count({ where: { ...where, isActive: true } }),
       Team.count({ where: { ...where, isActive: false } }),
@@ -252,7 +245,7 @@ export class TeamService {
         where,
         attributes: ['id', 'name', 'createdAt'],
         order: [['createdAt', 'DESC']],
-        limit: 5
+        limit: 5,
       }),
       Team.findAll({
         where,
@@ -261,26 +254,27 @@ export class TeamService {
           {
             model: Game,
             attributes: ['id'],
-            required: false
-          }
+            required: false,
+          },
         ],
         order: [['createdAt', 'DESC']],
-        limit: 5
-      })
+        limit: 5,
+      }),
     ]);
 
     // Подсчитываем среднее количество участников
     const teamsWithMembers = await Team.findAll({
       where,
-      attributes: ['members']
+      attributes: ['members'],
     });
 
-    const averageMembersPerTeam = teamsWithMembers.length > 0
-      ? teamsWithMembers.reduce((sum, team) => {
-          const memberCount = team.members ? team.members.length : 0;
-          return sum + memberCount;
-        }, 0) / teamsWithMembers.length
-      : 0;
+    const averageMembersPerTeam =
+      teamsWithMembers.length > 0
+        ? teamsWithMembers.reduce((sum, team) => {
+            const memberCount = team.members ? team.members.length : 0;
+            return sum + memberCount;
+          }, 0) / teamsWithMembers.length
+        : 0;
 
     return {
       totalTeams,
@@ -290,13 +284,13 @@ export class TeamService {
       recentTeams: recentTeams.map(team => ({
         id: team.id,
         name: team.name,
-        createdAt: team.createdAt.toISOString()
+        createdAt: team.createdAt.toISOString(),
       })),
       popularTeams: popularTeams.map(team => ({
         teamId: team.id,
         teamName: team.name,
-        gamesPlayed: team.games ? team.games.length : 0 // Упрощенная логика
-      }))
+        gamesPlayed: team.games ? team.games.length : 0, // Упрощенная логика
+      })),
     };
   }
 
@@ -314,20 +308,24 @@ export class TeamService {
       include: [
         {
           model: Organization,
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
-      order: [['name', 'ASC']]
+      order: [['name', 'ASC']],
     });
   }
 
   /**
    * Проверить уникальность номера стола
    */
-  async isTableNumberUnique(organizationId: number, tableNumber: number, excludeId?: string): Promise<boolean> {
+  async isTableNumberUnique(
+    organizationId: number,
+    tableNumber: number,
+    excludeId?: string,
+  ): Promise<boolean> {
     const where: WhereOptions = {
       organizationId,
-      tableNumber
+      tableNumber,
     };
 
     if (excludeId) {
@@ -344,11 +342,11 @@ export class TeamService {
   async checkTableNumber(
     tableNumber: number,
     organizationId: number,
-    excludeTeamId?: string
+    excludeTeamId?: string,
   ): Promise<{ isUnique: boolean; existingTeam?: Team | undefined }> {
     const where: WhereOptions = {
       tableNumber,
-      organizationId
+      organizationId,
     };
 
     // Исключаем текущую команду при обновлении
@@ -360,7 +358,7 @@ export class TeamService {
 
     return {
       isUnique: !existingTeam,
-      existingTeam: existingTeam ? existingTeam : undefined
+      existingTeam: existingTeam ? existingTeam : undefined,
     };
   }
 
@@ -369,10 +367,10 @@ export class TeamService {
    */
   async getNextAvailableTableNumber(organizationId: number): Promise<number> {
     const maxTableNumber = await Team.max('tableNumber', {
-      where: { organizationId }
+      where: { organizationId },
     });
 
-    return (maxTableNumber as number || 0) + 1;
+    return ((maxTableNumber as number) || 0) + 1;
   }
 
   /**
@@ -380,7 +378,7 @@ export class TeamService {
    */
   async validateTableNumbers(
     tableNumbers: number[],
-    organizationId: number
+    organizationId: number,
   ): Promise<{ valid: boolean; conflicts: Array<{ tableNumber: number; team: Team }> }> {
     const conflicts: Array<{ tableNumber: number; team: Team }> = [];
 
@@ -396,7 +394,7 @@ export class TeamService {
     const duplicates = tableNumbers.filter((num, index) => tableNumbers.indexOf(num) !== index);
     for (const duplicate of duplicates) {
       const existingTeam = await Team.findOne({
-        where: { tableNumber: duplicate, organizationId }
+        where: { tableNumber: duplicate, organizationId },
       });
       if (existingTeam) {
         conflicts.push({ tableNumber: duplicate, team: existingTeam });
@@ -405,7 +403,7 @@ export class TeamService {
 
     return {
       valid: conflicts.length === 0,
-      conflicts
+      conflicts,
     };
   }
 }

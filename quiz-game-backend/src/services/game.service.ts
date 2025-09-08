@@ -6,13 +6,13 @@ import { Organization } from '../models/organization.model';
 import { Team } from '../models/team.model';
 import { User } from '../models/user.model';
 import {
-    CreateGameDto,
-    GameListResult,
-    GameQueryDto,
-    GameStateChangeDto,
-    GameStats,
-    GameValidationResult,
-    UpdateGameDto
+  CreateGameDto,
+  GameListResult,
+  GameQueryDto,
+  GameStateChangeDto,
+  GameStats,
+  GameValidationResult,
+  UpdateGameDto,
 } from '../types/game.types';
 import { logger } from '../utils/logger.util';
 
@@ -30,7 +30,7 @@ export class GameService {
         sortOrder = 'DESC',
         status,
         templateId,
-        organizationId
+        organizationId,
       } = query;
 
       const offset = (page - 1) * limit;
@@ -40,7 +40,7 @@ export class GameService {
       if (search) {
         where[Op.or] = [
           { name: { [Op.iLike]: `%${search}%` } },
-          { description: { [Op.iLike]: `%${search}%` } }
+          { description: { [Op.iLike]: `%${search}%` } },
         ];
       }
 
@@ -65,23 +65,23 @@ export class GameService {
           {
             model: GameTemplate,
             as: 'template',
-            attributes: ['id', 'name', 'description']
+            attributes: ['id', 'name', 'description'],
           },
           {
             model: User,
             as: 'createdBy',
-            attributes: ['id', 'username', 'email']
+            attributes: ['id', 'username', 'email'],
           },
           {
             model: Organization,
             as: 'organization',
-            attributes: ['id', 'name']
-          }
+            attributes: ['id', 'name'],
+          },
         ],
         order: [[sortBy, sortOrder]],
         limit,
         offset,
-        distinct: true
+        distinct: true,
       });
 
       const totalPages = Math.ceil(count / limit);
@@ -91,7 +91,7 @@ export class GameService {
         currentPage: page,
         totalPages,
         totalItems: count,
-        itemsPerPage: limit
+        itemsPerPage: limit,
       };
     } catch (error) {
       logger.error('Error getting games:', error);
@@ -109,19 +109,19 @@ export class GameService {
           {
             model: GameTemplate,
             as: 'template',
-            attributes: ['id', 'name', 'description', 'settings']
+            attributes: ['id', 'name', 'description', 'settings'],
           },
           {
             model: User,
             as: 'createdBy',
-            attributes: ['id', 'username', 'email']
+            attributes: ['id', 'username', 'email'],
           },
           {
             model: Organization,
             as: 'organization',
-            attributes: ['id', 'name']
-          }
-        ]
+            attributes: ['id', 'name'],
+          },
+        ],
       });
 
       return game;
@@ -134,7 +134,11 @@ export class GameService {
   /**
    * Создать новую игру
    */
-  async createGame(createData: CreateGameDto, userId: string, organizationId: number): Promise<Game> {
+  async createGame(
+    createData: CreateGameDto,
+    userId: string,
+    organizationId: number,
+  ): Promise<Game> {
     try {
       // Валидация данных
       const validation = this.validateGameData(createData);
@@ -154,7 +158,7 @@ export class GameService {
         status: GameStatus.DRAFT,
         settings: createData.settings || {},
         createdBy: userId,
-        organizationId: organizationId.toString()
+        organizationId: organizationId.toString(),
       };
 
       if (createData.description) {
@@ -258,13 +262,7 @@ export class GameService {
    */
   async searchGames(query: GameQueryDto): Promise<GameListResult> {
     try {
-      const {
-        page = 1,
-        limit = 10,
-        search,
-        sortBy = 'createdAt',
-        sortOrder = 'DESC'
-      } = query;
+      const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
 
       const offset = (page - 1) * limit;
       const where: any = {};
@@ -272,7 +270,7 @@ export class GameService {
       if (search) {
         where[Op.or] = [
           { name: { [Op.iLike]: `%${search}%` } },
-          { description: { [Op.iLike]: `%${search}%` } }
+          { description: { [Op.iLike]: `%${search}%` } },
         ];
       }
 
@@ -282,18 +280,18 @@ export class GameService {
           {
             model: GameTemplate,
             as: 'template',
-            attributes: ['id', 'name', 'description']
+            attributes: ['id', 'name', 'description'],
           },
           {
             model: User,
             as: 'createdBy',
-            attributes: ['id', 'username', 'email']
-          }
+            attributes: ['id', 'username', 'email'],
+          },
         ],
         order: [[sortBy, sortOrder]],
         limit,
         offset,
-        distinct: true
+        distinct: true,
       });
 
       const totalPages = Math.ceil(count / limit);
@@ -303,7 +301,7 @@ export class GameService {
         currentPage: page,
         totalPages,
         totalItems: count,
-        itemsPerPage: limit
+        itemsPerPage: limit,
       };
     } catch (error) {
       logger.error('Error searching games:', error);
@@ -327,14 +325,14 @@ export class GameService {
         { status: 'draft', count: draftGames },
         { status: 'scheduled', count: scheduledGames },
         { status: 'active', count: activeGames },
-        { status: 'finished', count: finishedGames }
+        { status: 'finished', count: finishedGames },
       ];
 
       // Последние созданные игры
       const recentGames = await Game.findAll({
         order: [['createdAt', 'DESC']],
         limit: 5,
-        attributes: ['id', 'name', 'status', 'createdAt']
+        attributes: ['id', 'name', 'status', 'createdAt'],
       });
 
       // Популярные шаблоны (пока заглушка, будет реализовано в Sprint 5)
@@ -355,9 +353,9 @@ export class GameService {
           id: g.id,
           name: g.name,
           status: g.status.toString(),
-          createdAt: g.createdAt
+          createdAt: g.createdAt,
         })),
-        popularTemplates
+        popularTemplates,
       };
     } catch (error) {
       logger.error('Error getting game stats:', error);
@@ -368,7 +366,11 @@ export class GameService {
   /**
    * Изменить состояние игры
    */
-  async changeGameState(id: number, stateChange: GameStateChangeDto, userId: string): Promise<Game | null> {
+  async changeGameState(
+    id: number,
+    stateChange: GameStateChangeDto,
+    userId: string,
+  ): Promise<Game | null> {
     try {
       const game = await Game.findByPk(id);
 
@@ -416,7 +418,7 @@ export class GameService {
       }
 
       const updateData: any = {
-        status: newStatus
+        status: newStatus,
       };
 
       if (newStatus === GameStatus.FINISHED) {
@@ -425,7 +427,9 @@ export class GameService {
 
       await game.update(updateData);
 
-      logger.info(`Game state changed: ${id} to ${newStatus} by user: ${userId}, reason: ${reason || 'none'}`);
+      logger.info(
+        `Game state changed: ${id} to ${newStatus} by user: ${userId}, reason: ${reason || 'none'}`,
+      );
 
       return game;
     } catch (error) {
@@ -465,7 +469,7 @@ export class GameService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -476,20 +480,28 @@ export class GameService {
     const errors: string[] = [];
 
     if (settings.maxTeams !== undefined) {
-      if (typeof settings.maxTeams !== 'number' || settings.maxTeams < 1 || settings.maxTeams > 50) {
+      if (
+        typeof settings.maxTeams !== 'number' ||
+        settings.maxTeams < 1 ||
+        settings.maxTeams > 50
+      ) {
         errors.push('Максимальное количество команд должно быть числом от 1 до 50');
       }
     }
 
     if (settings.timeLimit !== undefined) {
-      if (typeof settings.timeLimit !== 'number' || settings.timeLimit < 60 || settings.timeLimit > 1440) {
+      if (
+        typeof settings.timeLimit !== 'number' ||
+        settings.timeLimit < 60 ||
+        settings.timeLimit > 1440
+      ) {
         errors.push('Временной лимит должен быть числом от 60 до 1440 минут');
       }
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -502,8 +514,8 @@ export class GameService {
       const teams = await Team.findAll({
         where: {
           id: { [Op.in]: teamIds },
-          organizationId: organizationId
-        }
+          organizationId,
+        },
       });
 
       if (teams.length !== teamIds.length) {
@@ -513,9 +525,9 @@ export class GameService {
       // Проверяем, что команды еще не добавлены в игру
       const existingGameTeams = await GameTeam.findAll({
         where: {
-          gameId: gameId,
-          teamId: { [Op.in]: teamIds }
-        }
+          gameId,
+          teamId: { [Op.in]: teamIds },
+        },
       });
 
       if (existingGameTeams.length > 0) {
@@ -524,11 +536,11 @@ export class GameService {
 
       // Добавляем команды в игру
       const gameTeams = teamIds.map((teamId, index) => ({
-        gameId: gameId,
-        teamId: teamId,
+        gameId,
+        teamId,
         joinedAt: index + 1,
         isActive: true,
-        joinedAtDate: new Date()
+        joinedAtDate: new Date(),
       }));
 
       await GameTeam.bulkCreate(gameTeams as any);
@@ -547,9 +559,9 @@ export class GameService {
     try {
       await GameTeam.destroy({
         where: {
-          gameId: gameId,
-          teamId: { [Op.in]: teamIds }
-        }
+          gameId,
+          teamId: { [Op.in]: teamIds },
+        },
       });
 
       logger.info(`Removed ${teamIds.length} teams from game: ${gameId}`);
@@ -565,12 +577,14 @@ export class GameService {
   async getGameTeams(gameId: string): Promise<Team[]> {
     try {
       const game = await Game.findByPk(gameId, {
-        include: [{
-          model: Team,
-          through: {
-            where: { isActive: true }
-          }
-        }]
+        include: [
+          {
+            model: Team,
+            through: {
+              where: { isActive: true },
+            },
+          },
+        ],
       });
 
       if (!game) {
