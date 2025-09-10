@@ -7,6 +7,7 @@ import { TemplateFiltersComponent } from '../components/TemplateFilters';
 import { TemplateList } from '../components/TemplateList';
 import { useTemplates } from '../hooks/useTemplates';
 import { GameTemplate } from '../types/template.types';
+import { templateService } from '../services/templateService';
 
 export function TemplatesPage() {
   const {
@@ -40,32 +41,14 @@ export function TemplatesPage() {
   };
 
   const handleDelete = async (template: GameTemplate) => {
-    if (!window.confirm(`Вы уверены, что хотите удалить шаблон "${template.name}"?`)) {
-      return;
-    }
-
-    setActionLoading(template.id);
-    try {
-      // TODO: Вызвать API для удаления шаблона
-      console.log('Delete template:', template);
-      await refreshTemplates();
-    } catch (error) {
-      console.error('Ошибка удаления шаблона:', error);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleDuplicate = async (template: GameTemplate) => {
-    setActionLoading(template.id);
-    try {
-      // TODO: Вызвать API для дублирования шаблона
-      console.log('Duplicate template:', template);
-      await refreshTemplates();
-    } catch (error) {
-      console.error('Ошибка дублирования шаблона:', error);
-    } finally {
-      setActionLoading(null);
+    if (window.confirm(`Вы уверены, что хотите удалить шаблон "${template.name}"?`)) {
+      try {
+        await templateService.deleteTemplate(template.id);
+        refreshTemplates();
+      } catch (error) {
+        console.error('Ошибка удаления шаблона:', error);
+        // TODO: Показать пользователю сообщение об ошибке
+      }
     }
   };
 
@@ -75,7 +58,9 @@ export function TemplatesPage() {
 
   const handleCreateSuccess = () => {
     // Обновляем список шаблонов после успешного создания
+    console.log('handleCreateSuccess called, refreshing templates...');
     refreshTemplates();
+    console.log('refreshTemplates called');
   };
 
   const handleEditSuccess = () => {
@@ -146,10 +131,9 @@ export function TemplatesPage() {
 
         <TemplateList
           templates={templates}
-          loading={loading}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          onDuplicate={handleDuplicate}
+          loading={loading}
         />
 
         {pagination && (

@@ -19,7 +19,7 @@ import {
 } from '../utils/storage';
 
 // Базовый URL API (можно вынести в конфиг)
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 /**
  * Класс для работы с API аутентификации
@@ -166,16 +166,16 @@ class AuthService {
    * Получение текущего пользователя
    */
   async getCurrentUser(): Promise<User> {
-    const response = await this.makeRequest<ApiResponse<User>>('/auth/me');
+    const response = await this.makeRequest<ApiResponse<{ user: User }>>('/auth/me');
 
-    if (!response.success || !response.data) {
+    if (!response.success || !response.data || !response.data.user) {
       throw new Error('Failed to get current user');
     }
 
     // Обновляем данные пользователя в localStorage
-    saveUserData(response.data);
+    saveUserData(response.data.user);
 
-    return response.data;
+    return response.data.user;
   }
 
   /**

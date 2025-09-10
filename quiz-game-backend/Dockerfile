@@ -10,7 +10,7 @@ RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install --only=production && npm cache clean --force
 
 # Stage 2: Build
 FROM node:20-alpine AS builder
@@ -25,7 +25,7 @@ COPY tsconfig.json ./
 COPY src ./src
 
 # Install all dependencies and build
-RUN npm ci && npm run build
+RUN npm install && npm run build
 
 # Stage 3: Runtime
 FROM node:20-alpine AS runtime

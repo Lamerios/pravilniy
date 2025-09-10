@@ -4,7 +4,6 @@
 
 import { Link } from 'react-router-dom';
 
-import { AdminOnly, ModeratorOrAbove, OwnerOnly, OwnerOrAdmin, RoleGuard } from '../components/RoleGuard';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useRole } from '../hooks/useRole';
 
@@ -49,126 +48,126 @@ export function DashboardPage() {
         <div className="dashboard-cards">
           <Link to="/games" className="dashboard-card-link">
             <div className="dashboard-card">
+              <div className="card-icon">🎮</div>
               <h3>Игры</h3>
-              <p>Управление играми и шаблонами</p>
+              <p>Создание и управление играми</p>
               <div className="card-stats">
                 <span className="stat-number">0</span>
                 <span className="stat-label">Активных игр</span>
+              </div>
+              <div className="card-actions">
+                <span className="action-text">Создать игру</span>
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/templates" className="dashboard-card-link">
+            <div className="dashboard-card">
+              <div className="card-icon">📋</div>
+              <h3>Шаблоны</h3>
+              <p>Создание и управление шаблонами игр</p>
+              <div className="card-stats">
+                <span className="stat-number">0</span>
+                <span className="stat-label">Доступных шаблонов</span>
+              </div>
+              <div className="card-actions">
+                <span className="action-text">Создать шаблон</span>
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/teams" className="dashboard-card-link">
+            <div className="dashboard-card">
+              <div className="card-icon">👥</div>
+              <h3>Команды</h3>
+              <p>Управление командами участников</p>
+              <div className="card-stats">
+                <span className="stat-number">0</span>
+                <span className="stat-label">Зарегистрированных команд</span>
+              </div>
+              <div className="card-actions">
+                <span className="action-text">Управление командами</span>
               </div>
             </div>
           </Link>
 
           <div className="dashboard-card">
-            <h3>Команды</h3>
-            <p>Управление командами</p>
-            <div className="card-stats">
-              <span className="stat-number">0</span>
-              <span className="stat-label">Зарегистрированных команд</span>
-            </div>
-          </div>
-
-          <div className="dashboard-card">
+            <div className="card-icon">📊</div>
             <h3>Статистика</h3>
-            <p>Аналитика и отчеты</p>
+            <p>Аналитика и отчеты по играм</p>
             <div className="card-stats">
               <span className="stat-number">0</span>
               <span className="stat-label">Проведенных игр</span>
+            </div>
+            <div className="card-actions">
+              <span className="action-text">Просмотр отчетов</span>
             </div>
           </div>
         </div>
 
         <div className="dashboard-recent">
-          <h2>Последние действия</h2>
-          <div className="recent-actions">
-            <p className="no-actions">Пока нет действий</p>
-          </div>
-        </div>
-
-        {/* Демонстрация ролей */}
-        <div className="dashboard-roles">
-          <h2>Информация о ролях</h2>
-          <div className="role-info">
-            <div className="role-info-card">
-              <h3>Текущая роль</h3>
-              <p className="current-role">{roleInfo.currentRole}</p>
-              <p className="role-level">Уровень: {roleInfo.roleLevel}</p>
-            </div>
-
-            <div className="role-permissions">
-              <h3>Разрешения</h3>
-              <ul>
-                <li className={roleInfo.permissions.canAccessAdmin ? 'allowed' : 'denied'}>
-                  Доступ к админ панели: {roleInfo.permissions.canAccessAdmin ? '✅' : '❌'}
-                </li>
-                <li className={roleInfo.permissions.canAccessOwner ? 'allowed' : 'denied'}>
-                  Доступ владельца: {roleInfo.permissions.canAccessOwner ? '✅' : '❌'}
-                </li>
-                <li className={roleInfo.permissions.canAccessModerator ? 'allowed' : 'denied'}>
-                  Доступ модератора: {roleInfo.permissions.canAccessModerator ? '✅' : '❌'}
-                </li>
-                <li className={roleInfo.permissions.canAccessOwnerOrAdmin ? 'allowed' : 'denied'}>
-                  Доступ владельца/админа: {roleInfo.permissions.canAccessOwnerOrAdmin ? '✅' : '❌'}
-                </li>
-              </ul>
+          <h2>Быстрые действия</h2>
+          <div className="quick-actions">
+            <Link to="/games" className="quick-action-btn">
+              <span className="action-icon">🎮</span>
+              <span className="action-text">Создать игру</span>
+            </Link>
+            <Link to="/templates" className="quick-action-btn">
+              <span className="action-icon">📋</span>
+              <span className="action-text">Создать шаблон</span>
+            </Link>
+            <Link to="/teams" className="quick-action-btn">
+              <span className="action-icon">👥</span>
+              <span className="action-text">Управление командами</span>
+            </Link>
+            <div className="quick-action-btn disabled">
+              <span className="action-icon">📊</span>
+              <span className="action-text">Просмотр статистики</span>
             </div>
           </div>
         </div>
 
-        {/* Демонстрация компонентов с защитой по ролям */}
-        <div className="dashboard-role-demo">
-          <h2>Демонстрация защиты по ролям</h2>
+        <div className="dashboard-info">
+          <h2>Информация о системе</h2>
+          <div className="info-cards">
+            <div className="info-card">
+              <h3>Ваша роль</h3>
+              <p className="role-badge">{roleInfo.currentRole}</p>
+              <p className="role-description">
+                {roleInfo.currentRole === 'admin' && 'Полный доступ ко всем функциям системы'}
+                {roleInfo.currentRole === 'owner' && 'Права владельца организации'}
+                {roleInfo.currentRole === 'moderator' && 'Права модератора игр'}
+                {!['admin', 'owner', 'moderator'].includes(roleInfo.currentRole || '') && 'Базовые права пользователя'}
+              </p>
+            </div>
 
-          <div className="role-demo-section">
-            <h3>Секция только для администраторов</h3>
-            <AdminOnly fallback={<p className="access-denied">❌ Доступ только для администраторов</p>}>
-              <div className="admin-section">
-                <p>✅ Вы администратор! Эта секция видна только вам.</p>
-                <button className="admin-button">Админская кнопка</button>
+            <div className="info-card">
+              <h3>Статус системы</h3>
+              <div className="status-indicators">
+                <div className="status-item">
+                  <span className="status-dot active"></span>
+                  <span>Система работает</span>
+                </div>
+                <div className="status-item">
+                  <span className="status-dot active"></span>
+                  <span>База данных подключена</span>
+                </div>
+                <div className="status-item">
+                  <span className="status-dot active"></span>
+                  <span>API доступен</span>
+                </div>
               </div>
-            </AdminOnly>
-          </div>
+            </div>
 
-          <div className="role-demo-section">
-            <h3>Секция только для владельцев</h3>
-            <OwnerOnly fallback={<p className="access-denied">❌ Доступ только для владельцев</p>}>
-              <div className="owner-section">
-                <p>✅ Вы владелец! Эта секция видна только вам.</p>
-                <button className="owner-button">Кнопка владельца</button>
+            <div className="info-card">
+              <h3>Полезные ссылки</h3>
+              <div className="help-links">
+                <a href="/games" className="help-link">📖 Документация по играм</a>
+                <a href="/templates" className="help-link">📋 Руководство по шаблонам</a>
+                <a href="/teams" className="help-link">👥 Управление командами</a>
+                <div className="help-link disabled">📊 Аналитика и отчеты</div>
               </div>
-            </OwnerOnly>
-          </div>
-
-          <div className="role-demo-section">
-            <h3>Секция для модераторов и выше</h3>
-            <ModeratorOrAbove fallback={<p className="access-denied">❌ Доступ только для модераторов и выше</p>}>
-              <div className="moderator-section">
-                <p>✅ У вас есть права модератора или выше!</p>
-                <button className="moderator-button">Кнопка модератора</button>
-              </div>
-            </ModeratorOrAbove>
-          </div>
-
-          <div className="role-demo-section">
-            <h3>Секция для владельцев и администраторов</h3>
-            <OwnerOrAdmin fallback={<p className="access-denied">❌ Доступ только для владельцев и администраторов</p>}>
-              <div className="owner-admin-section">
-                <p>✅ Вы владелец или администратор!</p>
-                <button className="owner-admin-button">Кнопка владельца/админа</button>
-              </div>
-            </OwnerOrAdmin>
-          </div>
-
-          <div className="role-demo-section">
-            <h3>Гибкая проверка ролей</h3>
-            <RoleGuard
-              requiredRoles={[roleInfo.currentRole as any]}
-              fallback={<p className="access-denied">❌ Доступ запрещен</p>}
-            >
-              <div className="flexible-section">
-                <p>✅ Эта секция видна только пользователям с вашей ролью: <strong>{roleInfo.currentRole}</strong></p>
-                <button className="flexible-button">Кнопка для {roleInfo.currentRole}</button>
-              </div>
-            </RoleGuard>
+            </div>
           </div>
         </div>
       </div>

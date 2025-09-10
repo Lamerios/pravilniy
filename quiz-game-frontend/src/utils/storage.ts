@@ -3,9 +3,9 @@
  */
 
 const STORAGE_KEYS = {
-  ACCESS_TOKEN: 'quiz_game_access_token',
-  REFRESH_TOKEN: 'quiz_game_refresh_token',
-  USER_DATA: 'quiz_game_user_data'
+  ACCESS_TOKEN: 'pravilniy_quiz_access_token',
+  REFRESH_TOKEN: 'pravilniy_quiz_refresh_token',
+  USER_DATA: 'pravilniy_quiz_user_data'
 } as const;
 
 /**

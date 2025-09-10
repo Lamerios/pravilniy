@@ -1,4 +1,4 @@
-# 🎮 Quiz Game
+# 🎮 Правильный Квиз
 
 > **Система управления интеллектуальными играми**
 
@@ -542,8 +542,8 @@ docker-compose logs -f
 
 ## 📞 Поддержка
 
-- 📧 **Email**: support@quiz-game.com
-- 💬 **Discord**: [Quiz Game Community](https://discord.gg/quiz-game)
+- 📧 **Email**: support@pravilniy-quiz.com
+- 💬 **Discord**: [Правильный Квиз Community](https://discord.gg/pravilniy-quiz)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/quiz-game-team/quiz-game/issues)
 - 📖 **Wiki**: [GitHub Wiki](https://github.com/quiz-game-team/quiz-game/wiki)
 
@@ -561,13 +561,13 @@ docker-compose logs -f
 
 <div align="center">
 
-**🎮 Quiz Game** - Система управления интеллектуальными играми
+**🎮 Правильный Квиз** - Система управления интеллектуальными играми
 
 [![GitHub stars](https://img.shields.io/github/stars/quiz-game-team/quiz-game?style=social)](https://github.com/quiz-game-team/quiz-game/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quiz-game-team/quiz-game?style=social)](https://github.com/quiz-game-team/quiz-game/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/quiz-game-team/quiz-game)](https://github.com/quiz-game-team/quiz-game/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/quiz-game-team/quiz-game)](https://github.com/quiz-game-team/quiz-game/pulls)
 
-**Сделано с ❤️ командой Quiz Game**
+**Сделано с ❤️ командой Правильный Квиз**
 
 </div>

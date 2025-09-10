@@ -7,12 +7,13 @@ import {
     GameStats,
     UpdateGameDto
 } from '../types/game.types';
+import { getAccessToken } from '../utils/storage';
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
 class GameService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const token = localStorage.getItem('accessToken');
+    const token = getAccessToken();
 
     const config: RequestInit = {
       headers: {

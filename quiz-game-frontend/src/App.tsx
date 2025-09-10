@@ -10,6 +10,8 @@ import LoginPage from './pages/LoginPage';
 import PublicScoreboardPage from './pages/PublicScoreboardPage';
 import { ScoreboardPage } from './pages/ScoreboardPage';
 import { ScoreInputPage } from './pages/ScoreInputPage';
+import { TeamsPage } from './pages/TeamsPage';
+import { TemplatesPage } from './pages/TemplatesPage';
 import './styles/auth.css';
 import './styles/file-upload.css';
 import './styles/forms.css';
@@ -56,6 +58,24 @@ const App: React.FC = () => {
               element={
                 <WithAuth>
                   <GamesPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/templates"
+              element={
+                <WithAuth>
+                  <TemplatesPage />
+                </WithAuth>
+              }
+            />
+
+            <Route
+              path="/teams"
+              element={
+                <WithAuth>
+                  <TeamsPage />
                 </WithAuth>
               }
             />

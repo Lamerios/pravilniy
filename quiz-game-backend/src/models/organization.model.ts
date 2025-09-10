@@ -4,7 +4,6 @@ import {
   Column,
   CreatedAt,
   DataType,
-  HasMany,
   Model,
   PrimaryKey,
   Table,
@@ -59,10 +58,9 @@ export class Organization extends Model {
   @Column(DataType.DATE)
   declare updatedAt: Date;
 
-  // Ассоциации
-  @HasMany(() => User)
-  users!: User[];
-
-  @HasMany(() => GameTemplate)
-  gameTemplates!: GameTemplate[];
+  // Ассоциации настраиваются в associations.ts
+  declare users?: User[];
+  declare gameTemplates?: GameTemplate[];
+  declare games?: any[];
+  declare teams?: any[];
 }

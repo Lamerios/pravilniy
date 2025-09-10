@@ -6,14 +6,27 @@ services:
     build:
       context: ./quiz-game-backend
       dockerfile: Dockerfile
-    container_name: quiz-backend-prod
+    container_name: pravilniy-quiz-backend-prod
     restart: always
     environment:
       - NODE_ENV=production
       - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
       - BACKEND_PORT=5000
       - BACKEND_HOST=0.0.0.0
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - CORS_ORIGIN=https://92.62.119.17,http://92.62.119.17:3000
+      - CORS_CREDENTIALS=true
+      - RATE_LIMIT_WINDOW_MS=300000
+      - RATE_LIMIT_MAX_REQUESTS=1000
+      - RATE_LIMIT_SKIP_SUCCESSFUL_REQUESTS=true
     ports:
       - "5000:5000"
     volumes:
@@ -25,9 +38,9 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - quiz-network
+      - pravilniy-quiz-network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -44,18 +57,18 @@ services:
       context: ./quiz-game-frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: http://localhost:5000/api
-        VITE_WS_URL: http://localhost:5000
-    container_name: quiz-frontend-prod
+        VITE_API_URL: /api
+        VITE_WS_URL: /
+    container_name: pravilniy-quiz-frontend-prod
     restart: always
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - backend
     networks:
-      - quiz-network
+      - pravilniy-quiz-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
       interval: 30s
       timeout: 3s
       retries: 3
@@ -69,7 +82,7 @@ services:
   # PostgreSQL Database (Production)
   postgres:
     image: postgres:15-alpine
-    container_name: quiz-postgres-prod
+    container_name: pravilniy-quiz-postgres-prod
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -89,7 +102,7 @@ services:
       retries: 3
       start_period: 60s
     networks:
-      - quiz-network
+      - pravilniy-quiz-network
     logging:
       driver: "json-file"
       options:
@@ -99,22 +112,21 @@ services:
   # Redis Cache & Sessions (Production)
   redis:
     image: redis:7-alpine
-    container_name: quiz-redis-prod
+    container_name: pravilniy-quiz-redis-prod
     restart: always
     ports:
       - "6379:6379"
     volumes:
       - redis_prod_data:/data
-      - ./docker/redis/redis-prod.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf
+    command: redis-server --requirepass QuizGame2024!RedisPassword
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "QuizGame2024!RedisPassword", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
     networks:
-      - quiz-network
+      - pravilniy-quiz-network
     logging:
       driver: "json-file"
       options:
@@ -140,7 +152,7 @@ services:
       - postgres
       - redis
     networks:
-      - quiz-network
+      - pravilniy-quiz-network
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
       interval: 30s
@@ -164,5 +176,5 @@ volumes:
     driver: local
 
 networks:
-  quiz-network:
+  pravilniy-quiz-network:
     driver: bridge

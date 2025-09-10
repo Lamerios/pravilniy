@@ -33,7 +33,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -53,7 +53,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -73,7 +73,7 @@ export class TeamService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       },
       body: JSON.stringify(teamData)
     });
@@ -95,7 +95,7 @@ export class TeamService {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       },
       body: JSON.stringify(teamData)
     });
@@ -117,7 +117,7 @@ export class TeamService {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -139,7 +139,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -159,7 +159,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -179,7 +179,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -204,7 +204,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -224,7 +224,7 @@ export class TeamService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 
@@ -244,7 +244,7 @@ export class TeamService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       },
       body: JSON.stringify({ tableNumbers })
     });

@@ -26,7 +26,7 @@ export function GamesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
-  // Removed unused action loading state
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const handlePageChange = (page: number) => {
     setFilters({ page });

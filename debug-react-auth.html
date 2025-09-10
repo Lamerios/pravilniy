@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug React Auth</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .step.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .step.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .step.warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        .code {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin: 5px 0;
+            white-space: pre-wrap;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug React Authentication</h1>
+        <p>Эта страница поможет диагностировать проблемы с аутентификацией в React приложении.</p>
+        
+        <div class="step">
+            <h3>📋 Шаг 1: Проверка localStorage</h3>
+            <div id="localStorageCheck"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🌐 Шаг 2: Проверка API доступности</h3>
+            <div id="apiCheck"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🔑 Шаг 3: Проверка токенов</h3>
+            <div id="tokenCheck"></div>
+        </div>
+        
+        <div class="step">
+            <h3>👤 Шаг 4: Проверка пользователя через API</h3>
+            <div id="userCheck"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🚀 Шаг 5: Тест перехода в React</h3>
+            <div id="reactTest"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🔧 Действия</h3>
+            <button class="button" onclick="runFullDiagnostic()">🔄 Полная диагностика</button>
+            <button class="button" onclick="clearAllData()">🗑️ Очистить все данные</button>
+            <button class="button" onclick="goToReact()">🚀 Перейти в React</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function runFullDiagnostic() {
+            clearResults();
+            
+            // Шаг 1: localStorage
+            await checkLocalStorage();
+            
+            // Шаг 2: API
+            await checkAPI();
+            
+            // Шаг 3: Токены
+            await checkTokens();
+            
+            // Шаг 4: Пользователь
+            await checkUser();
+            
+            // Шаг 5: React тест
+            await testReact();
+        }
+        
+        async function checkLocalStorage() {
+            const step = document.getElementById('localStorageCheck');
+            step.innerHTML = '<p>⏳ Проверяем localStorage...</p>';
+            
+            try {
+                const accessToken = localStorage.getItem('pravilniy_quiz_access_token');
+                const refreshToken = localStorage.getItem('pravilniy_quiz_refresh_token');
+                const userData = localStorage.getItem('pravilniy_quiz_user_data');
+                
+                let html = '<h4>Результаты:</h4>';
+                html += `<p><strong>Access Token:</strong> ${accessToken ? '✅ Найден' : '❌ Отсутствует'}</p>`;
+                html += `<p><strong>Refresh Token:</strong> ${refreshToken ? '✅ Найден' : '❌ Отсутствует'}</p>`;
+                html += `<p><strong>User Data:</strong> ${userData ? '✅ Найден' : '❌ Отсутствует'}</p>`;
+                
+                if (accessToken && refreshToken && userData) {
+                    step.className = 'step success';
+                    html += '<p>✅ Все данные в localStorage присутствуют</p>';
+                } else {
+                    step.className = 'step error';
+                    html += '<p>❌ Не все данные присутствуют в localStorage</p>';
+                }
+                
+                step.innerHTML = html;
+            } catch (error) {
+                step.className = 'step error';
+                step.innerHTML = `<p>❌ Ошибка при проверке localStorage: ${error.message}</p>`;
+            }
+        }
+        
+        async function checkAPI() {
+            const step = document.getElementById('apiCheck');
+            step.innerHTML = '<p>⏳ Проверяем доступность API...</p>';
+            
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    step.className = 'step success';
+                    step.innerHTML = '<p>✅ API доступен и отвечает</p>';
+                } else {
+                    step.className = 'step error';
+                    step.innerHTML = `<p>❌ API недоступен: ${response.status}</p>`;
+                }
+            } catch (error) {
+                step.className = 'step error';
+                step.innerHTML = `<p>❌ Ошибка подключения к API: ${error.message}</p>`;
+            }
+        }
+        
+        async function checkTokens() {
+            const step = document.getElementById('tokenCheck');
+            step.innerHTML = '<p>⏳ Проверяем токены...</p>';
+            
+            try {
+                const accessToken = localStorage.getItem('pravilniy_quiz_access_token');
+                
+                if (!accessToken) {
+                    step.className = 'step error';
+                    step.innerHTML = '<p>❌ Access token отсутствует</p>';
+                    return;
+                }
+                
+                // Проверяем структуру токена
+                const parts = accessToken.split('.');
+                if (parts.length !== 3) {
+                    step.className = 'step error';
+                    step.innerHTML = '<p>❌ Неверный формат токена</p>';
+                    return;
+                }
+                
+                // Проверяем срок действия
+                const payload = JSON.parse(atob(parts[1]));
+                const exp = new Date(payload.exp * 1000);
+                const now = new Date();
+                const isValid = exp > now;
+                
+                let html = '<h4>Результаты:</h4>';
+                html += `<p><strong>Формат:</strong> ✅ Корректный JWT</p>`;
+                html += `<p><strong>Истекает:</strong> ${exp.toLocaleString()}</p>`;
+                html += `<p><strong>Статус:</strong> ${isValid ? '✅ Действителен' : '❌ Истек'}</p>`;
+                
+                if (isValid) {
+                    step.className = 'step success';
+                    html += '<p>✅ Токен действителен</p>';
+                } else {
+                    step.className = 'step error';
+                    html += '<p>❌ Токен истек</p>';
+                }
+                
+                step.innerHTML = html;
+            } catch (error) {
+                step.className = 'step error';
+                step.innerHTML = `<p>❌ Ошибка при проверке токена: ${error.message}</p>`;
+            }
+        }
+        
+        async function checkUser() {
+            const step = document.getElementById('userCheck');
+            step.innerHTML = '<p>⏳ Проверяем пользователя через API...</p>';
+            
+            try {
+                const accessToken = localStorage.getItem('pravilniy_quiz_access_token');
+                
+                if (!accessToken) {
+                    step.className = 'step error';
+                    step.innerHTML = '<p>❌ Access token отсутствует</p>';
+                    return;
+                }
+                
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    step.className = 'step success';
+                    step.innerHTML = `<p>✅ Пользователь получен: ${JSON.stringify(data.data.user)}</p>`;
+                } else {
+                    step.className = 'step error';
+                    step.innerHTML = `<p>❌ Ошибка получения пользователя: ${data.message || 'Неизвестная ошибка'}</p>`;
+                }
+            } catch (error) {
+                step.className = 'step error';
+                step.innerHTML = `<p>❌ Ошибка при запросе пользователя: ${error.message}</p>`;
+            }
+        }
+        
+        async function testReact() {
+            const step = document.getElementById('reactTest');
+            step.innerHTML = '<p>⏳ Тестируем переход в React...</p>';
+            
+            try {
+                // Проверяем, что React приложение загружается
+                const response = await fetch('/');
+                const html = await response.text();
+                
+                if (html.includes('id="root"')) {
+                    step.className = 'step success';
+                    step.innerHTML = '<p>✅ React приложение доступно</p>';
+                } else {
+                    step.className = 'step error';
+                    step.innerHTML = '<p>❌ React приложение недоступно</p>';
+                }
+            } catch (error) {
+                step.className = 'step error';
+                step.innerHTML = `<p>❌ Ошибка при проверке React: ${error.message}</p>`;
+            }
+        }
+        
+        function clearAllData() {
+            localStorage.removeItem('pravilniy_quiz_access_token');
+            localStorage.removeItem('pravilniy_quiz_refresh_token');
+            localStorage.removeItem('pravilniy_quiz_user_data');
+            clearResults();
+            showResult('Все данные очищены', 'success');
+        }
+        
+        function goToReact() {
+            window.location.href = '/';
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        function showResult(message, type) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<div class="step ${type}">${message}</div>`;
+        }
+        
+        // Автоматический запуск диагностики
+        runFullDiagnostic();
+    </script>
+</body>
+</html>
+

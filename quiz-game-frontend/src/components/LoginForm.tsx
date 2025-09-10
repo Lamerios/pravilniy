@@ -110,7 +110,7 @@ export function LoginForm({ onSuccess, className = '' }: LoginFormProps) {
             onChange={handleInputChange}
             className={`form-input ${validationErrors.email ? 'error' : ''}`}
             placeholder="Введите ваш email"
-            disabled={isLoading}
+            disabled={false}
             autoComplete="email"
           />
           {validationErrors.email && (
@@ -130,7 +130,7 @@ export function LoginForm({ onSuccess, className = '' }: LoginFormProps) {
             onChange={handleInputChange}
             className={`form-input ${validationErrors.password ? 'error' : ''}`}
             placeholder="Введите ваш пароль"
-            disabled={isLoading}
+            disabled={false}
             autoComplete="current-password"
           />
           {validationErrors.password && (
@@ -148,7 +148,7 @@ export function LoginForm({ onSuccess, className = '' }: LoginFormProps) {
         <button
           type="submit"
           className="submit-button"
-          disabled={isLoading}
+          disabled={false}
         >
           {isLoading ? (
             <>

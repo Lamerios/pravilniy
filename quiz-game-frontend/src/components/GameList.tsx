@@ -3,7 +3,7 @@ import { Game } from '../types/game.types';
 import { GameCard } from './GameCard';
 
 interface GameListProps {
-  games: Game[];
+  games: Game[] | undefined;
   loading?: boolean;
   onEdit?: ((game: Game) => void) | undefined;
   onDelete?: ((game: Game) => void) | undefined;
@@ -25,7 +25,7 @@ export function GameList({
   onResume,
   onManageTeams
 }: GameListProps) {
-  if (loading && games.length === 0) {
+  if (loading && (!games || games.length === 0)) {
     return (
       <div className="game-list">
         <div className="loading-skeleton">
@@ -52,7 +52,7 @@ export function GameList({
     );
   }
 
-  if (games.length === 0) {
+  if (!games || games.length === 0) {
     return (
       <div className="game-list">
         <div className="empty-state">
@@ -83,7 +83,7 @@ export function GameList({
         ))}
       </div>
 
-      {loading && games.length > 0 && (
+      {loading && games && games.length > 0 && (
         <div className="loading-overlay">
           <div className="loading-spinner">Загрузка...</div>
         </div>

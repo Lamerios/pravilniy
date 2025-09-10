@@ -3,6 +3,7 @@
  */
 
 import { createContext, ReactNode, useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 import { AuthContextType } from '../types/auth.types';
@@ -60,7 +61,7 @@ export function WithAuth({ children, fallback = null }: WithAuthProps) {
   }
 
   if (!isAuthenticated) {
-    return <>{fallback}</>;
+    return fallback ? <>{fallback}</> : <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

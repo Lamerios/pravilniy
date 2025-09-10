@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Test</title>
+</head>
+<body>
+    <h1>JavaScript Test Page</h1>
+    <input type="text" id="testInput" placeholder="Test input field" />
+    <button id="testButton">Test Button</button>
+    <div id="output">No JavaScript executed yet</div>
+    
+    <script>
+        console.log('JavaScript is running!');
+        
+        document.getElementById('testButton').addEventListener('click', function() {
+            document.getElementById('output').innerHTML = 'JavaScript works! Button clicked at ' + new Date();
+            console.log('Button clicked!');
+        });
+        
+        document.getElementById('testInput').addEventListener('input', function(e) {
+            console.log('Input changed:', e.target.value);
+        });
+        
+        // Test if DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM ready');
+            document.getElementById('output').innerHTML = 'DOM loaded, JavaScript active';
+        });
+        
+        // Immediate test
+        setTimeout(function() {
+            document.getElementById('output').innerHTML = 'JavaScript is active and running';
+        }, 100);
+    </script>
+</body>
+</html>
+
+

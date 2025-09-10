@@ -15,6 +15,7 @@ import {
 import { Game } from './game.model';
 import { Organization } from './organization.model';
 import { Round } from './round.model';
+import { User } from './user.model';
 
 @Table({
   tableName: 'game_templates',
@@ -28,35 +29,39 @@ export class GameTemplate extends Model {
   declare id: number;
 
   @AllowNull(false)
-  @Column(DataType.STRING(100))
+  @Column({ type: DataType.STRING(255), field: 'title' })
   name!: string;
 
   @Column(DataType.TEXT)
   description?: string;
 
   @AllowNull(false)
-  @Column(DataType.INTEGER)
+  @Column({ type: DataType.INTEGER, field: 'rounds_count' })
   roundsCount!: number;
 
   @AllowNull(false)
-  @Column(DataType.INTEGER)
+  @Column({ type: DataType.INTEGER, field: 'questions_per_round' })
   questionsPerRound!: number;
 
-  @Column(DataType.INTEGER)
+  @Column({ type: DataType.INTEGER, field: 'time_per_question' })
   timePerQuestion?: number; // в секундах
 
-  @Column(DataType.INTEGER)
+  @Column({ type: DataType.INTEGER, field: 'max_teams' })
   maxTeams?: number;
 
-  @Column(DataType.BOOLEAN)
+  @Column({ type: DataType.BOOLEAN, field: 'is_active' })
   isActive: boolean = true;
 
-  @Column(DataType.JSONB)
-  settings?: Record<string, any>; // дополнительные настройки
+  // @Column(DataType.JSONB)
+  // settings?: Record<string, any>; // дополнительные настройки (пока отключено, так как поля нет в БД)
 
   @ForeignKey(() => Organization)
-  @Column(DataType.INTEGER)
+  @Column({ type: DataType.INTEGER, field: 'organization_id' })
   organizationId!: number;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, field: 'created_by' })
+  createdBy!: number;
 
   @CreatedAt
   @Column(DataType.DATE)
@@ -69,6 +74,9 @@ export class GameTemplate extends Model {
   // Ассоциации
   @BelongsTo(() => Organization)
   organization!: Organization;
+
+  @BelongsTo(() => User)
+  creator!: User;
 
   @HasMany(() => Game)
   games!: Game[];

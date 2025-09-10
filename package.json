@@ -1,7 +1,7 @@
 {
-  "name": "quiz-game",
+  "name": "pravilniy-quiz",
   "version": "1.0.0",
-  "description": "Quiz Game - система управления интеллектуальными играми",
+  "description": "Правильный Квиз - система управления интеллектуальными играми",
   "private": true,
   "workspaces": [
     "quiz-game-backend",
@@ -108,7 +108,7 @@
     "websocket",
     "monorepo"
   ],
-  "author": "Quiz Game Team",
+  "author": "Правильный Квиз Team",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",

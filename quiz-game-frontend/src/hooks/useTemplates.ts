@@ -35,6 +35,9 @@ export function useTemplates(): UseTemplatesReturn {
       setError(null);
 
       const result: TemplateListResult = await templateService.getTemplates(query);
+      console.log('Templates API response:', result);
+      console.log('Templates array:', result.templates);
+      console.log('Templates length:', result.templates?.length);
       setTemplates(result.templates);
       setPagination({
         currentPage: result.currentPage,

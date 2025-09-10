@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { templateService } from '../services/template.service';
-import { CreateTemplateDto, TemplateSettings } from '../types/template.types';
-import { validateCreateTemplateForm } from '../utils/validation';
+import { CreateTemplateDto } from '../types/template.types';
 
 interface CreateTemplateModalProps {
   isOpen: boolean;
@@ -13,15 +12,14 @@ interface CreateTemplateModalProps {
 interface FormData {
   name: string;
   description: string;
-  settings: TemplateSettings;
-  categories: string[];
+  roundsCount: number;
+  maxTeams: number;
 }
 
 interface FormErrors {
   name?: string;
-  'settings.roundsCount'?: string;
-  'settings.questionsPerRound'?: string;
-  'settings.timePerQuestion'?: string;
+  roundsCount?: string;
+  maxTeams?: string;
   general?: string;
 }
 
@@ -29,17 +27,11 @@ export function CreateTemplateModal({ isOpen, onClose, onSuccess }: CreateTempla
   const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
-    settings: {
-      rounds: 3,
-      questionsPerRound: 10,
-      timePerQuestion: 30,
-      difficulty: 'medium'
-    },
-    categories: []
+    roundsCount: 3,
+    maxTeams: 10
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
-  const [newCategory, setNewCategory] = useState('');
 
   // Сброс формы при открытии/закрытии
   useEffect(() => {
@@ -47,32 +39,30 @@ export function CreateTemplateModal({ isOpen, onClose, onSuccess }: CreateTempla
       setFormData({
         name: '',
         description: '',
-        settings: {
-          rounds: 3,
-          questionsPerRound: 10,
-          timePerQuestion: 30,
-          difficulty: 'medium'
-        },
-        categories: []
+        roundsCount: 3,
+        maxTeams: 10
       });
       setErrors({});
-      setNewCategory('');
     }
   }, [isOpen]);
 
   const validateForm = (): boolean => {
-    const validationData = {
-      name: formData.name,
-      description: formData.description,
-      'settings.roundsCount': formData.settings.rounds,
-      'settings.questionsPerRound': formData.settings.questionsPerRound,
-      'settings.timePerQuestion': formData.settings.timePerQuestion
-    };
+    const newErrors: FormErrors = {};
 
-    const validation = validateCreateTemplateForm(validationData);
+    if (!formData.name.trim()) {
+      newErrors.name = 'Название шаблона обязательно';
+    }
 
-    if (!validation.isValid) {
-      setErrors(validation.errors);
+    if (formData.roundsCount < 1 || formData.roundsCount > 20) {
+      newErrors.roundsCount = 'Количество раундов должно быть от 1 до 20';
+    }
+
+    if (formData.maxTeams < 1 || formData.maxTeams > 50) {
+      newErrors.maxTeams = 'Максимальное количество команд должно быть от 1 до 50';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return false;
     }
 
@@ -80,7 +70,7 @@ export function CreateTemplateModal({ isOpen, onClose, onSuccess }: CreateTempla
     return true;
   };
 
-  const handleInputChange = (field: keyof FormData, value: string | TemplateSettings | string[]) => {
+  const handleInputChange = (field: keyof FormData, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -93,24 +83,6 @@ export function CreateTemplateModal({ isOpen, onClose, onSuccess }: CreateTempla
         [field]: undefined
       }));
     }
-  };
-
-  const handleSettingsChange = (field: keyof TemplateSettings, value: any) => {
-    handleInputChange('settings', {
-      ...formData.settings,
-      [field]: value
-    });
-  };
-
-  const handleAddCategory = () => {
-    if (newCategory.trim() && !formData.categories.includes(newCategory.trim())) {
-      handleInputChange('categories', [...formData.categories, newCategory.trim()]);
-      setNewCategory('');
-    }
-  };
-
-  const handleRemoveCategory = (categoryToRemove: string) => {
-    handleInputChange('categories', formData.categories.filter(cat => cat !== categoryToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,13 +100,20 @@ export function CreateTemplateModal({ isOpen, onClose, onSuccess }: CreateTempla
         name: formData.name.trim(),
         ...(formData.description.trim() && { description: formData.description.trim() }),
         settings: {
-          ...formData.settings,
-          ...(formData.categories.length > 0 && { categories: formData.categories })
-        }
+          rounds: formData.roundsCount,
+          questionsPerRound: 10, // Значение по умолчанию
+          timePerQuestion: 30, // Значение по умолчанию
+          scoringSystem: 'standard' as const,
+          categories: [],
+          difficulty: 'medium' as const
+        },
+        maxTeams: formData.maxTeams
       };
 
       await templateService.createTemplate(createData);
+      console.log('Template created successfully, calling onSuccess...');
       onSuccess();
+      console.log('onSuccess called, closing modal...');
       onClose();
     } catch (error) {
       setErrors({
@@ -218,119 +197,29 @@ export function CreateTemplateModal({ isOpen, onClose, onSuccess }: CreateTempla
                   type="number"
                   min="1"
                   max="20"
-                  value={formData.settings.rounds}
-                  onChange={(e) => handleSettingsChange('rounds', parseInt(e.target.value) || 1)}
-                  className={`form-input ${errors['settings.roundsCount'] ? 'error' : ''}`}
+                  value={formData.roundsCount}
+                  onChange={(e) => handleInputChange('roundsCount', parseInt(e.target.value) || 1)}
+                  className={`form-input ${errors.roundsCount ? 'error' : ''}`}
                   disabled={loading}
                 />
-                {errors['settings.roundsCount'] && <span className="field-error">{errors['settings.roundsCount']}</span>}
+                {errors.roundsCount && <span className="field-error">{errors.roundsCount}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="questions-per-round" className="form-label required">
-                  Вопросов в раунде
+                <label htmlFor="max-teams" className="form-label required">
+                  Максимальное количество команд
                 </label>
                 <input
-                  id="questions-per-round"
+                  id="max-teams"
                   type="number"
                   min="1"
                   max="50"
-                  value={formData.settings.questionsPerRound}
-                  onChange={(e) => handleSettingsChange('questionsPerRound', parseInt(e.target.value) || 1)}
-                  className={`form-input ${errors['settings.questionsPerRound'] ? 'error' : ''}`}
+                  value={formData.maxTeams}
+                  onChange={(e) => handleInputChange('maxTeams', parseInt(e.target.value) || 10)}
+                  className={`form-input ${errors.maxTeams ? 'error' : ''}`}
                   disabled={loading}
                 />
-                {errors['settings.questionsPerRound'] && <span className="field-error">{errors['settings.questionsPerRound']}</span>}
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="time-per-question" className="form-label required">
-                  Время на вопрос (секунды)
-                </label>
-                <input
-                  id="time-per-question"
-                  type="number"
-                  min="10"
-                  max="300"
-                  value={formData.settings.timePerQuestion}
-                  onChange={(e) => handleSettingsChange('timePerQuestion', parseInt(e.target.value) || 30)}
-                  className={`form-input ${errors['settings.timePerQuestion'] ? 'error' : ''}`}
-                  disabled={loading}
-                />
-                {errors['settings.timePerQuestion'] && <span className="field-error">{errors['settings.timePerQuestion']}</span>}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="difficulty" className="form-label">
-                  Уровень сложности
-                </label>
-                <select
-                  id="difficulty"
-                  value={formData.settings.difficulty || 'medium'}
-                  onChange={(e) => handleSettingsChange('difficulty', e.target.value)}
-                  className="form-input"
-                  disabled={loading}
-                >
-                  <option value="easy">🟢 Легкий</option>
-                  <option value="medium">🟡 Средний</option>
-                  <option value="hard">🔴 Сложный</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Категории</label>
-              <div className="categories-input">
-                <input
-                  type="text"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  placeholder="Добавить категорию"
-                  className="form-input"
-                  disabled={loading}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleAddCategory();
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddCategory}
-                  className="add-category-btn"
-                  disabled={loading || !newCategory.trim()}
-                >
-                  Добавить
-                </button>
-              </div>
-
-              {formData.categories.length > 0 && (
-                <div className="categories-list">
-                  {formData.categories.map((category, index) => (
-                    <span key={index} className="category-tag">
-                      {category}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveCategory(category)}
-                        className="remove-category-btn"
-                        disabled={loading}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="template-preview">
-              <h5>Предварительный просмотр</h5>
-              <div className="preview-info">
-                <p><strong>Общее время игры:</strong> {Math.round((formData.settings.rounds * formData.settings.questionsPerRound * formData.settings.timePerQuestion) / 60)} минут</p>
-                <p><strong>Общее количество вопросов:</strong> {formData.settings.rounds * formData.settings.questionsPerRound}</p>
+                {errors.maxTeams && <span className="field-error">{errors.maxTeams}</span>}
               </div>
             </div>
           </div>

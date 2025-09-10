@@ -24,7 +24,7 @@ export class UploadService {
     const response = await fetch(`${this.baseUrl}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       },
       body: formData
     });
@@ -69,7 +69,7 @@ export class UploadService {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       },
       body: JSON.stringify({ url })
     });
@@ -88,7 +88,7 @@ export class UploadService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('pravilniy_quiz_access_token')}`
       }
     });
 

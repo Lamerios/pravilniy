@@ -18,7 +18,6 @@ interface TeamLogoUploadProps {
 export const TeamLogoUpload: React.FC<TeamLogoUploadProps> = ({
   currentLogoUrl,
   onLogoChange,
-  _teamId,
   disabled = false,
   className = ''
 }) => {

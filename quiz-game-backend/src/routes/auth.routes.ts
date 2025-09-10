@@ -90,4 +90,11 @@ router.post(
  */
 router.post('/logout', authenticateToken, authController.logout);
 
+/**
+ * @route   POST /auth/clear-rate-limit
+ * @desc    Очистка rate limit store (для отладки)
+ * @access  Public
+ */
+router.post('/clear-rate-limit', authController.clearRateLimit);
+
 export default router;

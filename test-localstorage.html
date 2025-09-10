@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test localStorage</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Test localStorage</h1>
+    <div id="results"></div>
+    
+    <script>
+        function showResult(message, type = 'result') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = message;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        // Проверяем все ключи localStorage
+        showResult('=== Проверка localStorage ===');
+        
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const value = localStorage.getItem(key);
+            showResult(`${key}: ${value ? value.substring(0, 50) + '...' : 'null'}`);
+        }
+        
+        // Проверяем конкретные ключи
+        showResult('=== Проверка конкретных ключей ===');
+        
+        const accessToken = localStorage.getItem('pravilniy_quiz_access_token');
+        const refreshToken = localStorage.getItem('pravilniy_quiz_refresh_token');
+        const userData = localStorage.getItem('pravilniy_quiz_user_data');
+        
+        showResult(`pravilniy_quiz_access_token: ${accessToken ? '✅ Найден' : '❌ Отсутствует'}`, accessToken ? 'success' : 'error');
+        showResult(`pravilniy_quiz_refresh_token: ${refreshToken ? '✅ Найден' : '❌ Отсутствует'}`, refreshToken ? 'success' : 'error');
+        showResult(`pravilniy_quiz_user_data: ${userData ? '✅ Найден' : '❌ Отсутствует'}`, userData ? 'success' : 'error');
+        
+        // Проверяем старые ключи
+        showResult('=== Проверка старых ключей ===');
+        const oldAccessToken = localStorage.getItem('quiz_game_access_token');
+        const oldRefreshToken = localStorage.getItem('quiz_game_refresh_token');
+        const oldUserData = localStorage.getItem('quiz_game_user_data');
+        
+        showResult(`quiz_game_access_token: ${oldAccessToken ? '✅ Найден' : '❌ Отсутствует'}`, oldAccessToken ? 'success' : 'error');
+        showResult(`quiz_game_refresh_token: ${oldRefreshToken ? '✅ Найден' : '❌ Отсутствует'}`, oldRefreshToken ? 'success' : 'error');
+        showResult(`quiz_game_user_data: ${oldUserData ? '✅ Найден' : '❌ Отсутствует'}`, oldUserData ? 'success' : 'error');
+        
+        showResult('=== Тест завершен ===');
+    </script>
+</body>
+</html>
+

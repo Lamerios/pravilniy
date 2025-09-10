@@ -37,13 +37,6 @@ export class AuthService {
     // Поиск пользователя
     const user = await User.findOne({
       where: { email: email.toLowerCase() },
-      include: [
-        {
-          model: Organization,
-          as: 'organization',
-          attributes: ['id', 'name', 'isActive'],
-        },
-      ],
     });
 
     if (!user) {
@@ -51,17 +44,18 @@ export class AuthService {
     }
 
     // Проверка активности пользователя
-    if (!user.isActive) {
+    if (!user.getDataValue('isActive')) {
       throw new AuthError('Аккаунт деактивирован', 403);
     }
 
-    // Проверка активности организации
-    if (!user.organization.isActive) {
-      throw new AuthError('Организация деактивирована', 403);
+    // Получаем организацию отдельно
+    const organization = await Organization.findByPk(user.getDataValue('organizationId'));
+    if (!organization || !organization.getDataValue('isActive')) {
+      throw new AuthError('Организация не найдена или деактивирована', 403);
     }
 
     // Проверка пароля
-    const isPasswordValid = await comparePassword(password, user.password);
+    const isPasswordValid = await comparePassword(password, user.getDataValue('password'));
     if (!isPasswordValid) {
       throw new AuthError('Неверные учетные данные', 401);
     }
@@ -124,7 +118,7 @@ export class AuthService {
       throw new ValidationError('Организация не найдена', 'organizationId');
     }
 
-    if (!organization.isActive) {
+    if (!organization.getDataValue('isActive')) {
       throw new ValidationError('Организация деактивирована', 'organizationId');
     }
 
@@ -175,26 +169,20 @@ export class AuthService {
       const payload = verifyToken(refreshToken);
 
       // Поиск пользователя
-      const user = await User.findByPk(payload.userId, {
-        include: [
-          {
-            model: Organization,
-            as: 'organization',
-            attributes: ['id', 'name', 'isActive'],
-          },
-        ],
-      });
+      const user = await User.findByPk(payload.userId);
 
       if (!user) {
         throw new AuthError('Пользователь не найден', 401);
       }
 
-      if (!user.isActive) {
+      if (!user.getDataValue('isActive')) {
         throw new AuthError('Аккаунт деактивирован', 403);
       }
 
-      if (!user.organization.isActive) {
-        throw new AuthError('Организация деактивирована', 403);
+      // Получаем организацию отдельно
+      const organization = await Organization.findByPk(user.getDataValue('organizationId'));
+      if (!organization || !organization.getDataValue('isActive')) {
+        throw new AuthError('Организация не найдена или деактивирована', 403);
       }
 
       // Генерируем новые токены

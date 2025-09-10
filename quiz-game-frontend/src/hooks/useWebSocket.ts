@@ -50,7 +50,7 @@ export const useWebSocket = (options: UseWebSocketOptions): UseWebSocketReturn =
   const isManualDisconnect = useRef(false);
 
   const connect = useCallback(() => {
-    if (socketRef.current?.connected ?? false || connecting) {
+    if ((socketRef.current?.connected ?? false) || connecting) {
       return;
     }
 

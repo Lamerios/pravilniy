@@ -19,7 +19,6 @@ interface TeamScoreCardProps {
 }
 
 export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({
-  _teamId,
   teamName,
   tableNumber,
   position,

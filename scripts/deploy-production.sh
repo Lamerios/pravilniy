@@ -1,6 +1,6 @@
 #!/bin/bash
 # ===================================================================
-# Quiz Game - Production Deployment Script
+# Правильный Квиз - Production Deployment Script
 # ===================================================================
 
 set -euo pipefail
@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Configuration
 COMPOSE_FILE="docker-compose.prod.yml"
 ENV_FILE="env.production"
-PROJECT_NAME="quiz-game-prod"
+PROJECT_NAME="pravilniy-quiz-prod"
 
 # Logging functions
 log() {
@@ -45,7 +45,7 @@ check_prerequisites() {
     fi
 
     # Check if Docker Compose is available
-    if ! command -v docker-compose > /dev/null 2>&1; then
+    if ! command -v docker > /dev/null 2>&1 || ! docker compose version > /dev/null 2>&1; then
         error "Docker Compose is not installed. Please install Docker Compose and try again."
         exit 1
     fi
@@ -71,11 +71,11 @@ build_images() {
 
     # Build backend image
     log "Building backend image..."
-    docker-compose -f "$COMPOSE_FILE" build backend
+    docker compose -f "$COMPOSE_FILE" build backend
 
     # Build frontend image
     log "Building frontend image..."
-    docker-compose -f "$COMPOSE_FILE" build frontend
+    docker compose -f "$COMPOSE_FILE" build frontend
 
     success "Images built successfully"
 }
@@ -86,11 +86,11 @@ deploy_services() {
 
     # Stop existing services
     log "Stopping existing services..."
-    docker-compose -f "$COMPOSE_FILE" down --remove-orphans
+    docker compose -f "$COMPOSE_FILE" down --remove-orphans
 
     # Start services
     log "Starting services..."
-    docker-compose -f "$COMPOSE_FILE" up -d
+    docker compose -f "$COMPOSE_FILE" up -d
 
     success "Services deployed successfully"
 }
@@ -136,13 +136,13 @@ health_check() {
 # Show deployment status
 show_status() {
     log "Deployment status:"
-    docker-compose -f "$COMPOSE_FILE" ps
+    docker compose -f "$COMPOSE_FILE" ps
 
     log "Service logs (last 10 lines):"
     echo "=== Backend Logs ==="
-    docker-compose -f "$COMPOSE_FILE" logs --tail=10 backend
+    docker compose -f "$COMPOSE_FILE" logs --tail=10 backend
     echo "=== Frontend Logs ==="
-    docker-compose -f "$COMPOSE_FILE" logs --tail=10 frontend
+    docker compose -f "$COMPOSE_FILE" logs --tail=10 frontend
 }
 
 # Cleanup old images
@@ -167,7 +167,7 @@ main() {
     else
         error "Deployment failed health checks"
         log "Rolling back..."
-        docker-compose -f "$COMPOSE_FILE" down
+        docker compose -f "$COMPOSE_FILE" down
         exit 1
     fi
 }
@@ -176,7 +176,7 @@ main() {
 cleanup_on_exit() {
     if [[ $? -ne 0 ]]; then
         error "Deployment interrupted. Cleaning up..."
-        docker-compose -f "$COMPOSE_FILE" down --remove-orphans
+        docker compose -f "$COMPOSE_FILE" down --remove-orphans
     fi
 }
 trap cleanup_on_exit EXIT

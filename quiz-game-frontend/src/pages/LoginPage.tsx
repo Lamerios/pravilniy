@@ -23,7 +23,7 @@ export function LoginPage() {
         <div className="login-page-content">
           <div className="login-page-header">
             <div className="logo">
-              <h1>Quiz Game</h1>
+              <h1>Правильный Квиз</h1>
               <p>Система управления викторинами</p>
             </div>
           </div>
@@ -34,7 +34,7 @@ export function LoginPage() {
 
           <div className="login-page-footer">
             <div className="footer-info">
-              <p>© 2024 Quiz Game. Все права защищены.</p>
+              <p>© 2024 Правильный Квиз. Все права защищены.</p>
               <p>Версия 1.0.0</p>
             </div>
           </div>

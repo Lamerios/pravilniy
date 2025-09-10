@@ -1,11 +1,10 @@
 import { GameTemplate } from '../types/template.types';
 
 interface TemplateListProps {
-  templates: GameTemplate[];
+  templates: GameTemplate[] | undefined;
   loading?: boolean;
   onEdit?: (template: GameTemplate) => void;
   onDelete?: (template: GameTemplate) => void;
-  onDuplicate?: (template: GameTemplate) => void;
 }
 
 export function TemplateList({
@@ -13,8 +12,9 @@ export function TemplateList({
   loading = false,
   onEdit,
   onDelete,
-  onDuplicate
 }: TemplateListProps) {
+  console.log('TemplateList received templates:', templates);
+  console.log('TemplateList templates length:', templates?.length);
   if (loading) {
     return (
       <div className="template-list loading">
@@ -32,7 +32,7 @@ export function TemplateList({
     );
   }
 
-  if (templates.length === 0) {
+  if (!templates || templates.length === 0) {
     return (
       <div className="template-list empty">
         <div className="empty-state">
@@ -51,33 +51,20 @@ export function TemplateList({
           <div className="template-header">
             <h3 className="template-name">{template.name}</h3>
             <div className="template-actions">
-              {onEdit && (
-                <button
-                  onClick={() => onEdit(template)}
-                  className="action-btn edit-btn"
-                  title="Редактировать"
-                >
-                  ✏️
-                </button>
-              )}
-              {onDuplicate && (
-                <button
-                  onClick={() => onDuplicate(template)}
-                  className="action-btn duplicate-btn"
-                  title="Дублировать"
-                >
-                  📋
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={() => onDelete(template)}
-                  className="action-btn delete-btn"
-                  title="Удалить"
-                >
-                  🗑️
-                </button>
-              )}
+              <button
+                onClick={() => onEdit?.(template)}
+                className="action-btn edit-btn"
+                title="Редактировать"
+              >
+                ✏️
+              </button>
+              <button
+                onClick={() => onDelete?.(template)}
+                className="action-btn delete-btn"
+                title="Удалить"
+              >
+                🗑️
+              </button>
             </div>
           </div>
 
@@ -106,7 +93,7 @@ export function TemplateList({
             </div>
           </div>
 
-          {template.settings.difficulty && (
+          {template.settings?.difficulty && (
             <div className="template-difficulty">
               <span className={`difficulty-badge difficulty-${template.settings.difficulty}`}>
                 {template.settings.difficulty === 'easy' && '🟢 Легкий'}
@@ -116,16 +103,16 @@ export function TemplateList({
             </div>
           )}
 
-          {template.settings.categories && template.settings.categories.length > 0 && (
+          {template.settings?.categories && template.settings.categories.length > 0 && (
             <div className="template-categories">
               <span className="categories-label">Категории:</span>
               <div className="categories-list">
-                {template.settings.categories.slice(0, 3).map((category, index) => (
+                {template.settings?.categories.slice(0, 3).map((category, index) => (
                   <span key={index} className="category-tag">
                     {category}
                   </span>
                 ))}
-                {template.settings.categories.length > 3 && (
+                {template.settings?.categories.length > 3 && (
                   <span className="category-tag more">
                     +{template.settings.categories.length - 3}
                   </span>

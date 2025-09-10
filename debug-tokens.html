@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Tokens</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .token-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .token-value {
+            word-break: break-all;
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 5px;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug Tokens</h1>
+        <p>Этот файл поможет отладить проблемы с токенами аутентификации.</p>
+        
+        <div class="token-info">
+            <h3>📋 Текущие токены в localStorage:</h3>
+            <div id="tokenDisplay"></div>
+        </div>
+        
+        <div class="token-info">
+            <h3>🔧 Действия:</h3>
+            <button class="button" onclick="refreshTokens()">🔄 Обновить</button>
+            <button class="button" onclick="clearTokens()">🗑️ Очистить</button>
+            <button class="button" onclick="testAPI()">🧪 Тест API</button>
+            <button class="button" onclick="goToReact()">🚀 Перейти в React</button>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function refreshTokens() {
+            displayTokens();
+        }
+        
+        function clearTokens() {
+            localStorage.removeItem('pravilniy_quiz_access_token');
+            localStorage.removeItem('pravilniy_quiz_refresh_token');
+            localStorage.removeItem('pravilniy_quiz_user_data');
+            displayTokens();
+            showResult('Токены очищены', 'success');
+        }
+        
+        function displayTokens() {
+            const accessToken = localStorage.getItem('pravilniy_quiz_access_token');
+            const refreshToken = localStorage.getItem('pravilniy_quiz_refresh_token');
+            const userData = localStorage.getItem('pravilniy_quiz_user_data');
+            
+            let html = '';
+            
+            if (accessToken) {
+                html += '<h4>✅ Access Token:</h4>';
+                html += '<div class="token-value">' + accessToken.substring(0, 50) + '...</div>';
+                html += '<p><strong>Длина:</strong> ' + accessToken.length + ' символов</p>';
+                
+                // Проверяем срок действия
+                try {
+                    const payload = JSON.parse(atob(accessToken.split('.')[1]));
+                    const exp = new Date(payload.exp * 1000);
+                    const now = new Date();
+                    const isValid = exp > now;
+                    html += '<p><strong>Истекает:</strong> ' + exp.toLocaleString() + '</p>';
+                    html += '<p><strong>Статус:</strong> ' + (isValid ? '✅ Действителен' : '❌ Истек') + '</p>';
+                } catch (e) {
+                    html += '<p><strong>Статус:</strong> ❌ Неверный формат</p>';
+                }
+            } else {
+                html += '<h4>❌ Access Token: отсутствует</h4>';
+            }
+            
+            if (refreshToken) {
+                html += '<h4>✅ Refresh Token:</h4>';
+                html += '<div class="token-value">' + refreshToken.substring(0, 50) + '...</div>';
+                html += '<p><strong>Длина:</strong> ' + refreshToken.length + ' символов</p>';
+            } else {
+                html += '<h4>❌ Refresh Token: отсутствует</h4>';
+            }
+            
+            if (userData) {
+                html += '<h4>✅ User Data:</h4>';
+                try {
+                    const user = JSON.parse(userData);
+                    html += '<div class="token-value">' + JSON.stringify(user, null, 2) + '</div>';
+                } catch (e) {
+                    html += '<div class="token-value">' + userData + '</div>';
+                }
+            } else {
+                html += '<h4>❌ User Data: отсутствует</h4>';
+            }
+            
+            document.getElementById('tokenDisplay').innerHTML = html;
+        }
+        
+        async function testAPI() {
+            const accessToken = localStorage.getItem('pravilniy_quiz_access_token');
+            
+            if (!accessToken) {
+                showResult('❌ Access Token отсутствует', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('✅ API работает! Пользователь: ' + JSON.stringify(data), 'success');
+                } else {
+                    showResult('❌ API ошибка: ' + data.message + ' (статус: ' + response.status + ')', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Ошибка сети: ' + error.message, 'error');
+            }
+        }
+        
+        function goToReact() {
+            window.location.href = '/';
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="' + type + '">' + message + '</div>';
+        }
+        
+        // Инициализация
+        displayTokens();
+        
+        // Обновляем каждые 5 секунд
+        setInterval(displayTokens, 5000);
+    </script>
+</body>
+</html>
+

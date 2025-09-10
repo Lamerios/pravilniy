@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { clearRateLimitStore } from '../middleware/rate-limit.middleware';
 import {
   AuthError,
   AuthenticatedRequest,
@@ -285,4 +286,21 @@ export class AuthController {
       message: 'Внутренняя ошибка сервера',
     });
   }
+
+  /**
+   * POST /auth/clear-rate-limit
+   * Очистка rate limit store (для отладки)
+   */
+  clearRateLimit = async (req: Request, res: Response): Promise<void> => {
+    try {
+      clearRateLimitStore();
+      
+      res.status(200).json({
+        success: true,
+        message: 'Rate limit store cleared successfully',
+      });
+    } catch (error) {
+      this.handleError(error, res);
+    }
+  };
 }

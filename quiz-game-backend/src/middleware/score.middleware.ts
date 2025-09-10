@@ -18,7 +18,7 @@ const createScoreSchema = z
     notes: z.string().max(500, 'Заметки не могут превышать 500 символов').optional(),
   })
   .refine(
-    data => {
+    (data: any) => {
       // Если указаны minBet и maxBet, то minBet должен быть меньше maxBet
       if (data.minBet !== undefined && data.maxBet !== undefined) {
         return data.minBet <= data.maxBet;
@@ -30,7 +30,7 @@ const createScoreSchema = z
     },
   )
   .refine(
-    data => {
+    (data: any) => {
       // Валидация ставки в соответствии с типом
       if (data.bet !== undefined && data.betType) {
         switch (data.betType) {
@@ -68,7 +68,7 @@ const updateScoreSchema = z
     message: 'Необходимо указать хотя бы одно поле для обновления',
   })
   .refine(
-    data => {
+    (data: any) => {
       // Если указаны minBet и maxBet, то minBet должен быть меньше maxBet
       if (data.minBet !== undefined && data.maxBet !== undefined) {
         return data.minBet <= data.maxBet;
@@ -119,25 +119,25 @@ const scoreQuerySchema = z.object({
   page: z
     .string()
     .optional()
-    .transform(val => (val ? parseInt(val) : undefined)),
+    .transform((val: any) => (val ? parseInt(val) : undefined)),
   limit: z
     .string()
     .optional()
-    .transform(val => (val ? parseInt(val) : undefined)),
+    .transform((val: any) => (val ? parseInt(val) : undefined)),
   sortBy: z.string().optional(),
   sortOrder: z.enum(['ASC', 'DESC']).optional(),
   gameId: z
     .string()
     .optional()
-    .transform(val => (val ? parseInt(val) : undefined)),
+    .transform((val: any) => (val ? parseInt(val) : undefined)),
   teamId: z
     .string()
     .optional()
-    .transform(val => (val ? parseInt(val) : undefined)),
+    .transform((val: any) => (val ? parseInt(val) : undefined)),
   roundId: z
     .string()
     .optional()
-    .transform(val => (val ? parseInt(val) : undefined)),
+    .transform((val: any) => (val ? parseInt(val) : undefined)),
 });
 
 /**
@@ -163,7 +163,7 @@ export const validateCreateScore = (req: Request, res: Response, next: NextFunct
       res.status(400).json({
         success: false,
         message: 'Ошибка валидации данных',
-        errors: error.issues.map((err: any) => ({
+        errors: (error as any).issues.map((err: any) => ({
           field: err.path.join('.'),
           message: err.message,
         })),
@@ -197,7 +197,7 @@ export const validateUpdateScore = (req: Request, res: Response, next: NextFunct
       res.status(400).json({
         success: false,
         message: 'Ошибка валидации данных',
-        errors: error.issues.map((err: any) => ({
+        errors: (error as any).issues.map((err: any) => ({
           field: err.path.join('.'),
           message: err.message,
         })),
@@ -237,7 +237,7 @@ export const validateBulkScore = (req: Request, res: Response, next: NextFunctio
       res.status(400).json({
         success: false,
         message: 'Ошибка валидации данных',
-        errors: error.issues.map((err: any) => ({
+        errors: (error as any).issues.map((err: any) => ({
           field: err.path.join('.'),
           message: err.message,
         })),
@@ -270,7 +270,7 @@ export const validateCorrectScore = (req: Request, res: Response, next: NextFunc
       res.status(400).json({
         success: false,
         message: 'Ошибка валидации данных',
-        errors: error.issues.map((err: any) => ({
+        errors: (error as any).issues.map((err: any) => ({
           field: err.path.join('.'),
           message: err.message,
         })),
@@ -297,7 +297,7 @@ export const validateScoreQuery = (req: Request, res: Response, next: NextFuncti
       res.status(400).json({
         success: false,
         message: 'Ошибка валидации параметров запроса',
-        errors: error.issues.map((err: any) => ({
+        errors: (error as any).issues.map((err: any) => ({
           field: err.path.join('.'),
           message: err.message,
         })),
@@ -368,23 +368,23 @@ export const validateGameScoresQuery = (req: Request, res: Response, next: NextF
     const querySchema = z.object({
       teamId: z
         .string()
-        .transform(val => parseInt(val))
-        .refine(val => !isNaN(val) && val > 0)
+        .transform((val: any) => parseInt(val))
+        .refine((val: any) => !isNaN(val) && val > 0)
         .optional(),
       roundId: z
         .string()
-        .transform(val => parseInt(val))
-        .refine(val => !isNaN(val) && val > 0)
+        .transform((val: any) => parseInt(val))
+        .refine((val: any) => !isNaN(val) && val > 0)
         .optional(),
       page: z
         .string()
-        .transform(val => parseInt(val))
-        .refine(val => !isNaN(val) && val > 0)
+        .transform((val: any) => parseInt(val))
+        .refine((val: any) => !isNaN(val) && val > 0)
         .optional(),
       limit: z
         .string()
-        .transform(val => parseInt(val))
-        .refine(val => !isNaN(val) && val > 0 && val <= 100)
+        .transform((val: any) => parseInt(val))
+        .refine((val: any) => !isNaN(val) && val > 0 && val <= 100)
         .optional(),
       sortBy: z
         .enum(['createdAt', 'updatedAt', 'points', 'totalPoints', 'teamId', 'roundId'])
@@ -399,7 +399,7 @@ export const validateGameScoresQuery = (req: Request, res: Response, next: NextF
       res.status(400).json({
         success: false,
         message: 'Ошибка валидации параметров запроса',
-        errors: error.issues.map((err: any) => ({
+        errors: (error as any).issues.map((err: any) => ({
           field: err.path.join('.'),
           message: err.message,
         })),

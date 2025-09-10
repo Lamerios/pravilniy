@@ -44,25 +44,25 @@ export class TemplateService {
       //   where.isPublic = isPublic;
       // }
 
-      // Фильтр по тегам
-      if (tags && tags.length > 0) {
-        where.tags = { [Op.contains]: tags };
-      }
+      // Фильтр по тегам (пока отключен, так как поле tags не существует в БД)
+      // if (tags && tags.length > 0) {
+      //   where.tags = { [Op.contains]: tags };
+      // }
 
-      // Фильтр по сложности
-      if (difficulty) {
-        where['settings.difficulty'] = difficulty;
-      }
+      // Фильтр по сложности (пока отключен, так как поле settings не существует в БД)
+      // if (difficulty) {
+      //   where['settings.difficulty'] = difficulty;
+      // }
 
       const { count, rows } = await GameTemplate.findAndCountAll({
         where,
-        include: [
-          {
-            model: User,
-            as: 'creator',
-            attributes: ['id', 'username', 'email'],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: User,
+        //     as: 'creator',
+        //     attributes: ['id', 'username', 'email'],
+        //   },
+        // ],
         order: [[sortBy, sortOrder]],
         limit,
         offset,
@@ -90,13 +90,13 @@ export class TemplateService {
   async getTemplateById(id: string): Promise<GameTemplate | null> {
     try {
       const template = await GameTemplate.findByPk(id, {
-        include: [
-          {
-            model: User,
-            as: 'creator',
-            attributes: ['id', 'username', 'email'],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: User,
+        //     as: 'creator',
+        //     attributes: ['id', 'username', 'email'],
+        //   },
+        // ],
       });
 
       return template;
@@ -222,13 +222,13 @@ export class TemplateService {
 
       const { count, rows } = await GameTemplate.findAndCountAll({
         where,
-        include: [
-          {
-            model: User,
-            as: 'creator',
-            attributes: ['id', 'username', 'email'],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: User,
+        //     as: 'creator',
+        //     attributes: ['id', 'username', 'email'],
+        //   },
+        // ],
         order: [[sortBy, sortOrder]],
         limit,
         offset,

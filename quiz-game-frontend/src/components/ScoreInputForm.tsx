@@ -45,6 +45,7 @@ export const ScoreInputForm: React.FC<ScoreInputFormProps> = ({
   const [notes, setNotes] = useState<string>(initialData?.notes ?? '');
 
   const [submitting, setSubmitting] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showCriticalAlert, setShowCriticalAlert] = useState(false);
   // Removed unused state variables

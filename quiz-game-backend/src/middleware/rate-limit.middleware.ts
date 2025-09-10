@@ -145,8 +145,8 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
   // Более строгие лимиты для аутентификации
   const authConfig = {
     windowMs: 15 * 60 * 1000, // 15 минут
-    maxRequests: 5, // 5 попыток входа
-    blockDuration: 30 * 60 * 1000, // Блокировка на 30 минут
+    maxRequests: 50, // 50 попыток входа (временно увеличено для отладки)
+    blockDuration: 5 * 60 * 1000, // Блокировка на 5 минут (временно уменьшено)
   };
 
   let rateLimitInfo = rateLimitStore.get(key);
@@ -162,6 +162,8 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
 
   if (rateLimitInfo.blocked && now < rateLimitInfo.resetTime) {
     const retryAfter = Math.ceil((rateLimitInfo.resetTime - now) / 1000);
+    
+    console.warn(`[AUTH_RATE_LIMIT] Blocked request from ${key}: ${req.method} ${req.path} - Retry after ${retryAfter}s`);
 
     res.status(429).json({
       success: false,
@@ -179,6 +181,8 @@ export const authRateLimit = (req: Request, res: Response, next: NextFunction): 
     rateLimitInfo.resetTime = now + authConfig.blockDuration;
 
     const retryAfter = Math.ceil((rateLimitInfo.resetTime - now) / 1000);
+    
+    console.warn(`[AUTH_RATE_LIMIT] Rate limit exceeded for ${key}: ${req.method} ${req.path} - Blocked for ${retryAfter}s`);
 
     res.status(429).json({
       success: false,
@@ -269,4 +273,19 @@ export const rateLimitLogger = (req: Request, res: Response, next: NextFunction)
   };
 
   next();
+};
+
+/**
+ * Очищает все rate limit данные (для отладки)
+ */
+export const clearRateLimitStore = (): void => {
+  rateLimitStore.clear();
+  console.log('[RATE_LIMIT] Store cleared');
+};
+
+/**
+ * Получает информацию о rate limit для отладки
+ */
+export const getRateLimitInfo = (key: string): RateLimitInfo | undefined => {
+  return rateLimitStore.get(key);
 };

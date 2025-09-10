@@ -2,7 +2,6 @@
 import {
   AllowNull,
   AutoIncrement,
-  BelongsTo,
   Column,
   CreatedAt,
   DataType,
@@ -77,7 +76,9 @@ export class User extends Model {
   @Column(DataType.DATE)
   declare updatedAt: Date;
 
-  // Ассоциации
-  @BelongsTo(() => Organization)
-  organization!: Organization;
+  // Ассоциации настраиваются в associations.ts
+  declare organization?: Organization;
+  declare createdGameTemplates?: any[];
+  declare createdGames?: any[];
+  declare awardedScores?: any[];
 }

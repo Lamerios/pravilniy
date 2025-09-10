@@ -181,7 +181,16 @@ export function useAuth() {
       const refreshTokenValue = getRefreshToken();
       const userData = getUserData();
 
+      // Дополнительная отладка
+      console.log('Auth initialization:', {
+        accessToken: accessToken ? 'present' : 'missing',
+        refreshToken: refreshTokenValue ? 'present' : 'missing',
+        userData: userData ? 'present' : 'missing',
+        localStorageKeys: Object.keys(localStorage).filter(key => key.includes('pravilniy'))
+      });
+
       if (!accessToken || !refreshTokenValue || !userData) {
+        console.log('Missing auth data, setting unauthenticated state');
         updateState({
           user: null,
           tokens: null,
@@ -196,9 +205,11 @@ export function useAuth() {
       const isTokenValid = await checkAndRefreshToken();
 
       if (isTokenValid) {
+        console.log('Token is valid, getting current user...');
         // Получаем актуальные данные пользователя
         try {
           const currentUser = await authService.getCurrentUser();
+          console.log('Current user retrieved:', currentUser);
           updateState({
             user: currentUser,
             tokens: {
@@ -209,7 +220,9 @@ export function useAuth() {
             isLoading: false,
             error: null,
           });
+          console.log('Auth state updated to authenticated');
         } catch (error) {
+          console.error('Failed to get current user:', error);
           // Если не удалось получить данные пользователя, очищаем состояние
           clearAuthStorage();
           updateState({
@@ -221,6 +234,7 @@ export function useAuth() {
           });
         }
       } else {
+        console.log('Token is invalid, setting unauthenticated state');
         updateState({
           user: null,
           tokens: null,
@@ -243,10 +257,11 @@ export function useAuth() {
 
   /**
    * Инициализация при монтировании компонента
+   * Временно отключено для отладки
    */
   useEffect(() => {
     initializeAuth();
-  }, [initializeAuth]);
+  }, []);
 
   return {
     ...state,

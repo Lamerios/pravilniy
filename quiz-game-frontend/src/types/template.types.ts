@@ -22,13 +22,24 @@ export interface TemplateSettings {
 export interface CreateTemplateDto {
   name: string;
   description?: string;
-  settings: TemplateSettings;
+  settings: {
+    rounds: number;
+    questionsPerRound: number;
+    timePerQuestion: number;
+    scoringSystem: 'standard' | 'bonus' | 'penalty';
+    bonusPoints?: number;
+    penaltyPoints?: number;
+    categories?: string[];
+    difficulty?: 'easy' | 'medium' | 'hard';
+  };
+  maxTeams: number;
 }
 
 export interface UpdateTemplateDto {
   name?: string;
   description?: string;
-  settings?: TemplateSettings;
+  roundsCount?: number;
+  maxTeams?: number;
 }
 
 export interface TemplateQueryDto {

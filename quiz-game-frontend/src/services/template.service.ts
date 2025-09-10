@@ -6,12 +6,13 @@ import {
   TemplateStats,
   UpdateTemplateDto
 } from '../types/template.types';
+import { getAccessToken } from '../utils/storage';
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
 class TemplateService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const token = localStorage.getItem('accessToken');
+    const token = getAccessToken();
 
     const config: RequestInit = {
       headers: {
@@ -47,7 +48,16 @@ class TemplateService {
     const queryString = params.toString();
     const endpoint = `/templates${queryString ? `?${queryString}` : ''}`;
 
-    return this.request<TemplateListResult>(endpoint);
+    const response = await this.request<{ success: boolean; data: GameTemplate[]; pagination: any }>(endpoint);
+    
+    // Преобразуем ответ API в формат, ожидаемый frontend
+    return {
+      templates: response.data,
+      currentPage: response.pagination.currentPage,
+      totalPages: response.pagination.totalPages,
+      totalItems: response.pagination.totalItems,
+      itemsPerPage: response.pagination.itemsPerPage
+    };
   }
 
   /**
